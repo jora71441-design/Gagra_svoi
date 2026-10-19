@@ -2,129 +2,208 @@ import re
 import json
 import os
 
-CATEGORIES_MAP = {
-    "doors": {
-        "title": "Окна и двери",
-        "keywords": ["двер", "окн", "стекл", "петл", "замок", "наличник"]
-    },
-    "appliances": {
-        "title": "Бытовая техника",
-        "keywords": ["стирал", "холодильн", "кондиционер", "плит", "посудомой", "техник", "бойлер", "котел"]
-    },
-    "finish": {
-        "title": "Отделочные работы",
-        "keywords": ["обои", "потолок", "маляр", "штукатур", "плитк", "шпаклев", "покраск", "ремонт квартир"]
-    },
-    "plumbing": {
-        "title": "Сантехника",
-        "keywords": ["сантехник", "кран", "труб", "унитаз", "протечк", "смесител", "засор", "канализаци"]
-    },
-    "electric": {
-        "title": "Электрика",
-        "keywords": ["электрик", "проводк", "свет", "розетк", "щиток", "автомат", "люстр"]
-    },
-    "auto": {
-        "title": "Автоуслуги",
-        "keywords": ["авто", "эвакуатор", "машин", "колес", "шиномонтаж", "аккумулятор", "мотор"]
-    }
+# Категории и сопоставление
+CAT_ALIASES = {
+    "СТРОИТЕЛЬСТВО": ("construction", "Строительство и каркас"),
+    "КАРКАС": ("construction", "Строительство и каркас"),
+    "ОТДЕЛКА": ("finish", "Отделка и ремонт"),
+    "ИНТЕРЬЕР": ("finish", "Отделка и ремонт"),
+    "ИНЖЕНЕРНЫЕ": ("engineering", "Сантехника и электрика"),
+    "ОКНА": ("doors", "Окна и двери"),
+    "ДВЕРИ": ("doors", "Окна и двери"),
+    "РЕМОНТ И ОБСЛУЖИВАНИЕ": ("appliances", "Бытовая техника"),
+    "БЫТОВАЯ ТЕХНИКА": ("appliances", "Бытовая техника"),
+    "АВТО": ("auto", "Авто и транспорт"),
+    "КРАСОТА": ("beauty", "Красота и здоровье"),
+    "ЗДОРОВЬЕ": ("beauty", "Красота и здоровье"),
+    "ДОМ": ("home", "Дом, дача, еда"),
+    "ЕДА": ("home", "Дом, дача, еда"),
+    "ПОЛЕЗНЫЕ МЕСТА": ("places", "Полезные места и сервисы"),
+    "ЮВЕЛИР": ("places", "Полезные места и сервисы")
 }
 
-# Регулярка строки WhatsApp с очищенным форматом
-MSG_REGEX = re.compile(
-    r'^(\d{1,2}\.\d{1,2}\.\d{2,4}),?\s+(\d{1,2}:\d{2}(?::\d{2})?)\s*[-–]\s*([^:]+?):\s*(.*)$'
-)
+def clean_phone(p: str) -> str:
+    p = p.strip()
+    digits = re.sub(r'\D', '', p)
+    if digits.startswith('89') and len(digits) == 11:
+        digits = '7' + digits[1:]
+    elif len(digits) == 10 and digits.startswith('9'):
+        digits = '7' + digits
+    elif len(digits) == 7: # Местный абхазский городской
+        return "+7940" + digits
+    if len(digits) == 11:
+        return "+" + digits
+    return p
 
-def find_abkhaz_phones(text: str):
-    # Ищем последовательности с 940 и последующими 7 цифрами
-    pattern = r'(?:\+?7|8)?[\s\-\(\.]*940[\s\-\)\.]*(?:\d[\s\-\.]*){7}'
-    matches = re.findall(pattern, text)
-    cleaned = []
-    for m in matches:
-        digits = re.sub(r'\D', '', m)
-        if digits.startswith('8940'):
-            digits = '7940' + digits[4:]
-        elif digits.startswith('940'):
-            digits = '7940' + digits[3:]
-        if len(digits) == 11 and digits.startswith('7940'):
-            cleaned.append('+' + digits)
-    return cleaned
+def detect_category_by_text(text: str):
+    t = text.lower()
+    if any(k in t for k in ["окн", "двер", "москит", "стекл", "замок"]):
+        return "doors", "Окна и двери"
+    if any(k in t for k in ["стирал", "холодильн", "кондиционер", "техник", "плит", "духовк", "бытов"]):
+        return "appliances", "Бытовая техника"
+    if any(k in t for k in ["обои", "потолок", "плитк", "кафел", "паркет", "маляр", "штукатур", "столяр", "мебел"]):
+        return "finish", "Отделка и ремонт"
+    if any(k in t for k in ["сантехн", "электрик", "отоплен", "водоснабжен", "кран", "котел", "сифон"]):
+        return "engineering", "Сантехника и электрика"
+    if any(k in t for k in ["стройк", "сварк", "сварщ", "альпинист", "навес", "мусор"]):
+        return "construction", "Строительство и каркас"
+    if any(k in t for k in ["авто", "акпп", "диагност", "машин", "велосипед"]):
+        return "auto", "Авто и транспорт"
+    if any(k in t for k in ["массаж", "макияж", "лор", "врач", "психолог", "терапевт", "художник", "кормлени"]):
+        return "beauty", "Красота и здоровье"
+    if any(k in t for k in ["покос", "еда", "штор", "торт", "аджик", "доставк"]):
+        return "home", "Дом, дача, еда"
+    return "places", "Полезные места и сервисы"
 
-def detect_category(text: str):
-    text_lower = text.lower()
-    for cat_key, cat_data in CATEGORIES_MAP.items():
-        if any(kw in text_lower for kw in cat_data["keywords"]):
-            return cat_key, cat_data["title"]
-    return "other", "Разное и прочие услуги"
-
-def extract_name(text: str, sender: str) -> str:
-    lines = [line.strip() for line in text.split('\n') if line.strip()]
-    for line in lines:
-        if any(w in line.lower() for w in ["номер", "попробуй", "звони", "мастер"]):
-            continue
-        words = line.split()
-        if 1 <= len(words) <= 3 and not re.search(r'\d{5,}', line):
-            return line.replace("~", "").strip()
-    return f"Специалист ({sender})"
-
-def run():
+def parse_chat():
     chat_file = "_chat.txt"
     if not os.path.exists(chat_file):
-        print("Файл _chat.txt не найден.")
+        print("Файл _chat.txt не найден")
         return
 
     with open(chat_file, "r", encoding="utf-8", errors="ignore") as f:
         content = f.read()
 
-    # ВАЖНО: Удаляем все невидимые служебные Unicode-метки WhatsApp
+    # Удаляем скрытые юникод-символы WhatsApp
     content = re.sub(r'[\u200e\u200f\u202a-\u202e\u202f\ufeff]', '', content)
 
-    # Делим по датам сообщений
+    # Делим на сообщения
     raw_messages = re.split(r'\n(?=\d{1,2}\.\d{1,2}\.\d{2,4})', content)
 
-    masters = []
-    seen_phones = set()
-    master_id = 1
+    masters = {}
+    master_counter = 1
+
+    # Регулярка телефона
+    phone_pattern = r'(?:\+?7|8)?[\s\-]?(?:\(?\d{3}\)?[\s\-]?)?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}|\b[79]\d{2}[\s\-]?\d{2}[\s\-]?\d{2}\b'
 
     for msg in raw_messages:
-        match = MSG_REGEX.match(msg.strip())
-        if not match:
+        lines = [line.strip() for line in msg.split('\n') if line.strip()]
+        if not lines:
             continue
 
-        _, _, sender, text = match.groups()
-        phones = find_abkhaz_phones(text)
-        if not phones:
+        header = lines[0]
+        # Пропускаем системные сообщения (добавления списков номеров, выходы)
+        if any(skip in msg for skip in ["покинул(-а)", "присоединился", "добавил(-а) контакт", "Сообщения и звонки защищены", "ОПРОС:"]):
             continue
 
-        for phone in phones:
-            if phone in seen_phones:
+        # Ветка 1: Дайджест Ринаты "ПОЛЕЗНЫЕ КОНТАКТЫ ГАГРА"
+        if "ПОЛЕЗНЫЕ КОНТАКТЫ ГАГРА" in msg:
+            current_cat_key = "construction"
+            current_cat_title = "Строительство и каркас"
+
+            for line in lines[1:]:
+                # Определение категории по заголовкам дайджеста
+                upper_line = line.upper()
+                for alias, (ck, ct) in CAT_ALIASES.items():
+                    if alias in upper_line:
+                        current_cat_key = ck
+                        current_cat_title = ct
+                        break
+
+                # Строка мастера: ✅⭐ +7 940 926-40-99, Федор - стройка...
+                if any(line.startswith(prefix) for prefix in ["✅", "⭐", "📍", "•", "-"]):
+                    # Поиск телефона
+                    ph_match = re.search(phone_pattern, line)
+                    if not ph_match:
+                        continue
+                    
+                    raw_phone = ph_match.group(0)
+                    phone = clean_phone(raw_phone)
+                    if len(re.sub(r'\D', '', phone)) < 7:
+                        continue
+
+                    is_starred = "⭐" in line
+                    
+                    # Очищаем строку от маркеров и телефона
+                    info = line
+                    for ch in ["✅", "⭐", "📍", "•"]:
+                        info = info.replace(ch, "")
+                    info = info.replace(raw_phone, "").strip(" ,-–")
+
+                    # Разделяем имя и услугу
+                    if " - " in info:
+                        parts = info.split(" - ", 1)
+                        name = parts[0].strip(" ,")
+                        service = parts[1].strip()
+                    elif "," in info:
+                        parts = info.split(",", 1)
+                        name = parts[0].strip()
+                        service = parts[1].strip()
+                    else:
+                        name = info if info else "Специалист"
+                        service = f"Услуги по направлению: {current_cat_title}"
+
+                    if not name or len(name) > 30:
+                        name = current_cat_title
+
+                    masters[phone] = {
+                        "id": master_counter,
+                        "name": name,
+                        "category": current_cat_key,
+                        "category_title": current_cat_title,
+                        "service": service[:140],
+                        "phone": phone,
+                        "recommended_by": "Подборка чата (Гагра)",
+                        "verified": True,
+                        "starred": is_starred
+                    }
+                    master_counter += 1
+            continue
+
+        # Ветка 2: Индивидуальные объявления с хэштегами #услуга, #еда, #рекомендую
+        text_lower = msg.lower()
+        if any(tag in text_lower for tag in ["#услуга", "#рекомендую", "#еда", "сварочные, работы", "доставка посылок", "поклейкой обоев"]):
+            if "#ищу" in text_lower and not "#услуга" in text_lower:
                 continue
 
-            seen_phones.add(phone)
-            cat_key, cat_title = detect_category(text)
-            name = extract_name(text, sender)
+            ph_match = re.search(phone_pattern, msg)
+            if not ph_match:
+                continue
 
-            service_desc = re.sub(r'(?:\+?7|8)?[\s\-\(\.]*940[\s\-\)\.]*(?:\d[\s\-\.]*){7}', '', text)
-            service_desc = service_desc.replace('\n', ' ').strip()
-            if not service_desc or len(service_desc) < 5:
-                service_desc = f"Услуги по направлению: {cat_title}"
+            phone = clean_phone(ph_match.group(0))
+            if len(re.sub(r'\D', '', phone)) < 7:
+                continue
 
-            masters.append({
-                "id": master_id,
-                "name": name,
-                "category": cat_key,
-                "category_title": cat_title,
-                "service": service_desc[:120],
-                "phone": phone,
-                "recommended_by": sender.strip(),
-                "verified": True
-            })
-            master_id += 1
+            cat_key, cat_title = detect_category_by_text(msg)
+            
+            # Попытка вытащить имя
+            name = "Специалист"
+            for line in lines[1:]:
+                for kw in ["меня зовут", "мастер", "я ", "аскар", "вячеслав", "владимир", "сергей", "михаил"]:
+                    if kw in line.lower() and len(line) < 35:
+                        name = line.replace("#", "").strip()
+                        break
+
+            # Очищенный текст услуги
+            clean_body = re.sub(r'https?://\S+', '', msg)
+            clean_body = re.sub(phone_pattern, '', clean_body)
+            clean_body = " ".join([l for l in clean_body.split('\n')[1:] if not l.startswith('#') and len(l) > 4])
+            if not clean_body:
+                clean_body = f"Услуги по направлению: {cat_title}"
+
+            if phone not in masters:
+                masters[phone] = {
+                    "id": master_counter,
+                    "name": name[:30],
+                    "category": cat_key,
+                    "category_title": cat_title,
+                    "service": clean_body[:140].strip(),
+                    "phone": phone,
+                    "recommended_by": "Участник чата",
+                    "verified": True,
+                    "starred": "#рекомендую" in text_lower
+                }
+                master_counter += 1
+
+    masters_list = list(masters.values())
+    # Сортируем: сначала рекомендуемые (со звездочкой)
+    masters_list.sort(key=lambda x: not x.get("starred", False))
 
     os.makedirs("data", exist_ok=True)
     with open("data/masters.json", "w", encoding="utf-8") as out:
-        json.dump(masters, out, ensure_ascii=False, indent=2)
+        json.dump(masters_list, out, ensure_ascii=False, indent=2)
 
-    print(f"Готово! Собрано мастеров: {len(masters)}")
+    print(f"Успешно обработано: {len(masters_list)} специалистов.")
 
 if __name__ == "__main__":
-    run()
+    parse_chat()
