@@ -14,16 +14,14 @@
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
-<body class="bg-slate-100 text-slate-900 pb-20 antialiased min-h-screen flex flex-col">
+<body class="bg-slate-100 text-slate-900 pb-24 antialiased min-h-screen flex flex-col">
 
   <!-- ==================== 1. ГЛАВНЫЙ ЭКРАН (ХАБ ПРОЕКТОВ) ==================== -->
   <div id="view-hub" class="max-w-md mx-auto w-full px-4 py-6 flex-1 flex flex-col justify-between">
     <div>
-      <!-- Шапка портала -->
+      <!-- Шапка портала с новым логотипом -->
       <div class="flex items-center space-x-3 mb-6">
-        <div class="w-12 h-12 rounded-2xl bg-emerald-600 flex items-center justify-center text-white font-extrabold text-lg shadow-md shadow-emerald-600/20">
-          ГС
-        </div>
+        <img src="logo.jpg" alt="Город Своих" class="w-13 h-13 rounded-2xl object-cover shadow-md border border-slate-200/60 bg-white">
         <div>
           <h1 class="text-xl font-extrabold tracking-tight text-slate-900">Город Своих</h1>
           <p class="text-xs font-medium text-slate-500">Гагра & Абхазия • Полезная экосистема</p>
@@ -40,7 +38,7 @@
 
       <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-1 mb-3">Выберите направление</p>
 
-      <!-- ТРИ ГЛАВНЫХ ПРОЕКТА (КАРТОЧКИ ВЫБОРА) -->
+      <!-- ТРИ ГЛАВНЫХ ПРОЕКТА -->
       <div class="space-y-3.5">
 
         <!-- Проект 1: Мастера -->
@@ -107,14 +105,21 @@
         </div>
 
       </div>
+
+      <!-- ВЫДЕЛЕННАЯ ЯРКАЯ КНОПКА ПОДАЧИ ОБЪЯВЛЕНИЯ -->
+      <div class="mt-5">
+        <button onclick="openModal('portal')" 
+                class="w-full bg-linear-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 text-white font-bold text-xs py-3.5 px-4 rounded-2xl shadow-lg shadow-emerald-700/20 flex items-center justify-center gap-2 border border-emerald-500/30 transition transform active:scale-98">
+          <span class="text-base">✨</span>
+          <span>+ Предложить своё объявление или партнерство</span>
+        </button>
+      </div>
+
     </div>
 
     <!-- Футер хаба -->
     <div class="mt-8 pt-4 border-t border-slate-200 text-center">
       <p class="text-[11px] text-slate-400">© Город Своих • Независимое городское сообщество</p>
-      <button onclick="openModal('portal')" class="text-xs text-slate-600 font-semibold mt-1.5 hover:underline">
-        + Предложить свое объявление / партнерство
-      </button>
     </div>
   </div>
 
@@ -127,9 +132,12 @@
         <span>Разделы</span>
       </button>
       
-      <div class="text-center">
-        <h2 id="innerHeaderTitle" class="text-sm font-extrabold text-slate-900 leading-tight">Мастера и услуги</h2>
-        <p class="text-[10px] text-slate-500">Город Своих • Гагра</p>
+      <div class="flex items-center gap-2 text-center">
+        <img src="logo.jpg" alt="Город Своих" class="w-6 h-6 rounded-lg object-cover">
+        <div>
+          <h2 id="innerHeaderTitle" class="text-sm font-extrabold text-slate-900 leading-tight">Мастера и услуги</h2>
+          <p class="text-[9px] text-slate-500 text-left">Город Своих</p>
+        </div>
       </div>
 
       <button id="innerHeaderActionBtn" onclick="openContextModal()" 
@@ -442,7 +450,6 @@
     let activeCategory = 'all';
     let activeSubcategory = 'all';
 
-    // Маршрутизация через URL Hash
     function navigateTo(route) {
       currentRoute = route;
       window.location.hash = (route === 'hub') ? '' : route;
@@ -461,7 +468,6 @@
       document.getElementById('view-jobs').classList.toggle('hidden', currentRoute !== 'jobs');
       document.getElementById('view-rent').classList.toggle('hidden', currentRoute !== 'rent');
 
-      // Обновление шапки профильного ресурса
       const titleEl = document.getElementById('innerHeaderTitle');
       const actionBtn = document.getElementById('innerHeaderActionBtn');
 
@@ -484,7 +490,6 @@
 
     window.addEventListener('hashchange', applyRoute);
 
-    // Загрузка мастеров
     async function loadData() {
       try {
         const response = await fetch('data/masters.json?v=' + Date.now());
@@ -495,7 +500,6 @@
       }
     }
 
-    // Каскадные чипсы мастеров
     function renderSubBar() {
       const container = document.getElementById('subBarContainer');
       const bar = document.getElementById('subBar');
@@ -613,7 +617,6 @@
       });
     }
 
-    // Фильтр вакансий
     function filterJobs(type) {
       document.querySelectorAll('.job-chip').forEach(btn => {
         btn.className = "job-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap";
@@ -629,7 +632,6 @@
       });
     }
 
-    // Модальные окна
     function openModal() {
       document.getElementById('publishModal').classList.remove('hidden');
     }
@@ -640,7 +642,6 @@
       document.getElementById('publishModal').classList.add('hidden');
     }
 
-    // Слушатели поиска мастеров
     document.getElementById('searchInput').addEventListener('input', (e) => {
       document.getElementById('clearSearch').classList.toggle('hidden', !e.target.value);
       renderMasters();
@@ -666,7 +667,6 @@
       });
     });
 
-    // Инициализация
     applyRoute();
     loadData();
   </script>
