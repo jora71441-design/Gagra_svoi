@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Город Своих | Мастера и услуги Гагра</title>
+  <title>Город Своих | Каталог мастеров Гагра</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,83 +14,176 @@
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
-<body class="bg-slate-100 text-slate-900 pb-12 antialiased">
+<body class="bg-slate-100 text-slate-900 pb-20 antialiased">
 
-  <header class="bg-white border-b border-slate-200 sticky top-0 z-30 px-4 py-3 shadow-xs">
+  <!-- Шапка -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30 px-4 py-2.5 shadow-xs">
     <div class="max-w-md mx-auto flex items-center justify-between">
-      <div class="flex items-center space-x-2.5">
-        <div class="w-9 h-9 rounded-full bg-emerald-600 flex items-center justify-center text-white font-bold text-sm shadow-xs">
+      <div class="flex items-center space-x-2">
+        <div class="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center text-white font-bold text-xs shadow-xs">
           ГС
         </div>
         <div>
-          <h1 class="text-base font-bold leading-tight">Город Своих</h1>
-          <p class="text-xs text-slate-500">Каталог проверенных мастеров Гагры</p>
+          <h1 class="text-sm font-bold leading-tight">Город Своих</h1>
+          <p class="text-[10px] text-slate-500">Мастера и услуги • Гагра</p>
         </div>
       </div>
-      <a href="https://chat.whatsapp.com/I9DjXtqIhPBHQEIFDxDtcg" target="_blank" 
-         class="text-xs font-medium text-emerald-700 bg-emerald-50 px-2.5 py-1.5 rounded-lg border border-emerald-200 hover:bg-emerald-100 transition">
-        В чат ↗
-      </a>
+      <button onclick="openModal()" 
+         class="text-xs font-semibold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200 hover:bg-emerald-100 transition shadow-xs">
+        + Разместить
+      </button>
     </div>
   </header>
 
-  <main class="max-w-md mx-auto px-4 pt-4">
+  <main class="max-w-md mx-auto px-4 pt-3">
 
+    <!-- Строка живого поиска -->
     <div class="relative mb-3">
-      <input type="text" id="searchInput" placeholder="Поиск (двери, стиралка, обои, сантехник)..." 
-             class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 pl-10 text-sm shadow-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition">
-      <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <input type="text" id="searchInput" placeholder="Что ищете? (стиралка, обои, кран, акпп)..." 
+             class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 pl-10 text-sm shadow-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 transition">
+      <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
       </svg>
-      <button id="clearSearch" class="hidden absolute right-3 top-3 text-slate-400 hover:text-slate-600">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-        </svg>
-      </button>
+      <button id="clearSearch" class="hidden absolute right-3 top-2.5 text-slate-400">✕</button>
     </div>
 
-    <div class="flex space-x-2 overflow-x-auto no-scrollbar pb-3 mb-2" id="categoriesBar">
-      <button data-cat="all" class="cat-btn active bg-slate-900 text-white text-xs font-medium px-3.5 py-2 rounded-full whitespace-nowrap shadow-xs transition">
+    <!-- УРОВЕНЬ 1: Основные макро-категории -->
+    <div class="flex space-x-1.5 overflow-x-auto no-scrollbar pb-1 mb-2" id="macroBar">
+      <button data-cat="all" class="macro-btn active bg-slate-900 text-white text-xs font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap shadow-xs">
         Все
       </button>
-      <button data-cat="doors" class="cat-btn bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3.5 py-2 rounded-full whitespace-nowrap transition">
-        🚪 Окна и двери
-      </button>
-      <button data-cat="appliances" class="cat-btn bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3.5 py-2 rounded-full whitespace-nowrap transition">
+      <button data-cat="appliances" class="macro-btn bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3 py-1.5 rounded-full whitespace-nowrap">
         🧺 Техника
       </button>
-      <button data-cat="finish" class="cat-btn bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3.5 py-2 rounded-full whitespace-nowrap transition">
-        🎨 Отделка
+      <button data-cat="engineering" class="macro-btn bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3 py-1.5 rounded-full whitespace-nowrap">
+        🔧 Сантехника и свет
       </button>
-      <button data-cat="plumbing" class="cat-btn bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3.5 py-2 rounded-full whitespace-nowrap transition">
-        🔧 Сантехника
+      <button data-cat="finish" class="macro-btn bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3 py-1.5 rounded-full whitespace-nowrap">
+        🎨 Отделка и ремонт
       </button>
-      <button data-cat="electric" class="cat-btn bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3.5 py-2 rounded-full whitespace-nowrap transition">
-        ⚡ Электрика
+      <button data-cat="construction" class="macro-btn bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3 py-1.5 rounded-full whitespace-nowrap">
+        🏗 Стройка и сварка
       </button>
-      <button data-cat="auto" class="cat-btn bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3.5 py-2 rounded-full whitespace-nowrap transition">
-        🚗 Авто
+      <button data-cat="auto" class="macro-btn bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3 py-1.5 rounded-full whitespace-nowrap">
+        🚗 Авто и транспорт
+      </button>
+      <button data-cat="lifestyle" class="macro-btn bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3 py-1.5 rounded-full whitespace-nowrap">
+        🌿 Быт и здоровье
       </button>
     </div>
 
-    <div class="flex justify-between items-center mb-3 px-1 text-xs text-slate-500">
-      <span>Найдено мастеров: <strong id="countDisplay" class="text-slate-800">0</strong></span>
-      <span class="text-emerald-700 font-medium">● Проверены чатом</span>
+    <!-- УРОВЕНЬ 2: Сужающие подкатегории (появляются при выборе категории) -->
+    <div id="subBarContainer" class="hidden mb-3">
+      <div class="flex space-x-1.5 overflow-x-auto no-scrollbar p-1.5 bg-slate-200/60 rounded-xl" id="subBar">
+        <!-- Генерируются динамически через JS -->
+      </div>
     </div>
 
+    <!-- Инфо-счетчик -->
+    <div class="flex justify-between items-center mb-3 px-1 text-[11px] text-slate-500">
+      <span>Найдено специалистов: <strong id="countDisplay" class="text-slate-800">0</strong></span>
+      <span class="text-emerald-700 font-medium">● Проверены сообществом</span>
+    </div>
+
+    <!-- Список мастеров -->
     <div id="mastersList" class="space-y-3"></div>
 
-    <div id="emptyState" class="hidden text-center py-12 bg-white rounded-2xl border border-slate-200 p-6 mt-4">
-      <p class="text-2xl mb-2">🔍</p>
-      <h3 class="text-sm font-semibold text-slate-800">Мастер не найден</h3>
-      <p class="text-xs text-slate-500 mt-1 max-w-xs mx-auto">Попробуйте изменить запрос или спросите рекомендацию в чате.</p>
+    <!-- Заглушка, если ничего не найдено -->
+    <div id="emptyState" class="hidden text-center py-10 bg-white rounded-2xl border border-slate-200 p-6 mt-3">
+      <p class="text-3xl mb-2">🔎</p>
+      <h3 class="text-sm font-bold text-slate-800">Ничего не найдено</h3>
+      <p class="text-xs text-slate-500 mt-1 max-w-xs mx-auto">Спросите мастера прямо в общем чате — участники оперативно подскажут контакт.</p>
+      <a href="https://chat.whatsapp.com/GnHSLd8VWaxGboukz9s3FI" target="_blank" 
+         class="inline-block mt-4 bg-emerald-600 text-white text-xs font-semibold px-4 py-2 rounded-xl">
+        Спросить в WhatsApp-чате ↗
+      </a>
     </div>
 
   </main>
 
+  <!-- Модальное окно подачи заявки -->
+  <div id="publishModal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl p-5 shadow-2xl">
+      <div class="flex justify-between items-center mb-3">
+        <h3 class="text-base font-bold text-slate-900">Разместить услугу в каталоге</h3>
+        <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold p-1">✕</button>
+      </div>
+      <p class="text-xs text-slate-600 mb-4 leading-relaxed">
+        Размещение в городском каталоге бесплатное. Нажмите кнопку ниже, чтобы отправить информацию администратору в WhatsApp.
+      </p>
+      <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 text-xs text-slate-600 mb-4 space-y-1">
+        <p><strong>Шаблон сообщения:</strong></p>
+        <p>1. Имя специалиста / Сервиса</p>
+        <p>2. Номер телефона (+7 940 / другой)</p>
+        <p>3. Специализация и перечень услуг</p>
+        <p>4. Город / Район выезда</p>
+      </div>
+      <div class="space-y-2">
+        <a href="https://wa.me/79409001828?text=Здравствуйте!%20Хочу%20добавить%20услугу%20в%20каталог%20Город%20Своих:%0A1.%20Имя/Услуга:%20%0A2.%20Телефон:%20%0A3.%20Описание:%20%0A4.%20Район:%20Гагра" 
+           target="_blank" 
+           class="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs py-3 rounded-xl shadow-xs transition">
+          Отправить заявку в WhatsApp
+        </a>
+        <button onclick="closeModal()" class="w-full py-2 text-xs text-slate-500 font-medium">
+          Отмена
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script>
+    const TAXONOMY = {
+      appliances: {
+        all: "Вся техника",
+        washers: "Стиральные машины",
+        fridges: "Холодильники",
+        aircon: "Кондиционеры",
+        gadgets: "Телефоны и ТВ",
+        small_appliances: "Мелкая техника"
+      },
+      engineering: {
+        all: "Вся сантехника/свет",
+        plumbing: "Сантехника и вода",
+        heating: "Котлы и отопление",
+        electric: "Электрика и свет",
+        underfloor: "Тёплые полы"
+      },
+      finish: {
+        all: "Вся отделка",
+        wallpaper: "Обои и покраска",
+        ceilings: "Натяжные потолки",
+        tiles: "Плитка и кафель",
+        flooring: "Ламинат и полы",
+        doors: "Окна и двери",
+        furniture: "Мебель и сборка"
+      },
+      construction: {
+        all: "Вся стройка",
+        building: "Стройка под ключ",
+        welding: "Сварка и навесы",
+        climbing: "Пром. альпинизм",
+        waste: "Вывоз мусора"
+      },
+      auto: {
+        all: "Весь транспорт",
+        autodiag: "Диагностика и автоэлектрик",
+        gearbox: "Ремонт АКПП",
+        bike: "Велосипеды",
+        delivery: "Доставка и грузы"
+      },
+      lifestyle: {
+        all: "Весь быт и здоровье",
+        medical: "Массаж и врачи",
+        beauty: "Красота и уход",
+        garden: "Покос травы",
+        sewing: "Шторы и шитье",
+        stores: "Магазины и сервисы"
+      }
+    };
+
     let masters = [];
     let activeCategory = 'all';
+    let activeSubcategory = 'all';
 
     async function loadData() {
       try {
@@ -102,19 +195,67 @@
       }
     }
 
+    function renderSubBar() {
+      const container = document.getElementById('subBarContainer');
+      const bar = document.getElementById('subBar');
+
+      if (activeCategory === 'all' || !TAXONOMY[activeCategory]) {
+        container.classList.add('hidden');
+        bar.innerHTML = '';
+        activeSubcategory = 'all';
+        return;
+      }
+
+      container.classList.remove('hidden');
+      bar.innerHTML = '';
+
+      const subs = TAXONOMY[activeCategory];
+      Object.keys(subs).forEach(subKey => {
+        const btn = document.createElement('button');
+        const isActive = (activeSubcategory === subKey);
+        btn.className = isActive 
+          ? "sub-btn active bg-emerald-600 text-white text-[11px] font-semibold px-2.5 py-1 rounded-lg whitespace-nowrap shadow-xs transition"
+          : "sub-btn bg-white text-slate-700 text-[11px] font-medium px-2.5 py-1 rounded-lg whitespace-nowrap hover:bg-slate-50 transition";
+        btn.textContent = subs[subKey];
+        btn.onclick = () => {
+          activeSubcategory = subKey;
+          renderSubBar();
+          render();
+        };
+        bar.appendChild(btn);
+      });
+    }
+
+    function matchesQuery(master, searchWords) {
+      if (searchWords.length === 0) return true;
+      const fullContext = [
+        master.name,
+        master.service,
+        master.category_title,
+        master.subcategory_title || '',
+        master.phone,
+        ...(master.keywords || [])
+      ].join(' ').toLowerCase();
+
+      return searchWords.every(word => {
+        const stem = word.length > 4 ? word.substring(0, word.length - 2) : word;
+        return fullContext.includes(stem);
+      });
+    }
+
     function render() {
-      const query = document.getElementById('searchInput').value.trim().toLowerCase();
+      const rawQuery = document.getElementById('searchInput').value.trim().toLowerCase();
+      const searchWords = rawQuery ? rawQuery.split(/\s+/) : [];
+      
       const listEl = document.getElementById('mastersList');
       const emptyEl = document.getElementById('emptyState');
       const countEl = document.getElementById('countDisplay');
 
       const filtered = masters.filter(m => {
-        const matchesCategory = (activeCategory === 'all') || (m.category === activeCategory);
-        const matchesSearch = !query || 
-          m.name.toLowerCase().includes(query) || 
-          m.service.toLowerCase().includes(query) || 
-          m.category_title.toLowerCase().includes(query);
-        return matchesCategory && matchesSearch;
+        const matchesCat = (activeCategory === 'all') || (m.category === activeCategory);
+        const matchesSub = (activeSubcategory === 'all') || (m.subcategory === activeSubcategory);
+        const matchesSearch = matchesQuery(m, searchWords);
+        return matchesCat && matchesSub && matchesSearch;
       });
 
       countEl.textContent = filtered.length;
@@ -133,50 +274,51 @@
         const telLink = `tel:${m.phone}`;
 
         const card = document.createElement('div');
-        card.className = "bg-white rounded-2xl p-4 border border-slate-200/80 shadow-xs hover:border-slate-300 transition";
+        card.className = "bg-white rounded-2xl p-4 border border-slate-200/90 shadow-xs hover:border-slate-300 transition";
         card.innerHTML = `
-          <div class="flex items-start justify-between gap-2 mb-2">
+          <div class="flex items-start justify-between gap-2 mb-1.5">
             <div>
-              <span class="inline-block text-[11px] font-medium bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md mb-1">
-                ${m.category_title}
-              </span>
-              <h3 class="text-base font-bold text-slate-900">${m.name}</h3>
+              <div class="flex items-center gap-1.5 mb-1 flex-wrap">
+                <span class="text-[10px] font-semibold bg-slate-100 text-slate-700 px-2 py-0.5 rounded-md">
+                  ${m.subcategory_title || m.category_title}
+                </span>
+              </div>
+              <h3 class="text-base font-bold text-slate-900 leading-snug">${m.name}</h3>
             </div>
-            ${m.verified ? `
+            ${m.starred ? `
+              <span class="inline-flex items-center text-[10px] font-semibold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full whitespace-nowrap">
+                ⭐ Рекомендуют
+              </span>
+            ` : `
               <span class="inline-flex items-center text-[10px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full whitespace-nowrap">
                 ✓ Проверен
               </span>
-            ` : ''}
+            `}
           </div>
           
-          <p class="text-xs text-slate-600 mb-3 leading-relaxed">${m.service}</p>
-          
-          ${m.recommended_by ? `
-            <div class="text-[11px] text-slate-600 mb-3.5 flex items-center gap-1 bg-slate-50 p-2 rounded-lg border border-slate-100">
-              <span>⭐</span>
-              <span>Рекомендация: <span class="font-medium text-slate-700">${m.recommended_by}</span></span>
-            </div>
-          ` : ''}
+          <p class="text-xs text-slate-600 mb-2 leading-relaxed">${m.service}</p>
+          <p class="text-[11px] font-mono font-medium text-slate-500 mb-3">${m.phone}</p>
 
           <div class="grid grid-cols-2 gap-2 pt-1 border-t border-slate-100">
             <a href="${waLink}" target="_blank" 
-               class="flex items-center justify-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold py-2.5 px-3 rounded-xl transition shadow-xs">
-              <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/>
-              </svg>
+               class="flex items-center justify-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold py-2.5 px-3 rounded-xl transition">
               WhatsApp
             </a>
             <a href="${telLink}" 
                class="flex items-center justify-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold py-2.5 px-3 rounded-xl transition">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
-              </svg>
               Позвонить
             </a>
           </div>
         `;
         listEl.appendChild(card);
       });
+    }
+
+    function openModal() {
+      document.getElementById('publishModal').classList.remove('hidden');
+    }
+    function closeModal() {
+      document.getElementById('publishModal').classList.add('hidden');
     }
 
     document.getElementById('searchInput').addEventListener('input', (e) => {
@@ -191,13 +333,15 @@
       render();
     });
 
-    document.querySelectorAll('.cat-btn').forEach(btn => {
+    document.querySelectorAll('.macro-btn').forEach(btn => {
       btn.addEventListener('click', () => {
-        document.querySelectorAll('.cat-btn').forEach(b => {
-          b.className = 'cat-btn bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3.5 py-2 rounded-full whitespace-nowrap transition';
+        document.querySelectorAll('.macro-btn').forEach(b => {
+          b.className = 'macro-btn bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3 py-1.5 rounded-full whitespace-nowrap';
         });
-        btn.className = 'cat-btn active bg-slate-900 text-white text-xs font-medium px-3.5 py-2 rounded-full whitespace-nowrap shadow-xs transition';
+        btn.className = 'macro-btn active bg-slate-900 text-white text-xs font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap shadow-xs';
         activeCategory = btn.dataset.cat;
+        activeSubcategory = 'all';
+        renderSubBar();
         render();
       });
     });
