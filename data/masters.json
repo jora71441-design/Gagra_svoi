@@ -1,0 +1,142 @@
+[
+  {
+    "id": 1,
+    "name": "Специалист (Валерий Сгб)",
+    "category": "other",
+    "category_title": "Разное и прочие услуги",
+    "service": "Услуги по направлению: Разное и прочие услуги",
+    "phone": "+79409910709",
+    "recommended_by": "Валерий Сгб",
+    "verified": true
+  },
+  {
+    "id": 2,
+    "name": "Специалист (Валерий Сгб)",
+    "category": "other",
+    "category_title": "Разное и прочие услуги",
+    "service": "Услуги по направлению: Разное и прочие услуги",
+    "phone": "+79409646816",
+    "recommended_by": "Валерий Сгб",
+    "verified": true
+  },
+  {
+    "id": 3,
+    "name": "Специалист (+7 940 998-05-83)",
+    "category": "appliances",
+    "category_title": "Бытовая техника",
+    "service": "Ремонт холодильников обращайтесь по номеру Сергей",
+    "phone": "+79409980583",
+    "recommended_by": "+7 940 998-05-83",
+    "verified": true
+  },
+  {
+    "id": 4,
+    "name": "Специалист (Рината Тибай)",
+    "category": "other",
+    "category_title": "Разное и прочие услуги",
+    "service": "Федор, он мастер по внутренней отделке, узнайте может занимается сам или кто есть знакомый 👌",
+    "phone": "+79409264099",
+    "recommended_by": "Рината Тибай",
+    "verified": true
+  },
+  {
+    "id": 5,
+    "name": "Специалист (+7 940 991-07-51)",
+    "category": "other",
+    "category_title": "Разное и прочие услуги",
+    "service": "Промышленный альпинист.",
+    "phone": "+79409910751",
+    "recommended_by": "+7 940 991-07-51",
+    "verified": true
+  },
+  {
+    "id": 6,
+    "name": "Специалист (+7 940 717-13-31)",
+    "category": "other",
+    "category_title": "Разное и прочие услуги",
+    "service": "Вагинак",
+    "phone": "+79409942903",
+    "recommended_by": "+7 940 717-13-31",
+    "verified": true
+  },
+  {
+    "id": 7,
+    "name": "Специалист (+7 940 717-13-31)",
+    "category": "electric",
+    "category_title": "Электрика",
+    "service": "Рекомендую электрика Слава",
+    "phone": "+79409166368",
+    "recommended_by": "+7 940 717-13-31",
+    "verified": true
+  },
+  {
+    "id": 8,
+    "name": "Специалист (+7 940 729-99-77)",
+    "category": "appliances",
+    "category_title": "Бытовая техника",
+    "service": "Юра дом быта. По ремонту бытовой техники",
+    "phone": "+79409309469",
+    "recommended_by": "+7 940 729-99-77",
+    "verified": true
+  },
+  {
+    "id": 9,
+    "name": "+7 940 719-44-47",
+    "category": "other",
+    "category_title": "Разное и прочие услуги",
+    "service": "Услуги по направлению: Разное и прочие услуги",
+    "phone": "+79407194447",
+    "recommended_by": "Рината Тибай",
+    "verified": true
+  },
+  {
+    "id": 10,
+    "name": "Специалист (+7 940 771-53-71)",
+    "category": "other",
+    "category_title": "Разное и прочие услуги",
+    "service": "Хаджарат.",
+    "phone": "+79407110487",
+    "recommended_by": "+7 940 771-53-71",
+    "verified": true
+  },
+  {
+    "id": 11,
+    "name": "+7 940 770-85-16",
+    "category": "other",
+    "category_title": "Разное и прочие услуги",
+    "service": "Услуги по направлению: Разное и прочие услуги",
+    "phone": "+79407708516",
+    "recommended_by": "Рината Тибай",
+    "verified": true
+  },
+  {
+    "id": 12,
+    "name": "+7 940 921-17-35",
+    "category": "other",
+    "category_title": "Разное и прочие услуги",
+    "service": "Услуги по направлению: Разное и прочие услуги",
+    "phone": "+79409211735",
+    "recommended_by": "Рината Тибай",
+    "verified": true
+  },
+  {
+    "id": 13,
+    "name": "Специалист (Рината Тибай)",
+    "category": "other",
+    "category_title": "Разное и прочие услуги",
+    "service": "Адамыр",
+    "phone": "+79407390022",
+    "recommended_by": "Рината Тибай",
+    "verified": true
+  },
+  {
+    "id": 14,
+    "name": "Специалист (Рината Тибай)",
+    "category": "other",
+    "category_title": "Разное и прочие услуги",
+    "service": "попробуй👌 этот номер, Петр",
+    "phone": "+79409154575",
+    "recommended_by": "Рината Тибай",
+    "verified": true
+  }
+]
