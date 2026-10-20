@@ -501,7 +501,7 @@
         <button type="submit" 
                 style="background-color: #065f46 !important;" 
                 class="w-full text-white font-bold text-xs py-3.5 px-4 rounded-xl shadow-md hover:bg-emerald-800 transition active:scale-98">
-          Отправить мастер-анкету Ринате ↗
+          Отправить анкету ↗
         </button>
       </form>
 
@@ -568,7 +568,7 @@
 
         <button type="submit" 
                 class="w-full bg-blue-700 text-white font-bold text-xs py-3.5 px-4 rounded-xl shadow-md hover:bg-blue-800 transition active:scale-98">
-          Отправить в WhatsApp-чат вакансий ↗
+          Отправить вакансию ↗
         </button>
       </form>
 
@@ -628,7 +628,7 @@
 
         <button type="submit" 
                 class="w-full bg-sky-700 text-white font-bold text-xs py-3.5 px-4 rounded-xl shadow-md hover:bg-sky-800 transition active:scale-98">
-          Отправить Ринате в Telegram ↗
+          Отправить на добавление ↗
         </button>
       </form>
 
@@ -952,7 +952,7 @@
     }
 
     // Отправка формы 1: Мастера (в WhatsApp Ринате)
-    function submitMastersForm(e) {
+        function submitMastersForm(e) {
       e.preventDefault();
       const catSelect = document.getElementById('mFormCategory').value;
       const customCat = document.getElementById('mFormCustomCat').value.trim();
@@ -969,12 +969,16 @@
 Телефон: ${phone}
 Сфера: ${finalCategory}
 Услуги: ${service}
-Район: ${district}
+Город: ${district}
 —
-(Анкета мастера с портала «Город Своих»)`;
+(Анкета с сайта «Город Своих»)`;
+
+      // ВСТАВЬ СЮДА ТОЧНЫЙ WHATSAPP-НОМЕР РИНАТЫ (ТОЛЬКО ЦИФРЫ, НАПРИМЕР: 7940XXXXXXX):
+      const rinataPhone = "79263949118";
 
       closeModal();
-      window.open(`https://wa.me/79409001828?text=` + encodeURIComponent(text), '_blank');
+      // Прямой вызов диалога в приложении без промежуточных вкладок
+      window.location.href = `https://api.whatsapp.com/send?phone=${rinataPhone}&text=` + encodeURIComponent(text);
     }
 
     // Отправка формы 2: Вакансии (в WhatsApp Ринате или чат)
