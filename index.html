@@ -1236,6 +1236,7 @@
     }
 
     // Отправка формы 4: Город Своих помогает (в WhatsApp Ринате)
+        // Отправка формы 4: Город Своих помогает (в WhatsApp Ринате)
     function submitHelpsForm(e) {
       e.preventDefault();
       const type = document.getElementById('hFormType').value;
@@ -1245,8 +1246,15 @@
       const district = document.getElementById('hFormDistrict').value;
       const phone = document.getElementById('hFormPhone').value.trim();
 
+      // Динамический хэштег на основе выбранной категории
+      let hashtag = '#городпомогает';
+      if (type.includes('животным')) hashtag = '#помощь_животным';
+      else if (type.includes('Экология')) hashtag = '#эко_субботник';
+      else if (type.includes('Взаимовыручка')) hashtag = '#взаимовыручка';
+      else if (type.includes('Социальное')) hashtag = '#соц_мероприятие';
+
       const text = 
-`#городпомогает
+`${hashtag}
 Направление: ${type}
 Инициатива: ${title}
 Описание: ${desc}
