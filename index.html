@@ -481,15 +481,20 @@
                     class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 leading-relaxed"></textarea>
         </div>
 
-        <!-- Район выезда (масштабируемый) -->
+                <!-- Город / Район выезда мастера -->
         <div>
-          <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Район выезда *</label>
-          <select id="mFormDistrict" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500">
-            <option value="Гагра (все районы)" selected>Гагра (все районы)</option>
-            <option value="Гагра + Пицунда">Гагра + Пицунда</option>
-            <option value="Гагра + Цандрипш">Гагра + Цандрипш</option>
-            <option value="Гагрский район целиком">Гагрский район целиком</option>
-            <option value="Выезд по всей Абхазии">Выезд по всей Абхазии</option>
+          <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Город / Район выезда *</label>
+          <select id="mFormDistrict" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500">
+            <option value="Гагра" selected>Гагра</option>
+            <option value="Цандрипш">Цандрипш</option>
+            <option value="Пицунда">Пицунда</option>
+            <option value="Гудаута">Гудаута</option>
+            <option value="Новый Афон">Новый Афон</option>
+            <option value="Сухум">Сухум</option>
+            <option value="Ткуарчал">Ткуарчал</option>
+            <option value="Очамчыра">Очамчыра</option>
+            <option value="Гал">Гал</option>
+            <option value="По всей Абхазии">По всей Абхазии</option>
           </select>
         </div>
 
@@ -536,10 +541,20 @@
             <input type="text" id="jFormContact" required placeholder="Тамара" 
                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
           </div>
-          <div>
-            <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Район</label>
-            <input type="text" id="jFormDistrict" value="Гагра" 
-                   class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <div>
+            <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Город *</label>
+            <select id="jFormDistrict" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2 py-2 text-xs text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="Гагра" selected>Гагра</option>
+              <option value="Цандрипш">Цандрипш</option>
+              <option value="Пицунда">Пицунда</option>
+              <option value="Гудаута">Гудаута</option>
+              <option value="Новый Афон">Новый Афон</option>
+              <option value="Сухум">Сухум</option>
+              <option value="Ткуарчал">Ткуарчал</option>
+              <option value="Очамчыра">Очамчыра</option>
+              <option value="Гал">Гал</option>
+              <option value="Вся Абхазия">Вся Абхазия</option>
+            </select>
           </div>
         </div>
 
@@ -580,10 +595,19 @@
             <input type="text" id="rFormPrice" required placeholder="35 000 ₽" 
                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500">
           </div>
-          <div>
-            <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Город / Район *</label>
-            <input type="text" id="rFormDistrict" required value="Гагра, Кемпинг" placeholder="Гагра, Пицунда" 
-                   class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500">
+                    <div>
+            <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Город жилья *</label>
+            <select id="rFormDistrict" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2 py-2 text-xs text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-sky-500">
+              <option value="Гагра" selected>Гагра</option>
+              <option value="Цандрипш">Цандрипш</option>
+              <option value="Пицунда">Пицунда</option>
+              <option value="Гудаута">Гудаута</option>
+              <option value="Новый Афон">Новый Афон</option>
+              <option value="Сухум">Сухум</option>
+              <option value="Ткуарчал">Ткуарчал</option>
+              <option value="Очамчыра">Очамчыра</option>
+              <option value="Гал">Гал</option>
+            </select>
           </div>
         </div>
 
