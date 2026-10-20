@@ -903,13 +903,75 @@
         console.error('Ошибка загрузки мастеров:', err);
       }
 
+      // 2. ПАРСИНГ ИНИЦИАТИВ ИЗ ФАЙЛА helps_chat.txt
       try {
-        const helpRes = await fetch('data/helps.json?v=' + Date.now());
-        if (helpRes.ok) {
-          helpsData = await helpRes.json();
+        const chatRes = await fetch('data/helps_chat.txt?v=' + Date.now());
+        if (chatRes.ok) {
+          const chatText = await chatRes.text();
+          helpsData = parseHelpsFromChat(chatText);
         }
-      } catch (e) {}
+      } catch (e) {
+        console.error('Экспорт чата helps_chat.txt не найден или ошибка загрузки');
+      }
       renderHelps('all');
+    }
+
+    // Умный парсер экспорта WhatsApp по строгим хэштегам
+    function parseHelpsFromChat(text) {
+      // Разделяем текст на отдельные сообщения по датам (поддержка форматов iOS и Android)
+      const messages = text.split(/\n(?=\[?\d{2}\.\d{2}\.\d{2,4})/);
+      let results = [];
+
+      messages.forEach(msg => {
+        // Ищем только утвержденные хэштеги
+        const tags = ['#помощь_животным', '#эко_субботник', '#взаимовыручка', '#соц_мероприятие'];
+        const foundTag = tags.find(t => msg.includes(t));
+        
+        // Если нужного хэштега нет, пропускаем сообщение
+        if (!foundTag) return;
+
+        // Назначаем категорию и бэйдж в зависимости от найденного хэштега
+        let type = 'all', badge = '🤝 Инициатива';
+        if (foundTag === '#помощь_животным') { type = 'animals'; badge = '🐾 Помощь животным'; }
+        else if (foundTag === '#эко_субботник') { type = 'eco'; badge = '🌿 Эко-десант'; }
+        else if (foundTag === '#взаимовыручка') { type = 'care'; badge = '🤝 Взаимовыручка'; }
+        else if (foundTag === '#соц_мероприятие') { type = 'events'; badge = '🎈 Мероприятие'; }
+
+        // Инструмент для извлечения текста по ключам из заявки
+        const extract = (keyword) => {
+          const regex = new RegExp(`${keyword}\\s*(.*?)(?=\\n[А-Яа-яЁё]+:|\\n—|$)`, 's');
+          const match = msg.match(regex);
+          return match ? match[1].trim() : '';
+        };
+
+        const title = extract('Заголовок:');
+        const desc = extract('Описание:');
+        const city = extract('Город:');
+        const contactRaw = extract('Связь:');
+
+        // Отделяем номер телефона от имени
+        const phoneMatch = contactRaw.match(/\+?\d[\d\s\-()]{9,}/);
+        const phone = phoneMatch ? phoneMatch[0] : '';
+        const contactName = contactRaw.replace(phone, '').replace(/,\s*$/, '').trim();
+
+        // Добавляем инициативу в массив, только если есть заголовок и описание
+        if (title && desc) {
+          results.push({
+            type: type,
+            badge: badge,
+            title: title,
+            desc: desc,
+            city: city || 'Гагра',
+            contact: contactName || 'Куратор',
+            phone: phone,
+            status: 'Актуально',
+            btn_text: 'Откликнуться'
+          });
+        }
+      });
+      
+      // Самые свежие инициативы показываем первыми
+      return results.reverse();
     }
 
     function renderHelps(filterType = 'all') {
