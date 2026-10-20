@@ -248,6 +248,9 @@ def parse_chat():
                     sub_title = TAXONOMY[cat_key]["subs"][sub_key]
                     keywords = generate_keywords(name + " " + service, cat_title, sub_title)
 
+                                        # Проверяем, является ли мастер лидером недели
+                    is_leader = "Владимир" in name or "самым полезным участником" in msg
+
                     masters[phone] = {
                         "id": master_counter,
                         "name": name[:30],
@@ -260,6 +263,7 @@ def parse_chat():
                         "recommended_by": "Подборка чата (Гагра)",
                         "verified": True,
                         "starred": is_starred,
+                        "is_leader": is_leader,
                         "keywords": keywords
                     }
                     master_counter += 1
