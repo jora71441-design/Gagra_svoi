@@ -373,65 +373,243 @@
     </div>
   </section>
 
-
-  <!-- ==================== МОДАЛЬНОЕ ОКНО РАЗМЕЩЕНИЯ ==================== -->
+  <!-- ==================== ЕДИНЫЙ КОНТЕКСТНЫЙ МОДАЛЬНЫЙ ЦЕНТР ==================== -->
   <div id="publishModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
-    <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl p-5 shadow-2xl">
-      <div class="flex justify-between items-center mb-3">
-        <h3 class="text-base font-bold text-slate-900" id="modalTitle">Разместить объявление</h3>
+    <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl p-5 shadow-2xl max-h-[92vh] overflow-y-auto no-scrollbar">
+      
+      <!-- Шапка модалки с кнопкой возврата/закрытия -->
+      <div class="flex justify-between items-center pb-3 border-b border-slate-100 mb-3">
+        <div class="flex items-center gap-2">
+          <button id="modalBackBtn" onclick="showModalView('hub')" class="hidden text-slate-400 hover:text-slate-700 text-xs font-bold pr-1">
+            ← Назад
+          </button>
+          <div>
+            <h3 class="text-base font-extrabold text-slate-900 leading-tight" id="modalTitle">Разместить объявление</h3>
+            <p class="text-[10px] text-slate-500" id="modalSubTitle">Сообщество «Город Своих»</p>
+          </div>
+        </div>
         <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold p-1">✕</button>
       </div>
-      <p class="text-xs text-slate-600 mb-4 leading-relaxed" id="modalDesc">
-        Выберите нужное направление для публикации в экосистеме «Город Своих»:
-      </p>
 
-      <div class="space-y-2.5 mb-4" id="modalOptions">
-        <a href="https://wa.me/79409001828?text=Здравствуйте!%20Хочу%20добавить%20услугу%20в%20каталог%20мастеров:%0A1.%20Имя/Услуга:%20%0A2.%20Телефон:%20%0A3.%20Описание:%20%0A4.%20Район:%20Гагра" 
-           target="_blank" 
-           class="flex items-center justify-between p-3.5 rounded-2xl border border-slate-200 hover:border-emerald-500 bg-slate-50 transition">
+      <!-- ЭКРАН 0: ВЫБОР НАПРАВЛЕНИЯ (ДЛЯ ГЛАВНОГО ХАБА) -->
+      <div id="modalView-hub" class="space-y-2.5">
+        <p class="text-xs text-slate-600 mb-3 leading-relaxed">
+          Выберите профильный раздел для публикации вашего предложения:
+        </p>
+
+        <div onclick="showModalView('masters')" 
+             class="flex items-center justify-between p-3.5 rounded-2xl border border-slate-200 hover:border-emerald-500 bg-slate-50 transition cursor-pointer">
           <div class="flex items-center gap-3">
             <span class="text-xl">🛠</span>
             <div class="text-left">
-              <p class="text-xs font-bold text-slate-900">Я мастер / Предлагаю услуги</p>
-              <p class="text-[10px] text-slate-500">Анкета в каталог мастеров</p>
+              <p class="text-xs font-bold text-slate-900">Услуги и мастера</p>
+              <p class="text-[10px] text-slate-500">Добавить визитку в каталог и чат</p>
             </div>
           </div>
-          <span class="text-emerald-700 text-xs font-bold">WhatsApp ↗</span>
-        </a>
+          <span class="text-emerald-700 text-xs font-bold">Заполнить →</span>
+        </div>
 
-        <a href="https://chat.whatsapp.com/I9DjXtqIhPbHQElFDxDtcg?s=cl&p=a&mlu=4&ilr=4" 
-           target="_blank" 
-           class="flex items-center justify-between p-3.5 rounded-2xl border border-slate-200 hover:border-blue-500 bg-slate-50 transition">
+        <div onclick="showModalView('jobs')" 
+             class="flex items-center justify-between p-3.5 rounded-2xl border border-slate-200 hover:border-blue-500 bg-slate-50 transition cursor-pointer">
           <div class="flex items-center gap-3">
             <span class="text-xl">💼</span>
             <div class="text-left">
-              <p class="text-xs font-bold text-slate-900">Вакансия или резюме</p>
-              <p class="text-[10px] text-slate-500">Подать в чат работы Гагры</p>
+              <p class="text-xs font-bold text-slate-900">Работа и вакансии</p>
+              <p class="text-[10px] text-slate-500">Ищу сотрудника / работу / подработку</p>
             </div>
           </div>
-          <span class="text-blue-700 text-xs font-bold">Чат ↗</span>
-        </a>
+          <span class="text-blue-700 text-xs font-bold">Заполнить →</span>
+        </div>
 
-        <a href="https://t.me/rinata_tibay" 
-           target="_blank" 
-           class="flex items-center justify-between p-3.5 rounded-2xl border border-slate-200 hover:border-sky-500 bg-slate-50 transition">
+        <div onclick="showModalView('rent')" 
+             class="flex items-center justify-between p-3.5 rounded-2xl border border-slate-200 hover:border-sky-500 bg-slate-50 transition cursor-pointer">
           <div class="flex items-center gap-3">
             <span class="text-xl">🏠</span>
             <div class="text-left">
-              <p class="text-xs font-bold text-slate-900">Сдать жилье на долгий срок</p>
-              <p class="text-[10px] text-slate-500">Написать куратору Ринате</p>
+              <p class="text-xs font-bold text-slate-900">Долгосрочная аренда</p>
+              <p class="text-[10px] text-slate-500">Сдать жилье на срок от 1 месяца</p>
             </div>
           </div>
-          <span class="text-sky-700 text-xs font-bold">Telegram ↗</span>
-        </a>
+          <span class="text-sky-700 text-xs font-bold">Заполнить →</span>
+        </div>
       </div>
 
-      <button onclick="closeModal()" class="w-full py-2.5 text-xs text-slate-500 font-semibold">
-        Отмена
-      </button>
+      <!-- ЭКРАН 1: ФОРМА ДЛЯ МАСТЕРОВ И УСЛУГ -->
+      <form id="modalView-masters" onsubmit="submitMastersForm(event)" class="hidden space-y-3">
+        <!-- Направление с динамическим добавлением -->
+        <div>
+          <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Сфера деятельности *</label>
+          <select id="mFormCategory" onchange="toggleCustomCategory(this)" required 
+                  class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500">
+            <option value="🧺 Ремонт техники">🧺 Ремонт техники (стиралки, холод, кондеи)</option>
+            <option value="🔧 Сантехника и электрика">🔧 Сантехника, отопление, электрика</option>
+            <option value="🎨 Отделка и ремонт">🎨 Отделка (обои, плитка, потолки, полы, двери)</option>
+            <option value="🏗 Строительство и сварка">🏗 Стройка, сварка, навесы, альпинизм</option>
+            <option value="🚗 Авто и транспорт">🚗 Автоэлектрик, диагностика, грузы, вело</option>
+            <option value="🌿 Быт и здоровье">🌿 Массаж, врачи, сад, пошив, торты</option>
+            <option value="CUSTOM">➕ Другое направление (указать своё на утверждение)</option>
+          </select>
+          <input type="text" id="mFormCustomCat" placeholder="Напишите вашу специализацию..." 
+                 class="hidden mt-2 w-full bg-emerald-50/50 border border-emerald-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+        </div>
+
+        <!-- Имя мастера -->
+        <div>
+          <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Имя мастера или сервиса *</label>
+          <input type="text" id="mFormName" required placeholder="Например: Аскар или Сервис Ремонта" 
+                 class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+        </div>
+
+        <!-- Телефон (жесткий цифровой ввод) -->
+        <div>
+          <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Телефон для связи (WhatsApp) *</label>
+          <input type="tel" id="mFormPhone" required inputmode="tel"
+                 oninput="this.value = this.value.replace(/[^0-9+\s\-()]/g, '')"
+                 placeholder="+7 940 000-00-00" 
+                 class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-mono text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+          <p class="text-[10px] text-slate-400 mt-0.5">Только цифры и код (+7940... или РФ номер)</p>
+        </div>
+
+        <!-- Описание работ с развернутой подсказкой -->
+        <div>
+          <div class="flex justify-between items-center mb-1">
+            <label class="text-[11px] font-bold text-slate-700 uppercase">Описание работ *</label>
+            <span class="text-[10px] text-emerald-700 font-semibold">Подсказка внутри</span>
+          </div>
+          <textarea id="mFormService" required rows="4" 
+                    placeholder="Укажите подробно:&#10;1. Какие именно поломки устраняете (чистка, замена деталей, монтаж)&#10;2. Ваш опыт работы / есть ли гарантия&#10;3. Наличие инструментов и авто для выезда" 
+                    class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 leading-relaxed"></textarea>
+        </div>
+
+        <!-- Район выезда (масштабируемый) -->
+        <div>
+          <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Район выезда *</label>
+          <select id="mFormDistrict" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+            <option value="Гагра (все районы)" selected>Гагра (все районы)</option>
+            <option value="Гагра + Пицунда">Гагра + Пицунда</option>
+            <option value="Гагра + Цандрипш">Гагра + Цандрипш</option>
+            <option value="Гагрский район целиком">Гагрский район целиком</option>
+            <option value="Выезд по всей Абхазии">Выезд по всей Абхазии</option>
+          </select>
+        </div>
+
+        <button type="submit" 
+                style="background-color: #065f46 !important;" 
+                class="w-full text-white font-bold text-xs py-3.5 px-4 rounded-xl shadow-md hover:bg-emerald-800 transition active:scale-98">
+          Отправить мастер-анкету Ринате ↗
+        </button>
+      </form>
+
+      <!-- ЭКРАН 2: ФОРМА ДЛЯ ВАКАНСИЙ И РАБОТЫ -->
+      <form id="modalView-jobs" onsubmit="submitJobsForm(event)" class="hidden space-y-3">
+        <div>
+          <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Тип публикации *</label>
+          <select id="jFormType" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="#вакансия">💼 Вакансия (ищем сотрудника)</option>
+            <option value="#ищуработу">🙋‍♂️ Резюме (ищу работу)</option>
+            <option value="#подработка">⚡ Разовая подработка</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Должность / Специальность *</label>
+          <input type="text" id="jFormTitle" required placeholder="Например: Повар, Горничная, Разнорабочий" 
+                 class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Оплата / Зарплата *</label>
+          <input type="text" id="jFormSalary" required placeholder="Например: 2 500 ₽ / смена или 60 000 ₽ / мес" 
+                 class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Условия и график *</label>
+          <textarea id="jFormDesc" required rows="3" 
+                    placeholder="График, требования, предоставляется ли жилье / питание..." 
+                    class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Имя / Заведение *</label>
+            <input type="text" id="jFormContact" required placeholder="Тамара" 
+                   class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Район</label>
+            <input type="text" id="jFormDistrict" value="Гагра" 
+                   class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Телефон для связи *</label>
+          <input type="tel" id="jFormPhone" required inputmode="tel"
+                 oninput="this.value = this.value.replace(/[^0-9+\s\-()]/g, '')"
+                 placeholder="+7 940 000-00-00" 
+                 class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-mono text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <button type="submit" 
+                class="w-full bg-blue-700 text-white font-bold text-xs py-3.5 px-4 rounded-xl shadow-md hover:bg-blue-800 transition active:scale-98">
+          Отправить в WhatsApp-чат вакансий ↗
+        </button>
+      </form>
+
+      <!-- ЭКРАН 3: ФОРМА ДЛЯ ДОЛГОСРОЧНОЙ АРЕНДЫ -->
+      <form id="modalView-rent" onsubmit="submitRentForm(event)" class="hidden space-y-3">
+        <div class="p-2.5 bg-sky-50 rounded-xl border border-sky-100 text-[11px] text-sky-800 leading-snug">
+          📌 Принимается жилье <strong>только на срок от 1 месяца</strong> (посуточно не размещаем).
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Тип недвижимости *</label>
+          <select id="rFormType" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-sky-500">
+            <option value="1-комн. квартира">1-комнатная квартира</option>
+            <option value="2-комн. квартира">2-комнатная квартира</option>
+            <option value="3-комн. квартира">3-комнатная квартира</option>
+            <option value="Дом / Коттедж">Частный дом / Коттедж</option>
+            <option value="Студия / Номер">Студия со всеми удобствами</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Цена в месяц *</label>
+            <input type="text" id="rFormPrice" required placeholder="35 000 ₽" 
+                   class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500">
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Город / Район *</label>
+            <input type="text" id="rFormDistrict" required value="Гагра, Кемпинг" placeholder="Гагра, Пицунда" 
+                   class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Описание и условия *</label>
+          <textarea id="rFormDesc" required rows="3" 
+                    placeholder="Этаж, техника, кондиционер, отопление, повышается ли цена на лето..." 
+                    class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500"></textarea>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Ваш контактный телефон *</label>
+          <input type="tel" id="rFormPhone" required inputmode="tel"
+                 oninput="this.value = this.value.replace(/[^0-9+\s\-()]/g, '')"
+                 placeholder="+7 940 000-00-00" 
+                 class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-mono text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500">
+        </div>
+
+        <button type="submit" 
+                class="w-full bg-sky-700 text-white font-bold text-xs py-3.5 px-4 rounded-xl shadow-md hover:bg-sky-800 transition active:scale-98">
+          Отправить Ринате в Telegram ↗
+        </button>
+      </form>
+
     </div>
   </div>
-
 
   <!-- ==================== ЛОГИКА НАВИГАЦИИ И ПОИСКА ==================== -->
   <script>
@@ -683,14 +861,142 @@
       });
     }
 
-    function openModal() {
+        // ==================== УПРАВЛЕНИЕ КОНТЕКСТНЫМИ ФОРМАМИ ====================
+
+    // Показ конкретного экрана модалки
+    function showModalView(view) {
+      const views = ['hub', 'masters', 'jobs', 'rent'];
+      views.forEach(v => {
+        const el = document.getElementById('modalView-' + v);
+        if (el) el.classList.toggle('hidden', v !== view);
+      });
+
+      const title = document.getElementById('modalTitle');
+      const subTitle = document.getElementById('modalSubTitle');
+      const backBtn = document.getElementById('modalBackBtn');
+
+      if (view === 'hub') {
+        title.textContent = 'Разместить объявление';
+        subTitle.textContent = 'Сообщество «Город Своих»';
+        backBtn.classList.add('hidden');
+      } else if (view === 'masters') {
+        title.textContent = 'Анкета мастера';
+        subTitle.textContent = 'Каталог услуг Гагры';
+        backBtn.classList.toggle('hidden', currentRoute === 'masters');
+      } else if (view === 'jobs') {
+        title.textContent = 'Подать вакансию';
+        subTitle.textContent = 'Биржа труда Гагры';
+        backBtn.classList.toggle('hidden', currentRoute === 'jobs');
+      } else if (view === 'rent') {
+        title.textContent = 'Сдать жилье на долгий срок';
+        subTitle.textContent = 'Аренда в Абхазии (от 1 мес.)';
+        backBtn.classList.toggle('hidden', currentRoute === 'rent');
+      }
+    }
+
+    // Вызов формы по контексту
+    function openModal(target) {
       document.getElementById('publishModal').classList.remove('hidden');
+      if (target && target !== 'portal') {
+        showModalView(target);
+      } else if (currentRoute !== 'hub') {
+        showModalView(currentRoute);
+      } else {
+        showModalView('hub');
+      }
     }
+
     function openContextModal() {
-      openModal();
+      openModal(currentRoute);
     }
+
     function closeModal() {
       document.getElementById('publishModal').classList.add('hidden');
+    }
+
+    // Динамическое поле «Другое направление»
+    function toggleCustomCategory(select) {
+      const customInput = document.getElementById('mFormCustomCat');
+      if (select.value === 'CUSTOM') {
+        customInput.classList.remove('hidden');
+        customInput.required = true;
+        customInput.focus();
+      } else {
+        customInput.classList.add('hidden');
+        customInput.required = false;
+      }
+    }
+
+    // Отправка формы 1: Мастера (в WhatsApp Ринате)
+    function submitMastersForm(e) {
+      e.preventDefault();
+      const catSelect = document.getElementById('mFormCategory').value;
+      const customCat = document.getElementById('mFormCustomCat').value.trim();
+      const finalCategory = (catSelect === 'CUSTOM') ? `Другое (${customCat})` : catSelect;
+
+      const name = document.getElementById('mFormName').value.trim();
+      const phone = document.getElementById('mFormPhone').value.trim();
+      const service = document.getElementById('mFormService').value.trim();
+      const district = document.getElementById('mFormDistrict').value;
+
+      const text = 
+`#услуга
+Специалист: ${name}
+Телефон: ${phone}
+Сфера: ${finalCategory}
+Услуги: ${service}
+Район: ${district}
+—
+(Анкета мастера с портала «Город Своих»)`;
+
+      closeModal();
+      window.open(`https://wa.me/79409001828?text=` + encodeURIComponent(text), '_blank');
+    }
+
+    // Отправка формы 2: Вакансии (в WhatsApp Ринате или чат)
+    function submitJobsForm(e) {
+      e.preventDefault();
+      const type = document.getElementById('jFormType').value;
+      const title = document.getElementById('jFormTitle').value.trim();
+      const salary = document.getElementById('jFormSalary').value.trim();
+      const desc = document.getElementById('jFormDesc').value.trim();
+      const contact = document.getElementById('jFormContact').value.trim();
+      const district = document.getElementById('jFormDistrict').value.trim();
+      const phone = document.getElementById('jFormPhone').value.trim();
+
+      const text = 
+`${type}
+Должность: ${title}
+Оплата: ${salary}
+Требования/Условия: ${desc}
+Район: ${district}
+Контакт: ${contact}, ${phone}
+—
+(Подано через портал «Город Своих»)`;
+
+      closeModal();
+      window.open(`https://wa.me/79409001828?text=` + encodeURIComponent(text), '_blank');
+    }
+
+    // Отправка формы 3: Аренда (в Telegram Ринате)
+    function submitRentForm(e) {
+      e.preventDefault();
+      const type = document.getElementById('rFormType').value;
+      const price = document.getElementById('rFormPrice').value.trim();
+      const district = document.getElementById('rFormDistrict').value.trim();
+      const desc = document.getElementById('rFormDesc').value.trim();
+      const phone = document.getElementById('rFormPhone').value.trim();
+
+      const text = 
+`Здравствуйте, Рината! Хочу сдать жилье на долгий срок:
+Объект: ${type}
+Цена: ${price} / месяц
+Район: ${district}
+Описание: ${desc}
+Телефон: ${phone}`;
+
+      closeModal();
+      window.open(`https://t.me/rinata_tibay?text=` + encodeURIComponent(text), '_blank');
     }
 
     document.getElementById('searchInput').addEventListener('input', (e) => {
