@@ -141,15 +141,21 @@
 
       </div>
 
-           <!-- ВЫДЕЛЕННАЯ КНОПКА ПОДАЧИ ОБЪЯВЛЕНИЯ / ПАРТНЕРСТВА -->
+                 <!-- БЛОК ДОБРЫХ ДЕЛ: ГОРОД СВОИХ ПОМОГАЕТ -->
       <div class="mt-5">
-        <button onclick="openModal('portal')" 
-                style="background-color: #065f46 !important; color: #ffffff !important;"
-                class="w-full font-extrabold text-xs py-4 px-4 rounded-2xl shadow-lg shadow-emerald-900/20 flex items-center justify-center gap-2 border border-emerald-600 transition transform active:scale-98">
-          <span class="text-base">✨</span>
-          <span style="color: #ffffff !important;" class="tracking-wide uppercase text-[11px] font-bold">
-            + Предложить своё объявление или партнерство
-          </span>
+        <button onclick="navigateTo('helps')" 
+                style="background: linear-gradient(135deg, #047857 0%, #0d9488 100%) !important;"
+                class="w-full text-white p-4 rounded-3xl shadow-lg shadow-emerald-900/15 flex items-center justify-between border border-emerald-500/40 transition transform active:scale-98 hover:brightness-105">
+          <div class="flex items-center gap-3 text-left">
+            <div class="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-xs flex items-center justify-center text-xl shrink-0">
+              🤝
+            </div>
+            <div>
+              <h3 style="color: #ffffff !important;" class="text-xs font-extrabold uppercase tracking-wide leading-tight">Город Своих помогает</h3>
+              <p style="color: #d1fae5 !important;" class="text-[11px] font-medium mt-0.5">🐾 Приюты • 🌿 Субботники • Волонтерство</p>
+            </div>
+          </div>
+          <span style="color: #ffffff !important;" class="text-base pr-1">→</span>
         </button>
       </div>
 
@@ -372,6 +378,31 @@
       </div>
     </div>
   </section>
+  
+  <!-- ==================== 5. ПРОФИЛЬ: ГОРОД СВОИХ ПОМОГАЕТ ==================== -->
+  <section id="view-helps" class="hidden max-w-md mx-auto w-full px-4 pt-3 flex-1">
+    <div style="background: linear-gradient(135deg, #0f766e 0%, #065f46 100%);" class="rounded-3xl p-5 text-white shadow-sm mb-4">
+      <div class="flex items-center justify-between">
+        <span class="text-[10px] uppercase font-bold tracking-wider bg-white/20 px-2.5 py-0.5 rounded-md">Взаимовыручка</span>
+        <span class="text-xs text-emerald-200 font-semibold">Без коммерции</span>
+      </div>
+      <h2 class="text-lg font-bold mt-1.5">Город Своих помогает</h2>
+      <p class="text-xs text-emerald-100 mt-1 leading-relaxed">
+        Пространство добрых дел: помощь животным и приютам, совместные субботники, волонтерство и социальные события.
+      </p>
+    </div>
+
+    <!-- Фильтры добрых дел -->
+    <div class="flex space-x-1.5 overflow-x-auto no-scrollbar pb-2 mb-3">
+      <button onclick="filterHelps('all')" class="help-chip active bg-slate-900 text-white text-xs font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap shadow-xs">Все</button>
+      <button onclick="filterHelps('animals')" class="help-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap">🐾 Животные</button>
+      <button onclick="filterHelps('eco')" class="help-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap">🌿 Эко и субботники</button>
+      <button onclick="filterHelps('care')" class="help-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap">🤝 Взаимопомощь</button>
+      <button onclick="filterHelps('events')" class="help-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap">🎈 Мероприятия</button>
+    </div>
+
+    <div class="space-y-3" id="helpsContainer"></div>
+  </section>
 
   <!-- ==================== ЕДИНЫЙ КОНТЕКСТНЫЙ МОДАЛЬНЫЙ ЦЕНТР ==================== -->
   <div id="publishModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
@@ -430,7 +461,19 @@
               <p class="text-[10px] text-slate-500">Сдать жилье на срок от 1 месяца</p>
             </div>
           </div>
-          <span class="text-sky-700 text-xs font-bold">Заполнить →</span>
+                    <span class="text-sky-700 text-xs font-bold">Заполнить →</span>
+        </div>
+
+        <div onclick="showModalView('helps')" 
+             class="flex items-center justify-between p-3.5 rounded-2xl border border-teal-200 hover:border-teal-500 bg-teal-50/50 transition cursor-pointer">
+          <div class="flex items-center gap-3">
+            <span class="text-xl">🤝</span>
+            <div class="text-left">
+              <p class="text-xs font-bold text-teal-950">Город Своих помогает</p>
+              <p class="text-[10px] text-teal-700">Волонтерство, субботники, помощь</p>
+            </div>
+          </div>
+          <span class="text-teal-800 text-xs font-bold">Заполнить →</span>
         </div>
       </div>
 
@@ -631,6 +674,73 @@
           Отправить на добавление ↗
         </button>
       </form>
+      
+      <!-- ЭКРАН 4: ФОРМА ДЛЯ «ГОРОД СВОИХ ПОМОГАЕТ» -->
+      <form id="modalView-helps" onsubmit="submitHelpsForm(event)" class="hidden space-y-3">
+        <div class="p-2.5 bg-teal-50 rounded-xl border border-teal-200 text-[11px] text-teal-900 leading-snug">
+          🤝 Раздел только для некоммерческих инициатив, волонтерства, помощи приютам и городских субботников.
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Категория доброго дела *</label>
+          <select id="hFormType" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-teal-500">
+            <option value="🐾 Помощь животным">🐾 Помощь животным / Приюты</option>
+            <option value="🌿 Экология и субботник">🌿 Экология и субботник</option>
+            <option value="🤝 Взаимовыручка / Отдам даром">🤝 Взаимовыручка / Отдам даром</option>
+            <option value="🎈 Социальное мероприятие">🎈 Социальное мероприятие / Спорт</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Короткий заголовок *</label>
+          <input type="text" id="hFormTitle" required placeholder="Например: Доски для будки щенкам или Субботник на пляже" 
+                 class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500">
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Описание (что именно нужно / когда) *</label>
+          <textarea id="hFormDesc" required rows="3" 
+                    placeholder="Опишите подробно: какая помощь нужна (материалы, руки, корм), место и время проведения..." 
+                    class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500"></textarea>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Ваше имя / Группа *</label>
+            <input type="text" id="hFormContact" required placeholder="Владимир" 
+                   class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500">
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Город *</label>
+            <select id="hFormDistrict" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2 py-2 text-xs text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-teal-500">
+              <option value="Гагра" selected>Гагра</option>
+              <option value="Цандрипш">Цандрипш</option>
+              <option value="Пицунда">Пицунда</option>
+              <option value="Гудаута">Гудаута</option>
+              <option value="Новый Афон">Новый Афон</option>
+              <option value="Сухум">Сухум</option>
+              <option value="Ткуарчал">Ткуарчал</option>
+              <option value="Очамчыра">Очамчыра</option>
+              <option value="Гал">Гал</option>
+              <option value="Вся Абхазия">Вся Абхазия</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Телефон для связи (WhatsApp) *</label>
+          <input type="tel" id="hFormPhone" required inputmode="tel"
+                 oninput="this.value = this.value.replace(/[^0-9+\s\-()]/g, '')"
+                 placeholder="+7 940 000-00-00" 
+                 class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-mono text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500">
+        </div>
+
+        <button type="submit" 
+                style="background-color: #0f766e !important;"
+                class="w-full text-white font-bold text-xs py-3.5 px-4 rounded-xl shadow-md hover:bg-teal-800 transition active:scale-98">
+          Отправить инициативу
+        </button>
+      </form>
 
     </div>
   </div>
@@ -691,6 +801,45 @@
     let activeCategory = 'all';
     let activeSubcategory = 'all';
 
+        // Базовые инициативы помощи (если data/helps.json еще не создан)
+    let helpsData = [
+      {
+        type: "animals",
+        badge: "🐾 Помощь животным",
+        status: "Нужны материалы",
+        title: "Ненужные доски / паллеты для будки щенкам",
+        desc: "Бездомная собака ощенилась (4 щенка). Владимир с ребятами строят утепленную будку. Нужны остатки сухих досок или поддонов.",
+        city: "Гагра",
+        contact: "Владимир",
+        phone: "79119872800",
+        btn_text: "Помочь материалом"
+      },
+      {
+        type: "animals",
+        badge: "🐾 Волонтерство",
+        status: "Кураторство",
+        title: "Помощь с льготной стерилизацией животных",
+        desc: "Координация записей на льготную стерилизацию и передержку бездомных кошек и собак в Гагре. Консультация по уходу.",
+        city: "Гагра",
+        contact: "Чат сообщества",
+        phone: "",
+        chat_link: "https://chat.whatsapp.com/GnHSLd8VWaxGboukz9s3FI",
+        btn_text: "Написать в чат"
+      },
+      {
+        type: "eco",
+        badge: "🌿 Эко-десант",
+        status: "Субботник",
+        title: "Уборка береговой линии и парковых зон",
+        desc: "Совместный сбор пластика и штормового мусора на пляже. Мешки и перчатки предоставляем. Приглашаем жителей с семьями.",
+        city: "Гагра",
+        contact: "Волонтеры",
+        phone: "",
+        chat_link: "https://chat.whatsapp.com/GnHSLd8VWaxGboukz9s3FI",
+        btn_text: "Присоединиться"
+      }
+    ];
+
     function navigateTo(route) {
       currentRoute = route;
       window.location.hash = (route === 'hub') ? '' : route;
@@ -699,7 +848,7 @@
 
     function applyRoute() {
       const hash = window.location.hash.replace('#', '');
-      currentRoute = ['masters', 'jobs', 'rent'].includes(hash) ? hash : 'hub';
+      currentRoute = ['masters', 'jobs', 'rent', 'helps'].includes(hash) ? hash : 'hub';
 
       const isHub = (currentRoute === 'hub');
       document.getElementById('view-hub').classList.toggle('hidden', !isHub);
@@ -708,6 +857,7 @@
       document.getElementById('view-masters').classList.toggle('hidden', currentRoute !== 'masters');
       document.getElementById('view-jobs').classList.toggle('hidden', currentRoute !== 'jobs');
       document.getElementById('view-rent').classList.toggle('hidden', currentRoute !== 'rent');
+      document.getElementById('view-helps').classList.toggle('hidden', currentRoute !== 'helps');
 
       const titleEl = document.getElementById('innerHeaderTitle');
       const actionBtn = document.getElementById('innerHeaderActionBtn');
@@ -724,6 +874,10 @@
         titleEl.textContent = 'Долгосрочная аренда';
         actionBtn.className = "text-xs font-bold text-sky-700 bg-sky-50 px-2.5 py-1.5 rounded-xl border border-sky-200 hover:bg-sky-100 transition";
         actionBtn.textContent = '+ Сдать жилье';
+      } else if (currentRoute === 'helps') {
+        titleEl.textContent = 'Город Своих помогает';
+        actionBtn.className = "text-xs font-bold text-teal-800 bg-teal-50 px-2.5 py-1.5 rounded-xl border border-teal-200 hover:bg-teal-100 transition";
+        actionBtn.textContent = '+ Инициатива';
       }
 
       window.scrollTo(0, 0);
@@ -731,12 +885,11 @@
 
     window.addEventListener('hashchange', applyRoute);
 
-        async function loadData() {
+    async function loadData() {
       try {
         const response = await fetch('data/masters.json?v=' + Date.now());
         masters = await response.json();
 
-        // Наполняем золотой блок Лидера Недели на Главной
         const leader = masters.find(m => m.is_leader) || masters.find(m => m.name.includes("Владимир"));
         if (leader) {
           document.getElementById('hubLeaderName').textContent = leader.name;
@@ -749,8 +902,59 @@
 
         renderMasters();
       } catch (err) {
-        console.error('Ошибка загрузки данных:', err);
+        console.error('Ошибка загрузки мастеров:', err);
       }
+
+      try {
+        const helpRes = await fetch('data/helps.json?v=' + Date.now());
+        if (helpRes.ok) {
+          helpsData = await helpRes.json();
+        }
+      } catch (e) {}
+      renderHelps('all');
+    }
+
+    function renderHelps(filterType = 'all') {
+      const container = document.getElementById('helpsContainer');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const filtered = helpsData.filter(h => filterType === 'all' || h.type === filterType);
+      filtered.forEach(item => {
+        const cleanPhone = (item.phone || '').replace(/[^0-9]/g, '');
+        const linkHref = cleanPhone 
+          ? `https://api.whatsapp.com/send?phone=${cleanPhone}&text=` + encodeURIComponent(`Здравствуйте! Пишу по поводу инициативы "${item.title}" на портале Город Своих.`)
+          : (item.chat_link || 'https://chat.whatsapp.com/GnHSLd8VWaxGboukz9s3FI');
+
+        const card = document.createElement('div');
+        card.className = "help-card bg-white rounded-3xl p-4 border border-slate-200 shadow-xs";
+        card.innerHTML = `
+          <div class="flex items-start justify-between gap-2 mb-1.5">
+            <span class="text-[10px] font-bold bg-teal-50 text-teal-800 border border-teal-200 px-2 py-0.5 rounded-md">${item.badge}</span>
+            <span class="text-[11px] font-semibold text-emerald-700">${item.status || 'Актуально'}</span>
+          </div>
+          <h3 class="text-sm font-bold text-slate-900">${item.title}</h3>
+          <p class="text-xs text-slate-600 my-2 leading-relaxed">${item.desc}</p>
+          <div class="flex items-center justify-between pt-2.5 border-t border-slate-100 text-xs">
+            <span class="text-slate-500 font-medium">${item.city} • ${item.contact}</span>
+            <a href="${linkHref}" target="_blank" 
+               class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-3 py-1.5 rounded-xl transition">
+              ${item.btn_text || 'Откликнуться'}
+            </a>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function filterHelps(type) {
+      document.querySelectorAll('.help-chip').forEach(btn => {
+        btn.className = "help-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap shadow-xs";
+      });
+      if (event && event.target) {
+        event.target.className = "help-chip active bg-slate-900 text-white text-xs font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap shadow-xs";
+      }
+      renderHelps(type);
     }
 
     function renderSubBar() {
@@ -874,7 +1078,7 @@
       document.querySelectorAll('.job-chip').forEach(btn => {
         btn.className = "job-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap";
       });
-      event.target.className = "job-chip active bg-slate-900 text-white text-xs font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap";
+      event.target.className = "job-chip active bg-slate-900 text-white text-xs font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap shadow-xs";
 
       document.querySelectorAll('.job-card').forEach(card => {
         if (type === 'all' || card.dataset.type === type) {
@@ -885,11 +1089,10 @@
       });
     }
 
-        // ==================== УПРАВЛЕНИЕ КОНТЕКСТНЫМИ ФОРМАМИ ====================
+    // ==================== УПРАВЛЕНИЕ КОНТЕКСТНЫМИ ФОРМАМИ ====================
 
-    // Показ конкретного экрана модалки
     function showModalView(view) {
-      const views = ['hub', 'masters', 'jobs', 'rent'];
+      const views = ['hub', 'masters', 'jobs', 'rent', 'helps'];
       views.forEach(v => {
         const el = document.getElementById('modalView-' + v);
         if (el) el.classList.toggle('hidden', v !== view);
@@ -915,10 +1118,13 @@
         title.textContent = 'Сдать жилье на долгий срок';
         subTitle.textContent = 'Аренда в Абхазии (от 1 мес.)';
         backBtn.classList.toggle('hidden', currentRoute === 'rent');
+      } else if (view === 'helps') {
+        title.textContent = 'Предложить доброе дело';
+        subTitle.textContent = 'Город Своих помогает';
+        backBtn.classList.toggle('hidden', currentRoute === 'helps');
       }
     }
 
-    // Вызов формы по контексту
     function openModal(target) {
       document.getElementById('publishModal').classList.remove('hidden');
       if (target && target !== 'portal') {
@@ -936,6 +1142,117 @@
 
     function closeModal() {
       document.getElementById('publishModal').classList.add('hidden');
+    }
+
+    function toggleCustomCategory(select) {
+      const customInput = document.getElementById('mFormCustomCat');
+      if (select.value === 'CUSTOM') {
+        customInput.classList.remove('hidden');
+        customInput.required = true;
+        customInput.focus();
+      } else {
+        customInput.classList.add('hidden');
+        customInput.required = false;
+      }
+    }
+
+    // Отправка формы 1: Мастера (в WhatsApp Ринате)
+    function submitMastersForm(e) {
+      e.preventDefault();
+      const catSelect = document.getElementById('mFormCategory').value;
+      const customCat = document.getElementById('mFormCustomCat').value.trim();
+      const finalCategory = (catSelect === 'CUSTOM') ? `Другое (${customCat})` : catSelect;
+
+      const name = document.getElementById('mFormName').value.trim();
+      const phone = document.getElementById('mFormPhone').value.trim();
+      const service = document.getElementById('mFormService').value.trim();
+      const district = document.getElementById('mFormDistrict').value;
+
+      const text = 
+`#услуга
+Специалист: ${name}
+Телефон: ${phone}
+Сфера: ${finalCategory}
+Услуги: ${service}
+Город: ${district}
+—
+(Анкета с сайта «Город Своих»)`;
+
+      const rinataPhone = "79263949118";
+      closeModal();
+      window.location.href = `https://api.whatsapp.com/send?phone=${rinataPhone}&text=` + encodeURIComponent(text);
+    }
+
+    // Отправка формы 2: Вакансии (в WhatsApp Ринате)
+    function submitJobsForm(e) {
+      e.preventDefault();
+      const type = document.getElementById('jFormType').value;
+      const title = document.getElementById('jFormTitle').value.trim();
+      const salary = document.getElementById('jFormSalary').value.trim();
+      const desc = document.getElementById('jFormDesc').value.trim();
+      const contact = document.getElementById('jFormContact').value.trim();
+      const district = document.getElementById('jFormDistrict').value.trim();
+      const phone = document.getElementById('jFormPhone').value.trim();
+
+      const text = 
+`${type}
+Должность: ${title}
+Оплата: ${salary}
+Требования/Условия: ${desc}
+Город: ${district}
+Контакт: ${contact}, ${phone}
+—
+(Подано через портал «Город Своих»)`;
+
+      const rinataPhone = "79263949118";
+      closeModal();
+      window.location.href = `https://api.whatsapp.com/send?phone=${rinataPhone}&text=` + encodeURIComponent(text);
+    }
+
+    // Отправка формы 3: Аренда (в Telegram Ринате)
+    function submitRentForm(e) {
+      e.preventDefault();
+      const type = document.getElementById('rFormType').value;
+      const price = document.getElementById('rFormPrice').value.trim();
+      const district = document.getElementById('rFormDistrict').value.trim();
+      const desc = document.getElementById('rFormDesc').value.trim();
+      const phone = document.getElementById('rFormPhone').value.trim();
+
+      const text = 
+`Здравствуйте, Рината! Хочу сдать жилье на долгий срок:
+Объект: ${type}
+Цена: ${price} / месяц
+Город: ${district}
+Описание: ${desc}
+Телефон: ${phone}`;
+
+      closeModal();
+      window.open(`https://t.me/rinata_tibay?text=` + encodeURIComponent(text), '_blank');
+    }
+
+    // Отправка формы 4: Город Своих помогает (в WhatsApp Ринате)
+    function submitHelpsForm(e) {
+      e.preventDefault();
+      const type = document.getElementById('hFormType').value;
+      const title = document.getElementById('hFormTitle').value.trim();
+      const desc = document.getElementById('hFormDesc').value.trim();
+      const contact = document.getElementById('hFormContact').value.trim();
+      const district = document.getElementById('hFormDistrict').value;
+      const phone = document.getElementById('hFormPhone').value.trim();
+
+      const text = 
+`#городпомогает
+Направление: ${type}
+Инициатива: ${title}
+Описание: ${desc}
+Город: ${district}
+Координатор: ${contact}, ${phone}
+—
+(Социальная инициатива с сайта «Город Своих»)`;
+
+      const rinataPhone = "79263949118";
+      closeModal();
+      window.location.href = `https://api.whatsapp.com/send?phone=${rinataPhone}&text=` + encodeURIComponent(text);
     }
 
     // Динамическое поле «Другое направление»
@@ -994,50 +1311,6 @@
 
       const text = 
 `${type}
-Должность: ${title}
-Оплата: ${salary}
-Требования/Условия: ${desc}
-Район: ${district}
-Контакт: ${contact}, ${phone}
-—
-(Подано через портал «Город Своих»)`;
-
-      closeModal();
-      window.open(`https://wa.me/79263949118?text=` + encodeURIComponent(text), '_blank');
-    }
-
-    // Отправка формы 3: Аренда (в Telegram Ринате)
-    function submitRentForm(e) {
-      e.preventDefault();
-      const type = document.getElementById('rFormType').value;
-      const price = document.getElementById('rFormPrice').value.trim();
-      const district = document.getElementById('rFormDistrict').value.trim();
-      const desc = document.getElementById('rFormDesc').value.trim();
-      const phone = document.getElementById('rFormPhone').value.trim();
-
-      const text = 
-`Здравствуйте, Рината! Хочу сдать жилье на долгий срок:
-Объект: ${type}
-Цена: ${price} / месяц
-Район: ${district}
-Описание: ${desc}
-Телефон: ${phone}`;
-
-      closeModal();
-      window.open(`https://t.me/rinata_tibay?text=` + encodeURIComponent(text), '_blank');
-    }
-
-    document.getElementById('searchInput').addEventListener('input', (e) => {
-      document.getElementById('clearSearch').classList.toggle('hidden', !e.target.value);
-      renderMasters();
-    });
-
-    document.getElementById('clearSearch').addEventListener('click', () => {
-      const input = document.getElementById('searchInput');
-      input.value = '';
-      document.getElementById('clearSearch').classList.add('hidden');
-      renderMasters();
-    });
 
     document.querySelectorAll('.macro-btn').forEach(btn => {
       btn.addEventListener('click', () => {
