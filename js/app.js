@@ -135,28 +135,36 @@ function applyRoute() {
 
 window.addEventListener('hashchange', applyRoute);
 
-// ==================== ЗАГРУЗКА ДАННЫХ ====================
+// ==================== ЗАГРУЗКА ДАННЫХ (ГИБРИДНЫЙ РЕЖИМ) ====================
 
 async function loadData() {
-  // 1. Загрузка мастеров: сначала пробуем Supabase, если пусто — fallback на data/masters.json
+  let dbMasters = [];
+  let localMasters = [];
+
+  // 1. Тянем проверенных мастеров из Supabase
   try {
     const sbRes = await fetch(`${SUPABASE_URL}/rest/v1/masters?select=*&is_approved=eq.true&order=created_at.desc`, {
       headers: sbHeaders
     });
-    if (sbRes.ok) {
-      const dbMasters = await sbRes.json();
-      if (dbMasters.length > 0) {
-        masters = dbMasters;
-      } else {
-        const localRes = await fetch('data/masters.json?v=' + Date.now());
-        if (localRes.ok) masters = await localRes.json();
-      }
-    }
+    if (sbRes.ok) dbMasters = await sbRes.json();
   } catch (e) {
-    const localRes = await fetch('data/masters.json?v=' + Date.now());
-    if (localRes.ok) masters = await localRes.json();
+    console.warn('Supabase недоступен, работаем с локальными данными');
   }
 
+  // 2. Тянем основной каталог из masters.json
+  try {
+    const localRes = await fetch('data/masters.json?v=' + Date.now());
+    if (localRes.ok) localMasters = await localRes.json();
+  } catch (e) {
+    console.warn('masters.json не найден');
+  }
+
+  // 3. Объединяем: новые из базы идут первыми, дубликаты по телефону отсекаются
+  const dbPhones = new Set(dbMasters.map(m => (m.phone || '').replace(/[^0-9]/g, '')));
+  const filteredLocal = localMasters.filter(m => !dbPhones.has((m.phone || '').replace(/[^0-9]/g, '')));
+  masters = [...dbMasters, ...filteredLocal];
+
+  // Лидер недели
   const leader = masters.find(m => m.is_leader) || masters.find(m => m.name && m.name.includes("Владимир"));
   if (leader) {
     const lName = document.getElementById('hubLeaderName');
@@ -173,7 +181,7 @@ async function loadData() {
   }
   renderMasters();
 
-  // 2. Загрузка инициатив взаимовыручки: сначала Supabase, если пусто — fallback на файл чата
+  // 4. Загрузка инициатив взаимовыручки
   try {
     const sbHelpsRes = await fetch(`${SUPABASE_URL}/rest/v1/helps?select=*&is_approved=eq.true&order=created_at.desc`, {
       headers: sbHeaders
