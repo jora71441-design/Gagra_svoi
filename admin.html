@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Кабинет модератора | Город Своих</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { -webkit-tap-highlight-color: transparent; }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen pb-16 font-sans">
+
+  <!-- Шапка кабинета -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40 px-4 py-3 shadow-xs">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+        <h1 class="text-base font-bold text-slate-900 leading-none">Кабинет модератора</h1>
+      </div>
+      <button onclick="changePin()" class="text-[11px] font-semibold text-slate-500 bg-slate-100 px-2 py-1 rounded-lg hover:bg-slate-200 transition">
+        PIN: <span id="pinDisplay">****</span>
+      </button>
+    </div>
+
+    <!-- Вкладки разделов -->
+    <div class="flex gap-1.5 mt-3 overflow-x-auto no-scrollbar">
+      <button onclick="switchTab('masters')" id="tab-masters" class="tab-btn active px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap bg-slate-900 text-white">
+        🛠 Мастера <span id="badge-masters" class="ml-1 bg-white/20 text-white text-[10px] px-1.5 py-0.5 rounded-full hidden">0</span>
+      </button>
+      <button onclick="switchTab('jobs')" id="tab-jobs" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-semibold transition whitespace-nowrap bg-white text-slate-600 border border-slate-200">
+        💼 Вакансии <span id="badge-jobs" class="ml-1 bg-slate-200 text-slate-700 text-[10px] px-1.5 py-0.5 rounded-full hidden">0</span>
+      </button>
+      <button onclick="switchTab('rent')" id="tab-rent" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-semibold transition whitespace-nowrap bg-white text-slate-600 border border-slate-200">
+        🏠 Аренда <span id="badge-rent" class="ml-1 bg-slate-200 text-slate-700 text-[10px] px-1.5 py-0.5 rounded-full hidden">0</span>
+      </button>
+      <button onclick="switchTab('helps')" id="tab-helps" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-semibold transition whitespace-nowrap bg-white text-slate-600 border border-slate-200">
+        🤝 Помощь <span id="badge-helps" class="ml-1 bg-slate-200 text-slate-700 text-[10px] px-1.5 py-0.5 rounded-full hidden">0</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Основной контейнер -->
+  <main class="p-4 max-w-lg mx-auto">
+    <div class="flex items-center justify-between mb-3">
+      <span class="text-xs font-bold uppercase tracking-wider text-slate-500" id="sectionTitle">Заявки мастеров</span>
+      <button onclick="loadPending(currentTab)" class="text-xs font-semibold text-emerald-700 hover:text-emerald-800 flex items-center gap-1">
+        ↻ Обновить
+      </button>
+    </div>
+
+    <!-- Список заявок -->
+    <div id="cardsList" class="space-y-3">
+      <div class="text-center py-10 text-slate-400 text-sm">Загрузка заявок...</div>
+    </div>
+  </main>
+
+  <script>
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+      tg.expand();
+      tg.ready();
+    }
+
+    const SUPABASE_URL = 'https://yzbochrahmuhvryinajr.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl6Ym9jaHJhaG11aHZyeWluYWpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMyNzYyODcsImV4cCI6MjEwODg1MjI4N30.dTjerKbrcLuTEr5xPKXkR43Df4ECaGA-ztCrGD_SO-A';
+
+    let currentTab = 'masters';
+    let adminPin = localStorage.getItem('gsvoi_pin') || '7788';
+
+    function checkPin() {
+      if (!adminPin) {
+        adminPin = prompt('Введите PIN-код модератора:', '7788') || '7788';
+        localStorage.setItem('gsvoi_pin', adminPin);
+      }
+      document.getElementById('pinDisplay').textContent = adminPin;
+    }
+
+    function changePin() {
+      const newPin = prompt('Введите новый PIN модератора:', adminPin);
+      if (newPin) {
+        adminPin = newPin;
+        localStorage.setItem('gsvoi_pin', adminPin);
+        document.getElementById('pinDisplay').textContent = adminPin;
+        loadPending(currentTab);
+      }
+    }
+
+    function switchTab(tab) {
+      currentTab = tab;
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.className = "tab-btn px-3 py-1.5 rounded-xl text-xs font-semibold transition whitespace-nowrap bg-white text-slate-600 border border-slate-200";
+      });
+      const activeBtn = document.getElementById('tab-' + tab);
+      if (activeBtn) {
+        activeBtn.className = "tab-btn active px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap bg-slate-900 text-white";
+      }
+
+      const titles = {
+        masters: 'Заявки мастеров',
+        jobs: 'Вакансии и резюме',
+        rent: 'Объекты аренды',
+        helps: 'Инициативы взаимовыручки'
+      };
+      document.getElementById('sectionTitle').textContent = titles[tab];
+      loadPending(tab);
+    }
+
+    async function loadPending(table) {
+      const list = document.getElementById('cardsList');
+      list.innerHTML = '<div class="text-center py-10 text-slate-400 text-sm">Проверяем базу...</div>';
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/get_pending_records`, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ table_name: table, secret_pin: adminPin })
+        });
+
+        if (!res.ok) {
+          const err = await res.json();
+          list.innerHTML = `<div class="bg-red-50 border border-red-200 text-red-700 p-4 rounded-2xl text-xs">${err.message || 'Ошибка доступа. Проверьте PIN.'}</div>`;
+          return;
+        }
+
+        const items = await res.json();
+        renderCards(items, table);
+      } catch (e) {
+        list.innerHTML = '<div class="text-center py-10 text-red-500 text-xs">Ошибка соединения с базой</div>';
+      }
+    }
+
+    function renderCards(items, table) {
+      const list = document.getElementById('cardsList');
+      list.innerHTML = '';
+
+      if (!items || items.length === 0) {
+        list.innerHTML = `
+          <div class="bg-white rounded-3xl p-8 text-center border border-slate-200/80 shadow-xs">
+            <span class="text-3xl">☕</span>
+            <p class="text-sm font-bold text-slate-800 mt-2">Все чисто!</p>
+            <p class="text-xs text-slate-500 mt-1">Новых заявок в этом разделе пока нет.</p>
+          </div>
+        `;
+        return;
+      }
+
+      items.forEach(item => {
+        const card = document.createElement('div');
+        card.className = "bg-white rounded-3xl p-4 border border-slate-200 shadow-xs space-y-3";
+
+        let mainContent = '';
+        const phone = item.phone || '';
+        const cleanPhone = phone.replace(/[^0-9]/g, '');
+
+        if (table === 'masters') {
+          mainContent = `
+            <div class="flex items-start justify-between">
+              <div>
+                <span class="text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-md">${item.category_title || 'Услуга'}</span>
+                <h3 class="text-base font-bold text-slate-900 mt-1">${item.name}</h3>
+              </div>
+              <span class="text-[11px] font-mono text-slate-500">${item.city || 'Гагра'}</span>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed">${item.service}</p>
+          `;
+        } else if (table === 'jobs') {
+          mainContent = `
+            <div class="flex items-start justify-between">
+              <div>
+                <span class="text-[10px] font-bold bg-blue-50 text-blue-800 border border-blue-200 px-2 py-0.5 rounded-md">${item.type}</span>
+                <h3 class="text-base font-bold text-slate-900 mt-1">${item.title}</h3>
+              </div>
+              <span class="text-xs font-bold text-emerald-700">${item.salary || 'Договорная'}</span>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed">${item.desc}</p>
+            <p class="text-[11px] text-slate-500">${item.city || 'Гагра'} • ${item.contact || ''}</p>
+          `;
+        } else if (table === 'rent') {
+          mainContent = `
+            <div class="flex items-start justify-between">
+              <div>
+                <span class="text-[10px] font-bold bg-sky-50 text-sky-800 border border-sky-200 px-2 py-0.5 rounded-md">Аренда</span>
+                <h3 class="text-base font-bold text-slate-900 mt-1">${item.title}</h3>
+              </div>
+              <span class="text-xs font-bold text-emerald-700">${item.price} ₽</span>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed">${item.desc}</p>
+            <p class="text-[11px] text-slate-500">${item.district || 'Гагра'}</p>
+          `;
+        } else if (table === 'helps') {
+          mainContent = `
+            <div class="flex items-start justify-between">
+              <div>
+                <span class="text-[10px] font-bold bg-teal-50 text-teal-800 border border-teal-200 px-2 py-0.5 rounded-md">${item.badge || 'Помощь'}</span>
+                <h3 class="text-base font-bold text-slate-900 mt-1">${item.title}</h3>
+              </div>
+              <span class="text-[11px] text-slate-500">${item.city || 'Гагра'}</span>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed">${item.desc}</p>
+            <p class="text-[11px] text-slate-500">${item.contact || 'Куратор'}</p>
+          `;
+        }
+
+        card.innerHTML = `
+          ${mainContent}
+          <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+            <span class="font-mono text-slate-600">${phone}</span>
+            ${cleanPhone ? `<a href="https://wa.me/${cleanPhone}" target="_blank" class="text-emerald-700 font-semibold hover:underline">Написать в WhatsApp →</a>` : ''}
+          </div>
+          <div class="grid grid-cols-2 gap-2 pt-1">
+            <button onclick="approveItem('${table}', ${item.id})" class="bg-emerald-600 hover:bg-emerald-700 active:scale-98 text-white font-bold py-2.5 px-3 rounded-2xl text-xs transition shadow-xs flex items-center justify-center gap-1">
+              ✓ Одобрить
+            </button>
+            <button onclick="deleteItem('${table}', ${item.id})" class="bg-slate-100 hover:bg-rose-50 hover:text-rose-700 active:scale-98 text-slate-700 font-semibold py-2.5 px-3 rounded-2xl text-xs transition flex items-center justify-center gap-1">
+              ✕ Отклонить
+            </button>
+          </div>
+        `;
+        list.appendChild(card);
+      });
+    }
+
+    async function approveItem(table, id) {
+      if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/approve_record`, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ table_name: table, record_id: id, secret_pin: adminPin })
+        });
+        if (res.ok) {
+          if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+          loadPending(table);
+        } else {
+          alert('Ошибка при одобрении записи');
+        }
+      } catch (e) {
+        alert('Сбой сети при одобрении');
+      }
+    }
+
+    async function deleteItem(table, id) {
+      if (!confirm('Точно отклонить и удалить эту заявку?')) return;
+      if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('rigid');
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/delete_record`, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ table_name: table, record_id: id, secret_pin: adminPin })
+        });
+        if (res.ok) {
+          loadPending(table);
+        } else {
+          alert('Ошибка при удалении');
+        }
+      } catch (e) {
+        alert('Сбой сети при удалении');
+      }
+    }
+
+    checkPin();
+    loadPending('masters');
+  </script>
+</body>
+</html>
