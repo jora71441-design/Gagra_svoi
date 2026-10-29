@@ -1,3 +1,27 @@
+// ==================== КОНФИГУРАЦИЯ SUPABASE ====================
+
+const SUPABASE_URL = 'https://yzbochrahmuhvryinajr.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl6Ym9jaHJhaG11aHZyeWluYWpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMyNzYyODcsImV4cCI6MjEwODg1MjI4N30.dTjerKbrcLuTEr5xPKXkR43Df4ECaGA-ztCrGD_SO-A';
+
+const sbHeaders = {
+  'apikey': SUPABASE_ANON_KEY,
+  'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+  'Content-Type': 'application/json'
+};
+
+async function insertToSupabase(table, data) {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
+      method: 'POST',
+      headers: { ...sbHeaders, 'Prefer': 'return=minimal' },
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) console.error(`Ошибка записи в ${table}:`, await res.text());
+  } catch (err) {
+    console.error(`Сетевой сбой при отправке в ${table}:`, err);
+  }
+}
+
 // ==================== ТАКСОНОМИЯ И СОСТОЯНИЕ ====================
 
 const TAXONOMY = {
@@ -111,46 +135,75 @@ function applyRoute() {
 
 window.addEventListener('hashchange', applyRoute);
 
-// ==================== ЗАГРУЗКА И ПАРСИНГ ДАННЫХ ====================
+// ==================== ЗАГРУЗКА ДАННЫХ ====================
 
 async function loadData() {
-  // 1. Каталог мастеров
+  // 1. Загрузка мастеров: сначала пробуем Supabase, если пусто — fallback на data/masters.json
   try {
-    const response = await fetch('data/masters.json?v=' + Date.now());
-    if (response.ok) {
-      masters = await response.json();
-
-      const leader = masters.find(m => m.is_leader) || masters.find(m => m.name && m.name.includes("Владимир"));
-      if (leader) {
-        const lName = document.getElementById('hubLeaderName');
-        const lServ = document.getElementById('hubLeaderService');
-        const lDesc = document.getElementById('hubLeaderDesc');
-        const lLink = document.getElementById('hubLeaderWaLink');
-        if (lName) lName.textContent = leader.name;
-        if (lServ) lServ.textContent = leader.subcategory_title || leader.category_title;
-        if (lDesc) lDesc.textContent = leader.service;
-        if (lLink) {
-          const cleanPhone = (leader.phone || '').replace(/[^0-9]/g, '');
-          lLink.href = `https://wa.me/${cleanPhone}?text=` + encodeURIComponent(`Здравствуйте, ${leader.name}! Увидел ваш закреп лидера недели на портале "Город Своих".`);
-        }
+    const sbRes = await fetch(`${SUPABASE_URL}/rest/v1/masters?select=*&is_approved=eq.true&order=created_at.desc`, {
+      headers: sbHeaders
+    });
+    if (sbRes.ok) {
+      const dbMasters = await sbRes.json();
+      if (dbMasters.length > 0) {
+        masters = dbMasters;
+      } else {
+        const localRes = await fetch('data/masters.json?v=' + Date.now());
+        if (localRes.ok) masters = await localRes.json();
       }
-      renderMasters();
     }
-  } catch (err) {
-    console.error('Ошибка загрузки мастеров:', err);
+  } catch (e) {
+    const localRes = await fetch('data/masters.json?v=' + Date.now());
+    if (localRes.ok) masters = await localRes.json();
   }
 
-  // 2. Чат инициатив взаимовыручки
+  const leader = masters.find(m => m.is_leader) || masters.find(m => m.name && m.name.includes("Владимир"));
+  if (leader) {
+    const lName = document.getElementById('hubLeaderName');
+    const lServ = document.getElementById('hubLeaderService');
+    const lDesc = document.getElementById('hubLeaderDesc');
+    const lLink = document.getElementById('hubLeaderWaLink');
+    if (lName) lName.textContent = leader.name;
+    if (lServ) lServ.textContent = leader.subcategory_title || leader.category_title;
+    if (lDesc) lDesc.textContent = leader.service;
+    if (lLink) {
+      const cleanPhone = (leader.phone || '').replace(/[^0-9]/g, '');
+      lLink.href = `https://wa.me/${cleanPhone}?text=` + encodeURIComponent(`Здравствуйте, ${leader.name}! Увидел ваш закреп лидера недели на портале "Город Своих".`);
+    }
+  }
+  renderMasters();
+
+  // 2. Загрузка инициатив взаимовыручки: сначала Supabase, если пусто — fallback на файл чата
+  try {
+    const sbHelpsRes = await fetch(`${SUPABASE_URL}/rest/v1/helps?select=*&is_approved=eq.true&order=created_at.desc`, {
+      headers: sbHeaders
+    });
+    if (sbHelpsRes.ok) {
+      const dbHelps = await sbHelpsRes.json();
+      if (dbHelps.length > 0) {
+        helpsData = dbHelps;
+      } else {
+        await loadHelpsFromChatFile();
+      }
+    } else {
+      await loadHelpsFromChatFile();
+    }
+  } catch (e) {
+    await loadHelpsFromChatFile();
+  }
+  renderHelps('all');
+}
+
+async function loadHelpsFromChatFile() {
   try {
     const chatRes = await fetch('data/helps_chat.txt?v=' + Date.now());
     if (chatRes.ok) {
       const chatText = await chatRes.text();
       helpsData = parseHelpsFromChat(chatText);
     }
-  } catch (e) {
-    console.warn('Экспорт чата helps_chat.txt не найден или пуст.');
+  } catch (err) {
+    console.warn('helps_chat.txt пока не содержит данных');
   }
-  renderHelps('all');
 }
 
 function parseHelpsFromChat(text) {
@@ -225,7 +278,7 @@ function renderHelps(filterType = 'all') {
       <h3 class="text-sm font-bold text-slate-900">${item.title}</h3>
       <p class="text-xs text-slate-600 my-2 leading-relaxed">${item.desc}</p>
       <div class="flex items-center justify-between pt-2.5 border-t border-slate-100 text-xs">
-        <span class="text-slate-500 font-medium">${item.city} • ${item.contact}</span>
+        <span class="text-slate-500 font-medium">${item.city || 'Гагра'} • ${item.contact || 'Куратор'}</span>
         <a href="${linkHref}" target="_blank" 
            class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-3 py-1.5 rounded-xl transition">
           ${item.btn_text || 'Откликнуться'}
@@ -384,7 +437,7 @@ function filterJobs(type) {
   });
 }
 
-// ==================== МОДАЛЬНЫЕ ОКНА И ФОРМЫ ====================
+// ==================== МОДАЛЬНЫЕ ОКНА И ФОРМЫ С ЗАПИСЬЮ В SUPABASE ====================
 
 function showModalView(view) {
   const views = ['hub', 'masters', 'jobs', 'rent', 'helps'];
@@ -456,7 +509,8 @@ function toggleCustomCategory(select) {
   }
 }
 
-function submitMastersForm(e) {
+// 1. Форма мастеров: пишем в таблицу masters и открываем WhatsApp
+async function submitMastersForm(e) {
   e.preventDefault();
   const catSelect = document.getElementById('mFormCategory').value;
   const customCat = document.getElementById('mFormCustomCat').value.trim();
@@ -466,6 +520,17 @@ function submitMastersForm(e) {
   const phone = document.getElementById('mFormPhone').value.trim();
   const service = document.getElementById('mFormService').value.trim();
   const district = document.getElementById('mFormDistrict').value;
+
+  // Отправка в Supabase (на модерацию)
+  await insertToSupabase('masters', {
+    name: name,
+    phone: phone,
+    category: 'custom',
+    category_title: finalCategory,
+    service: service,
+    city: district,
+    is_approved: false
+  });
 
   const text = 
 `#услуга
@@ -482,7 +547,8 @@ function submitMastersForm(e) {
   window.location.href = `https://api.whatsapp.com/send?phone=${rinataPhone}&text=` + encodeURIComponent(text);
 }
 
-function submitJobsForm(e) {
+// 2. Форма вакансий: пишем в таблицу jobs и открываем WhatsApp
+async function submitJobsForm(e) {
   e.preventDefault();
   const type = document.getElementById('jFormType').value;
   const title = document.getElementById('jFormTitle').value.trim();
@@ -491,6 +557,18 @@ function submitJobsForm(e) {
   const contact = document.getElementById('jFormContact').value.trim();
   const district = document.getElementById('jFormDistrict').value.trim();
   const phone = document.getElementById('jFormPhone').value.trim();
+
+  // Отправка в Supabase (на модерацию)
+  await insertToSupabase('jobs', {
+    type: type,
+    title: title,
+    salary: salary,
+    desc: desc,
+    contact: contact,
+    city: district,
+    phone: phone,
+    is_approved: false
+  });
 
   const text = 
 `${type}
@@ -507,13 +585,24 @@ function submitJobsForm(e) {
   window.location.href = `https://api.whatsapp.com/send?phone=${rinataPhone}&text=` + encodeURIComponent(text);
 }
 
-function submitRentForm(e) {
+// 3. Форма аренды: пишем в таблицу rent и открываем Telegram
+async function submitRentForm(e) {
   e.preventDefault();
   const type = document.getElementById('rFormType').value;
   const price = document.getElementById('rFormPrice').value.trim();
   const district = document.getElementById('rFormDistrict').value.trim();
   const desc = document.getElementById('rFormDesc').value.trim();
   const phone = document.getElementById('rFormPhone').value.trim();
+
+  // Отправка в Supabase (на модерацию)
+  await insertToSupabase('rent', {
+    title: type,
+    price: price,
+    district: district,
+    desc: desc,
+    phone: phone,
+    is_approved: false
+  });
 
   const text = 
 `Здравствуйте, Рината! Хочу сдать жилье на долгий срок:
@@ -527,7 +616,8 @@ function submitRentForm(e) {
   window.open(`https://t.me/rinata_tibay?text=` + encodeURIComponent(text), '_blank');
 }
 
-function submitHelpsForm(e) {
+// 4. Форма инициатив взаимовыручки: пишем в таблицу helps и открываем WhatsApp
+async function submitHelpsForm(e) {
   e.preventDefault();
   const type = document.getElementById('hFormType').value;
   const title = document.getElementById('hFormTitle').value.trim();
@@ -537,10 +627,39 @@ function submitHelpsForm(e) {
   const phone = document.getElementById('hFormPhone').value.trim();
 
   let hashtag = '#городпомогает';
-  if (type.includes('животным')) hashtag = '#помощь_животным';
-  else if (type.includes('Экология')) hashtag = '#эко_субботник';
-  else if (type.includes('Взаимовыручка')) hashtag = '#взаимовыручка';
-  else if (type.includes('Социальное')) hashtag = '#соц_мероприятие';
+  let badge = '🤝 Инициатива';
+  let cleanType = 'care';
+
+  if (type.includes('животным')) {
+    hashtag = '#помощь_животным';
+    badge = '🐾 Помощь животным';
+    cleanType = 'animals';
+  } else if (type.includes('Экология')) {
+    hashtag = '#эко_субботник';
+    badge = '🌿 Эко-десант';
+    cleanType = 'eco';
+  } else if (type.includes('Взаимовыручка')) {
+    hashtag = '#взаимовыручка';
+    badge = '🤝 Взаимовыручка';
+    cleanType = 'care';
+  } else if (type.includes('Социальное')) {
+    hashtag = '#соц_мероприятие';
+    badge = '🎈 Мероприятие';
+    cleanType = 'events';
+  }
+
+  // Отправка в Supabase (на модерацию)
+  await insertToSupabase('helps', {
+    type: cleanType,
+    badge: badge,
+    title: title,
+    desc: desc,
+    city: district,
+    contact: contact,
+    phone: phone,
+    status: 'Актуально',
+    is_approved: false
+  });
 
   const text = 
 `${hashtag}
