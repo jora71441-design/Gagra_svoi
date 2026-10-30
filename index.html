@@ -50,20 +50,18 @@
       </div>
 
       <!-- ЗОЛОТОЙ ЗАКРЕП: ЛИДЕР НЕДЕЛИ -->
-      <div id="hubLeaderCard" class="bg-gradient-to-r from-amber-500 via-amber-600 to-yellow-600 rounded-3xl p-3.5 border border-amber-300/80 text-white shadow-md mb-4 relative">
-        <!-- Верхняя строка: бейдж статуса, категория и город -->
-        <div class="flex items-center justify-between gap-2 mb-2 flex-wrap">
+      <div id="hubLeaderCard" class="bg-gradient-to-r from-amber-500 via-amber-600 to-yellow-600 rounded-3xl p-4 border border-amber-300/80 text-white shadow-md mb-4 relative">
+        <!-- Верхняя плашка: статус слева, кнопка подсказки справа -->
+        <div class="flex items-center justify-between gap-2 mb-2">
           <span class="inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-amber-950 bg-amber-100 px-2 py-0.5 rounded-md shadow-2xs">
             👑 Лидер недели
           </span>
-          <div class="flex items-center gap-1.5 text-[10px]">
-            <span id="hubLeaderCategory" class="bg-white/20 backdrop-blur-xs text-white font-semibold px-2 py-0.5 rounded-md">
-              Услуги
-            </span>
-            <span id="hubLeaderCity" class="text-amber-100 font-medium">
-              Гагра
-            </span>
-          </div>
+          <a href="https://t.me/rinata_tibay?text=Здравствуйте,%20Рината!%20Хочу%20узнать%20условия%20размещения%20лидером%20недели%20на%20главной%20портала%20«Город%20Своих»." 
+             target="_blank" 
+             class="inline-flex items-center gap-1 text-[10px] font-bold text-amber-100 hover:text-white bg-black/15 hover:bg-black/25 active:scale-95 transition px-2.5 py-0.5 rounded-full backdrop-blur-xs border border-white/10">
+            <span>Как стать лидером?</span>
+            <span class="text-[9px]">↗</span>
+          </a>
         </div>
 
         <!-- Имя мастера -->
@@ -71,25 +69,35 @@
           Владимир
         </h3>
 
+        <!-- Категория и город под именем -->
+        <div class="flex items-center gap-2 mt-1 text-[11px] text-amber-100 font-medium">
+          <span id="hubLeaderCategory" class="bg-white/20 backdrop-blur-xs text-white font-semibold px-2 py-0.5 rounded-md text-[10px]">
+            Услуги
+          </span>
+          <span id="hubLeaderCity">
+            Гагра
+          </span>
+        </div>
+
         <!-- Описание услуг -->
-        <p class="text-xs text-white/95 mt-1 leading-snug" id="hubLeaderDesc">
+        <p class="text-xs text-white/95 mt-1.5 leading-snug" id="hubLeaderDesc">
           Опыт более 10 лет, пунктуальность, помощь в подборе материалов.
         </p>
 
         <!-- Соцсети / Портфолио -->
-        <div id="hubLeaderSocialWrap" class="mt-1.5 hidden">
-          <a id="hubLeaderSocial" href="#" target="_blank" class="inline-flex items-center gap-1 text-[11px] font-bold text-white bg-black/20 hover:bg-black/30 backdrop-blur-xs px-2 py-0.5 rounded-lg transition underline">
+        <div id="hubLeaderSocialWrap" class="mt-2 hidden">
+          <a id="hubLeaderSocial" href="#" target="_blank" class="inline-flex items-center gap-1 text-[11px] font-bold text-white bg-black/20 hover:bg-black/30 backdrop-blur-xs px-2.5 py-0.5 rounded-lg transition underline">
             🔗 <span>Instagram мастера</span>
           </a>
         </div>
 
         <!-- Телефон -->
-        <p class="text-[11px] font-mono font-medium text-amber-100 mt-1.5" id="hubLeaderPhone">
+        <p class="text-[11px] font-mono font-medium text-amber-100 mt-2" id="hubLeaderPhone">
           +7 940 ...
         </p>
 
-        <!-- Кнопки связи (аккуратный компактный ряд) -->
-        <div class="mt-2.5 pt-2 border-t border-white/20 grid grid-cols-2 gap-2">
+        <!-- Кнопки связи -->
+        <div class="mt-3 pt-2.5 border-t border-white/20 grid grid-cols-2 gap-2">
           <a id="hubLeaderWaLink" href="#" target="_blank" 
              class="bg-white hover:bg-amber-50 text-slate-950 text-xs font-black py-2 px-3 rounded-xl transition shadow-xs flex items-center justify-center gap-1 active:scale-95 text-center">
             <span>WhatsApp</span>
