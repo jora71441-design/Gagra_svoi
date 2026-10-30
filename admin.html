@@ -38,6 +38,9 @@
       <button onclick="switchTab('helps')" id="tab-helps" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-semibold transition whitespace-nowrap bg-white text-slate-600 border border-slate-200">
         🤝 Помощь <span id="badge-helps" class="ml-1 bg-slate-200 text-slate-700 text-[10px] px-1.5 py-0.5 rounded-full hidden">0</span>
       </button>
+      <button onclick="switchTab('promos')" id="tab-promos" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap bg-amber-50 text-amber-900 border border-amber-300">
+        👑 Закрепы и Топ
+      </button>
     </div>
   </header>
 
@@ -45,14 +48,20 @@
   <main class="p-4 max-w-lg mx-auto">
     <div class="flex items-center justify-between mb-3">
       <span class="text-xs font-bold uppercase tracking-wider text-slate-500" id="sectionTitle">Заявки мастеров</span>
-      <button onclick="loadPending(currentTab)" class="text-xs font-semibold text-emerald-700 hover:text-emerald-800 flex items-center gap-1">
+      <button onclick="refreshCurrentTab()" class="text-xs font-semibold text-emerald-700 hover:text-emerald-800 flex items-center gap-1">
         ↻ Обновить
       </button>
     </div>
 
-    <!-- Список заявок -->
+    <!-- Поисковая строка для вкладки закрепов -->
+    <div id="promosSearchBar" class="hidden mb-3">
+      <input type="text" id="promosSearchInput" oninput="filterPromosList()" placeholder="🔍 Поиск мастера по имени, телефону или услуге..." 
+             class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-2xs">
+    </div>
+
+    <!-- Список карточек -->
     <div id="cardsList" class="space-y-3">
-      <div class="text-center py-10 text-slate-400 text-sm">Загрузка заявок...</div>
+      <div class="text-center py-10 text-slate-400 text-sm">Загрузка данных...</div>
     </div>
   </main>
 
@@ -68,6 +77,7 @@
 
     let currentTab = 'masters';
     let adminPin = localStorage.getItem('gsvoi_pin') || '7788';
+    let approvedMastersCache = [];
 
     function checkPin() {
       if (!adminPin) {
@@ -83,6 +93,14 @@
         adminPin = newPin;
         localStorage.setItem('gsvoi_pin', adminPin);
         document.getElementById('pinDisplay').textContent = adminPin;
+        refreshCurrentTab();
+      }
+    }
+
+    function refreshCurrentTab() {
+      if (currentTab === 'promos') {
+        loadApprovedMasters();
+      } else {
         loadPending(currentTab);
       }
     }
@@ -94,17 +112,30 @@
       });
       const activeBtn = document.getElementById('tab-' + tab);
       if (activeBtn) {
-        activeBtn.className = "tab-btn active px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap bg-slate-900 text-white";
+        if (tab === 'promos') {
+          activeBtn.className = "tab-btn active px-3 py-1.5 rounded-xl text-xs font-black transition whitespace-nowrap bg-amber-600 text-white shadow-xs";
+        } else {
+          activeBtn.className = "tab-btn active px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap bg-slate-900 text-white";
+        }
       }
+
+      const pSearch = document.getElementById('promosSearchBar');
+      if (pSearch) pSearch.classList.toggle('hidden', tab !== 'promos');
 
       const titles = {
         masters: 'Заявки мастеров',
         jobs: 'Вакансии и резюме',
         rent: 'Объекты аренды',
-        helps: 'Инициативы взаимовыручки'
+        helps: 'Инициативы взаимовыручки',
+        promos: 'Управление закрепами и Топом'
       };
       document.getElementById('sectionTitle').textContent = titles[tab];
-      loadPending(tab);
+
+      if (tab === 'promos') {
+        loadApprovedMasters();
+      } else {
+        loadPending(tab);
+      }
     }
 
     async function loadPending(table) {
@@ -168,6 +199,7 @@
               <span class="text-[11px] font-mono text-slate-500">${item.city || 'Гагра'}</span>
             </div>
             <p class="text-xs text-slate-600 leading-relaxed">${item.service}</p>
+            ${item.social ? `<p class="text-[11px] text-blue-700 font-medium">🔗 ${item.social}</p>` : ''}
           `;
         } else if (table === 'jobs') {
           mainContent = `
@@ -269,6 +301,132 @@
         }
       } catch (e) {
         alert('Сбой сети при удалении');
+      }
+    }
+
+    // ==================== ВЛАДКА: УПРАВЛЕНИЕ ЗАКРЕПАМИ ====================
+
+    async function loadApprovedMasters() {
+      const list = document.getElementById('cardsList');
+      list.innerHTML = '<div class="text-center py-10 text-slate-400 text-sm">Загружаем базу специалистов...</div>';
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/masters?select=*&is_approved=eq.true&order=created_at.desc`, {
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+          }
+        });
+
+        if (!res.ok) {
+          list.innerHTML = `<div class="bg-red-50 border border-red-200 text-red-700 p-4 rounded-2xl text-xs">Не удалось загрузить базу мастеров</div>`;
+          return;
+        }
+
+        approvedMastersCache = await res.json();
+        filterPromosList();
+      } catch (e) {
+        list.innerHTML = '<div class="text-center py-10 text-red-500 text-xs">Сетевой сбой при загрузке мастеров</div>';
+      }
+    }
+
+    function filterPromosList() {
+      const search = (document.getElementById('promosSearchInput')?.value || '').toLowerCase().trim();
+      const list = document.getElementById('cardsList');
+      list.innerHTML = '';
+
+      const filtered = approvedMastersCache.filter(m => {
+        if (!search) return true;
+        const txt = `${m.name || ''} ${m.phone || ''} ${m.service || ''} ${m.category_title || ''}`.toLowerCase();
+        return txt.includes(search);
+      });
+
+      if (filtered.length === 0) {
+        list.innerHTML = `
+          <div class="bg-white rounded-3xl p-8 text-center border border-slate-200/80 shadow-xs">
+            <span class="text-3xl">🔍</span>
+            <p class="text-sm font-bold text-slate-800 mt-2">Мастера не найдены</p>
+            <p class="text-xs text-slate-500 mt-1">Проверьте поисковый запрос или одобрите новых мастеров в первой вкладке.</p>
+          </div>
+        `;
+        return;
+      }
+
+      filtered.forEach(m => {
+        const card = document.createElement('div');
+        const isLeader = !!m.is_leader;
+        const isPinned = !!m.is_pinned;
+
+        let borderClass = 'border-slate-200';
+        if (isLeader) borderClass = 'border-amber-400 ring-2 ring-amber-300/50 bg-amber-50/20';
+        else if (isPinned) borderClass = 'border-yellow-400 bg-yellow-50/10';
+
+        card.className = `bg-white rounded-3xl p-4 border ${borderClass} shadow-xs space-y-3 transition`;
+
+        const phone = m.phone || '';
+        const cleanPhone = phone.replace(/[^0-9]/g, '');
+
+        card.innerHTML = `
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-md">${m.category_title || 'Услуга'}</span>
+                ${isLeader ? '<span class="text-[10px] font-black bg-gradient-to-r from-amber-500 to-yellow-500 text-white px-2 py-0.5 rounded-md shadow-2xs">👑 Лидер недели (Главная)</span>' : ''}
+                ${isPinned ? '<span class="text-[10px] font-bold bg-yellow-100 text-yellow-900 border border-yellow-300 px-2 py-0.5 rounded-md">⭐ В топе раздела</span>' : ''}
+              </div>
+              <h3 class="text-base font-bold text-slate-900 mt-1">${m.name}</h3>
+            </div>
+            <span class="text-[11px] font-mono text-slate-500">${m.city || 'Гагра'}</span>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed">${m.service}</p>
+          ${m.social ? `<p class="text-[11px] text-blue-700 font-medium">🔗 ${m.social}</p>` : ''}
+
+          <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+            <span class="font-mono text-slate-600">${phone}</span>
+            ${cleanPhone ? `<a href="https://wa.me/${cleanPhone}" target="_blank" class="text-emerald-700 font-semibold hover:underline">WhatsApp →</a>` : ''}
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 pt-1">
+            <button onclick="toggleMasterStatus(${m.id}, 'leader')" 
+                    class="${isLeader ? 'bg-amber-600 hover:bg-amber-700 text-white font-black' : 'bg-slate-100 hover:bg-amber-50 text-slate-800 border border-slate-200 font-bold'} py-2.5 px-2 rounded-2xl text-xs transition flex items-center justify-center gap-1 active:scale-98">
+              ${isLeader ? '👑 Снять лидера' : '👑 На главную'}
+            </button>
+            <button onclick="toggleMasterStatus(${m.id}, 'pin')" 
+                    class="${isPinned ? 'bg-yellow-500 hover:bg-yellow-600 text-slate-950 font-black' : 'bg-slate-100 hover:bg-yellow-50 text-slate-800 border border-slate-200 font-bold'} py-2.5 px-2 rounded-2xl text-xs transition flex items-center justify-center gap-1 active:scale-98">
+              ${isPinned ? '⭐ Снять закреп' : '⭐ В топ раздела'}
+            </button>
+          </div>
+        `;
+        list.appendChild(card);
+      });
+    }
+
+    async function toggleMasterStatus(id, actionType) {
+      if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/toggle_master_status`, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            master_id: id,
+            action_type: actionType,
+            secret_pin: adminPin
+          })
+        });
+
+        if (res.ok) {
+          if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+          loadApprovedMasters();
+        } else {
+          const err = await res.json();
+          alert('Ошибка: ' + (err.message || 'Сбой выполнения'));
+        }
+      } catch (e) {
+        alert('Сетевой сбой при обновлении статуса');
       }
     }
 
