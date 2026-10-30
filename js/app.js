@@ -443,7 +443,7 @@ function matchesQuery(master, searchWords) {
   });
 }
 
-        function renderMasters() {
+function renderMasters() {
   const sInput = document.getElementById('searchInput');
   if (!sInput) return;
   const rawQuery = sInput.value.trim().toLowerCase();
@@ -490,7 +490,14 @@ function matchesQuery(master, searchWords) {
     const waLink = `https://wa.me/${cleanPhone}?text=${waText}`;
     const telLink = `tel:${m.phone}`;
 
-    // Бейджи и золотая рамка выводятся строго в своем контексте
+    // Шаблон сообщения для жалобы куратору
+    const complaintText = encodeURIComponent(`Здравствуйте, Рината! Претензия/жалоба по мастеру из каталога «Город Своих»:
+Специалист: ${m.name}
+Телефон: ${m.phone}
+Сфера: ${m.subcategory_title || m.category_title || 'Услуги'}
+Суть проблемы: `);
+    const complaintLink = `https://wa.me/79263949118?text=${complaintText}`;
+
     const isContextTop = (activeCategory === 'all' && m.is_top_all);
     const isCategoryPin = (activeCategory !== 'all' && m.is_pinned);
 
@@ -513,6 +520,9 @@ function matchesQuery(master, searchWords) {
       `;
     }
 
+    // Расчет количества рекомендаций
+    const recCount = m.recommendations_count || (m.starred ? 1 : 0);
+
     const card = document.createElement('div');
     card.className = `${borderClass} rounded-3xl p-4 border shadow-xs hover:border-slate-300 transition`;
     card.innerHTML = `
@@ -528,7 +538,7 @@ function matchesQuery(master, searchWords) {
         </div>
         ${m.starred ? `
           <span class="text-[10px] font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full whitespace-nowrap">
-            ⭐ Рекомендуют
+            ⭐ Рекомендуют (${recCount})
           </span>
         ` : `
           <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full whitespace-nowrap">
@@ -539,7 +549,15 @@ function matchesQuery(master, searchWords) {
       
       <p class="text-xs text-slate-600 mb-2 leading-relaxed">${m.service}</p>
       ${m.social ? `<p class="text-[11px] text-blue-700 font-medium mb-2">🔗 <a href="${m.social}" target="_blank" class="hover:underline">${m.social}</a></p>` : ''}
-      <p class="text-[11px] font-mono font-medium text-slate-500 mb-3">${m.phone}</p>
+      
+      <!-- Телефон и кнопка жалобы -->
+      <div class="flex items-center justify-between mb-3 text-[11px]">
+        <span class="font-mono font-medium text-slate-500">${m.phone}</span>
+        <a href="${complaintLink}" target="_blank" 
+           class="text-slate-400 hover:text-rose-600 transition flex items-center gap-1 font-medium">
+          <span>🚩</span> Пожаловаться
+        </a>
+      </div>
 
       <div class="grid grid-cols-2 gap-2 pt-1 border-t border-slate-100">
         <a href="${waLink}" target="_blank" 
