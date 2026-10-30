@@ -73,6 +73,25 @@ const TAXONOMY = {
   }
 };
 
+// Словарь синонимов и народных запросов для поиска
+const SEARCH_SYNONYMS = {
+  'стиралка': ['стиральн', 'машин', 'постирать', 'стирплк', 'стирмашин'],
+  'стиральная': ['стиралк', 'машин'],
+  'кондер': ['кондиционер', 'сплит', 'климат', 'фреон', 'кондей'],
+  'кондей': ['кондиционер', 'сплит', 'климат', 'кондер'],
+  'кондиционер': ['кондер', 'сплит', 'климат', 'кондей'],
+  'сантехник': ['сантехник', 'труб', 'кран', 'смесител', 'унитаз', 'засор', 'канализац', 'протечк', 'бойлер', 'котел'],
+  'электрик': ['электрик', 'проводк', 'свет', 'розетк', 'щиток', 'автомат'],
+  'плитка': ['плиточн', 'кафел', 'керамогранит', 'ванн'],
+  'кафель': ['плитк', 'плиточн', 'керамогранит', 'ванн'],
+  'починить': ['ремонт', 'мастер', 'исправ', 'настройк'],
+  'ремонт': ['починить', 'мастер', 'исправ', 'отделк'],
+  'авто': ['машин', 'автоэлектрик', 'коробк', 'акпп', 'диагностик', 'мотор'],
+  'шторы': ['пошив', 'ткан', 'шить', 'штор'],
+  'психолог': ['терапи', 'консультац', 'психотерапевт'],
+  'собака': ['животн', 'грумер', 'ветеринар', 'щенок', 'пес']
+};
+
 let masters = [];
 let helpsData = [];
 let currentRoute = 'hub';
@@ -80,6 +99,32 @@ let activeCategory = 'all';
 let activeSubcategory = 'all';
 
 // ==================== РОУТИНГ И НАВИГАЦИЯ ====================
+
+// Функция нативного шеринга ссылкой на портал
+async function sharePortal() {
+  const shareData = {
+    title: 'Город Своих — Гагра & Абхазия',
+    text: 'Единый сервис для жителей и гостей Гагры: проверенные мастера, долгосрочная аренда и вакансии без посредников.',
+    url: window.location.origin + window.location.pathname
+  };
+
+  if (navigator.share) {
+    try {
+      await navigator.share(shareData);
+    } catch (err) {
+      if (err.name !== 'AbortError') console.warn('Ошибка шеринга:', err);
+    }
+  } else if (navigator.clipboard) {
+    try {
+      await navigator.clipboard.writeText(shareData.url);
+      alert('Ссылка на портал скопирована в буфер обмена!');
+    } catch (e) {
+      prompt('Скопируйте ссылку на портал:', shareData.url);
+    }
+  } else {
+    prompt('Скопируйте ссылку на портал:', shareData.url);
+  }
+}
 
 function navigateTo(route) {
   currentRoute = route;
@@ -176,7 +221,7 @@ async function loadData() {
     if (lDesc) lDesc.textContent = leader.service;
     if (lLink) {
       const cleanPhone = (leader.phone || '').replace(/[^0-9]/g, '');
-      lLink.href = `https://wa.me/${cleanPhone}?text=` + encodeURIComponent(`Здравствуйте, ${leader.name}! Увидел ваш закреп лидера недели на портале "Город Своих".`);
+      lLink.href = `https://wa.me/${cleanPhone}?text=` + encodeURIComponent(`Здравствуйте, ${leader.name}! Увидел ваш золотой закреп на главной "Город Своих".`);
     }
   }
   renderMasters();
@@ -350,9 +395,16 @@ function matchesQuery(master, searchWords) {
     ...(master.keywords || [])
   ].join(' ').toLowerCase();
 
-  return searchWords.every(word => {
+  return searchWords.every(rawWord => {
+    const word = rawWord.toLowerCase();
     const stem = word.length > 4 ? word.substring(0, word.length - 2) : word;
-    return fullContext.includes(stem);
+
+    // 1. Прямое совпадение по слову или усеченному корню
+    if (fullContext.includes(word) || fullContext.includes(stem)) return true;
+
+    // 2. Проверка по словарю синонимов и народных формулировок
+    const syns = SEARCH_SYNONYMS[word] || SEARCH_SYNONYMS[stem] || [];
+    return syns.some(syn => fullContext.includes(syn));
   });
 }
 
@@ -528,6 +580,8 @@ async function submitMastersForm(e) {
   const phone = document.getElementById('mFormPhone').value.trim();
   const service = document.getElementById('mFormService').value.trim();
   const district = document.getElementById('mFormDistrict').value;
+  const socialInput = document.getElementById('mFormSocial');
+  const social = socialInput ? socialInput.value.trim() : '';
 
   // Отправка в Supabase (на модерацию)
   await insertToSupabase('masters', {
@@ -537,8 +591,11 @@ async function submitMastersForm(e) {
     category_title: finalCategory,
     service: service,
     city: district,
+    social: social || null,
     is_approved: false
   });
+
+  const socialBlock = social ? `\nСоцсети/Портфолио: ${social}` : '';
 
   const text = 
 `#услуга
@@ -546,7 +603,7 @@ async function submitMastersForm(e) {
 Телефон: ${phone}
 Сфера: ${finalCategory}
 Услуги: ${service}
-Город: ${district}
+Город: ${district}${socialBlock}
 —
 (Анкета с сайта «Город Своих»)`;
 
