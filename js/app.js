@@ -164,8 +164,8 @@ function applyRoute() {
       titleEl.textContent = 'Работа и вакансии';
       actionBtn.className = "text-xs font-bold text-blue-700 bg-blue-50 px-2.5 py-1.5 rounded-xl border border-blue-200 hover:bg-blue-100 transition";
       actionBtn.textContent = '+ Вакансия';
-    } else if (currentRoute === 'rent') {
-      titleEl.textContent = 'Долгосрочная аренда';
+        } else if (currentRoute === 'rent') {
+      titleEl.textContent = 'Аренда / сдача жилья';
       actionBtn.className = "text-xs font-bold text-sky-700 bg-sky-50 px-2.5 py-1.5 rounded-xl border border-sky-200 hover:bg-sky-100 transition";
       actionBtn.textContent = '+ Сдать жилье';
     } else if (currentRoute === 'helps') {
