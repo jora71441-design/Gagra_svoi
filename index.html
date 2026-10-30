@@ -50,35 +50,63 @@
       </div>
 
       <!-- ЗОЛОТОЙ ЗАКРЕП: ЛИДЕР НЕДЕЛИ -->
-      <div id="hubLeaderCard" class="bg-gradient-to-r from-amber-500 via-amber-600 to-yellow-600 rounded-3xl p-4.5 border border-amber-400 text-white shadow-md mb-5 relative overflow-hidden">
-        <div class="flex items-center justify-between gap-2 mb-2.5">
-          <span class="inline-flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-wider text-amber-950 bg-white/95 px-2.5 py-0.5 rounded-full shadow-2xs">
-            👑 Топ недели сообщества
+      <div id="hubLeaderCard" class="bg-gradient-to-br from-amber-500 via-amber-600 to-yellow-600 rounded-3xl p-5 border border-amber-300 text-white shadow-lg mb-5 relative">
+        <!-- Верхняя строка: статус, сфера и город -->
+        <div class="flex items-center justify-between gap-2 mb-3 flex-wrap">
+          <span class="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-amber-950 bg-amber-100/95 px-2.5 py-1 rounded-full shadow-xs">
+            👑 Лидер недели
           </span>
-          <span class="text-[10px] font-semibold text-amber-100">Выбор жителей</span>
-        </div>
-
-        <div class="flex items-start justify-between gap-3">
-          <div>
-            <h3 class="text-lg font-black text-white leading-tight drop-shadow-2xs" id="hubLeaderName">Владимир</h3>
-            <p class="text-xs font-bold text-amber-100 mt-0.5" id="hubLeaderService">Поклейка обоев любой сложности</p>
-            <p class="text-[11px] text-white/90 mt-1.5 leading-snug" id="hubLeaderDesc">
-              Опыт более 10 лет, пунктуальность, помощь в подборе материалов.
-            </p>
+          <div class="flex items-center gap-1.5 text-[11px]">
+            <span id="hubLeaderCategory" class="bg-white/20 backdrop-blur-xs text-white font-semibold px-2 py-0.5 rounded-lg text-[10px]">
+              Услуги
+            </span>
+            <span id="hubLeaderCity" class="text-amber-100 font-medium text-[11px]">
+              Гагра
+            </span>
           </div>
         </div>
 
-        <div class="mt-3.5 pt-2.5 border-t border-white/20 flex items-center justify-between gap-2">
-          <a id="hubLeaderWaLink" href="https://wa.me/79119872800?text=Здравствуйте,%20Владимир!%20Увидел%20ваш%20золотой%20закреп%20на%20главной%20Город%20Своих" 
-             target="_blank" 
-             class="bg-white hover:bg-amber-50 text-slate-900 text-xs font-black py-2 px-4 rounded-xl transition shadow-xs flex items-center gap-1.5 active:scale-95">
-            <span>WhatsApp</span>
-            <span class="text-[10px] text-emerald-600 font-extrabold">↗</span>
+        <!-- Имя мастера -->
+        <h3 class="text-xl font-black text-white leading-tight drop-shadow-xs" id="hubLeaderName">
+          Владимир
+        </h3>
+
+        <!-- Описание услуг -->
+        <p class="text-xs text-white/95 mt-2 leading-relaxed" id="hubLeaderDesc">
+          Опыт более 10 лет, пунктуальность, помощь в подборе материалов.
+        </p>
+
+        <!-- Соцсети / Портфолио (скрывается автоматически, если ссылки нет) -->
+        <div id="hubLeaderSocialWrap" class="mt-2.5 hidden">
+          <a id="hubLeaderSocial" href="#" target="_blank" class="inline-flex items-center gap-1.5 text-[11px] font-bold text-white bg-black/20 hover:bg-black/30 backdrop-blur-xs px-2.5 py-1 rounded-xl transition underline">
+            🔗 <span>Instagram мастера</span>
           </a>
-          <a href="https://t.me/rinata_tibay?text=Здравствуйте,%20Рината!%20Хочу%20узнать,%20как%20стать%20лидером%20недели%20на%20портале%20Город%20Своих" 
+        </div>
+
+        <!-- Телефон -->
+        <p class="text-[11px] font-mono font-medium text-amber-100 mt-2.5" id="hubLeaderPhone">
+          +7 940 ...
+        </p>
+
+        <!-- Кнопки связи -->
+        <div class="mt-3.5 pt-3 border-t border-white/20 grid grid-cols-2 gap-2">
+          <a id="hubLeaderWaLink" href="#" target="_blank" 
+             class="bg-white hover:bg-amber-50 text-slate-950 text-xs font-black py-2.5 px-3 rounded-2xl transition shadow-xs flex items-center justify-center gap-1.5 active:scale-95 text-center">
+            <span>WhatsApp</span>
+            <span class="text-emerald-600 font-bold">↗</span>
+          </a>
+          <a id="hubLeaderTelLink" href="#" 
+             class="bg-amber-400/30 hover:bg-amber-400/40 border border-white/30 text-white text-xs font-bold py-2.5 px-3 rounded-2xl transition flex items-center justify-center gap-1.5 active:scale-95 text-center">
+            <span>Позвонить</span>
+          </a>
+        </div>
+
+        <!-- Ссылка на условия с отступом -->
+        <div class="mt-3 text-center">
+          <a href="https://t.me/rinata_tibay?text=Здравствуйте,%20Рината!%20Хочу%20узнать%20условия%20размещения%20лидером%20недели%20на%20главной%20портала%20«Город%20Своих»." 
              target="_blank" 
-             class="text-[10px] text-white hover:text-amber-100 font-semibold underline text-right">
-            Как стать лидером?
+             class="text-[10px] text-amber-100 hover:text-white font-medium underline inline-block py-0.5">
+            Как стать партнером / лидером недели? →
           </a>
         </div>
       </div>
