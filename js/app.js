@@ -208,20 +208,55 @@ async function loadData() {
   const dbPhones = new Set(dbMasters.map(m => (m.phone || '').replace(/[^0-9]/g, '')));
   const filteredLocal = localMasters.filter(m => !dbPhones.has((m.phone || '').replace(/[^0-9]/g, '')));
   masters = [...dbMasters, ...filteredLocal];
-
-  // Лидер недели
+  
+    // Лидер недели
   const leader = masters.find(m => m.is_leader) || masters.find(m => m.name && m.name.includes("Владимир"));
-  if (leader) {
-    const lName = document.getElementById('hubLeaderName');
-    const lServ = document.getElementById('hubLeaderService');
-    const lDesc = document.getElementById('hubLeaderDesc');
-    const lLink = document.getElementById('hubLeaderWaLink');
-    if (lName) lName.textContent = leader.name;
-    if (lServ) lServ.textContent = leader.subcategory_title || leader.category_title;
-    if (lDesc) lDesc.textContent = leader.service;
-    if (lLink) {
+  const leaderCard = document.getElementById('hubLeaderCard');
+  if (leaderCard) {
+    if (leader) {
+      leaderCard.classList.remove('hidden');
+      const lName = document.getElementById('hubLeaderName');
+      const lCat = document.getElementById('hubLeaderCategory');
+      const lCity = document.getElementById('hubLeaderCity');
+      const lDesc = document.getElementById('hubLeaderDesc');
+      const lPhone = document.getElementById('hubLeaderPhone');
+      const lWa = document.getElementById('hubLeaderWaLink');
+      const lTel = document.getElementById('hubLeaderTelLink');
+      const lSocWrap = document.getElementById('hubLeaderSocialWrap');
+      const lSoc = document.getElementById('hubLeaderSocial');
+
+      if (lName) lName.textContent = leader.name || '';
+      if (lCat) lCat.textContent = leader.category_title || leader.subcategory_title || 'Услуги';
+      if (lCity) lCity.textContent = leader.city || 'Гагра';
+      if (lDesc) lDesc.textContent = leader.service || '';
+      if (lPhone) lPhone.textContent = leader.phone || '';
+
       const cleanPhone = (leader.phone || '').replace(/[^0-9]/g, '');
-      lLink.href = `https://wa.me/${cleanPhone}?text=` + encodeURIComponent(`Здравствуйте, ${leader.name}! Увидел ваш золотой закреп на главной "Город Своих".`);
+      if (lWa) {
+        const waText = encodeURIComponent(`Здравствуйте, ${leader.name}! Увидел ваш золотой закреп на главной "Город Своих".`);
+        lWa.href = `https://wa.me/${cleanPhone}?text=${waText}`;
+      }
+      if (lTel) {
+        lTel.href = `tel:${cleanPhone || leader.phone || ''}`;
+      }
+
+      if (lSocWrap && lSoc) {
+        if (leader.social && leader.social.trim()) {
+          lSocWrap.classList.remove('hidden');
+          lSoc.href = leader.social.trim();
+          const sLower = leader.social.toLowerCase();
+          let label = 'Портфолио / Соцсети';
+          if (sLower.includes('instagram.com')) label = 'Instagram мастера';
+          else if (sLower.includes('t.me')) label = 'Telegram мастера';
+          else if (sLower.includes('vk.com')) label = 'ВКонтакте мастера';
+          const labelSpan = lSoc.querySelector('span');
+          if (labelSpan) labelSpan.textContent = label;
+        } else {
+          lSocWrap.classList.add('hidden');
+        }
+      }
+    } else {
+      leaderCard.classList.add('hidden');
     }
   }
   renderMasters();
