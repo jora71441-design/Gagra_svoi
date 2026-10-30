@@ -420,11 +420,18 @@ function renderMasters() {
   if (!listEl) return;
 
   const filtered = masters.filter(m => {
-    const matchesCat = (activeCategory === 'all') || (m.category === activeCategory);
+    // Совпадение по системному слагу или по вхождению в название сферы
+    const matchesCat = (activeCategory === 'all') || 
+                       (m.category === activeCategory) ||
+                       (m.category_title && m.category_title.toLowerCase().includes(activeCategory));
+
     const matchesSub = (activeSubcategory === 'all') || (m.subcategory === activeSubcategory);
     const matchesSearch = matchesQuery(m, searchWords);
     return matchesCat && matchesSub && matchesSearch;
   });
+
+  // ЗАКРЕП В ТОПЕ: мастера с is_pinned всегда сортируются первыми
+  filtered.sort((a, b) => (b.is_pinned ? 1 : 0) - (a.is_pinned ? 1 : 0));
 
   if (countEl) countEl.textContent = filtered.length;
   listEl.innerHTML = '';
@@ -440,15 +447,27 @@ function renderMasters() {
     const waText = encodeURIComponent(`Здравствуйте, ${m.name}! Нашел ваш контакт в каталоге мастеров "Город Своих" (Гагра).`);
     const waLink = `https://wa.me/${cleanPhone}?text=${waText}`;
     const telLink = `tel:${m.phone}`;
+    const isPinned = !!m.is_pinned;
 
     const card = document.createElement('div');
-    card.className = "bg-white rounded-3xl p-4 border border-slate-200/90 shadow-xs hover:border-slate-300 transition";
+    const borderClass = isPinned 
+      ? 'border-amber-400 ring-2 ring-amber-300/60 bg-amber-50/15' 
+      : 'border-slate-200/90 bg-white';
+
+    card.className = `${borderClass} rounded-3xl p-4 border shadow-xs hover:border-slate-300 transition`;
     card.innerHTML = `
       <div class="flex items-start justify-between gap-2 mb-1.5">
         <div>
-          <span class="text-[10px] font-bold bg-slate-100 text-slate-700 px-2 py-0.5 rounded-md">
-            ${m.subcategory_title || m.category_title}
-          </span>
+          <div class="flex items-center gap-1.5 flex-wrap">
+            <span class="text-[10px] font-bold bg-slate-100 text-slate-700 px-2 py-0.5 rounded-md">
+              ${m.subcategory_title || m.category_title}
+            </span>
+            ${isPinned ? `
+              <span class="text-[10px] font-black bg-gradient-to-r from-amber-500 to-yellow-500 text-white px-2 py-0.5 rounded-md shadow-2xs">
+                👑 В топе раздела
+              </span>
+            ` : ''}
+          </div>
           <h3 class="text-base font-bold text-slate-900 leading-snug mt-1">${m.name}</h3>
         </div>
         ${m.starred ? `
@@ -463,6 +482,7 @@ function renderMasters() {
       </div>
       
       <p class="text-xs text-slate-600 mb-2 leading-relaxed">${m.service}</p>
+      ${m.social ? `<p class="text-[11px] text-blue-700 font-medium mb-2">🔗 <a href="${m.social}" target="_blank" class="hover:underline">${m.social}</a></p>` : ''}
       <p class="text-[11px] font-mono font-medium text-slate-500 mb-3">${m.phone}</p>
 
       <div class="grid grid-cols-2 gap-2 pt-1 border-t border-slate-100">
@@ -569,12 +589,23 @@ function toggleCustomCategory(select) {
   }
 }
 
+// Карта соответствия категорий формы и фильтров каталога
+const CATEGORY_MAP = {
+  '🧺 Ремонт техники': 'appliances',
+  '🔧 Сантехника и электрика': 'engineering',
+  '🎨 Отделка и ремонт': 'finish',
+  '🏗 Строительство и сварка': 'construction',
+  '🚗 Авто и транспорт': 'auto',
+  '🌿 Быт и здоровье': 'lifestyle'
+};
+
 // 1. Форма мастеров: пишем в таблицу masters и открываем WhatsApp
 async function submitMastersForm(e) {
   e.preventDefault();
   const catSelect = document.getElementById('mFormCategory').value;
   const customCat = document.getElementById('mFormCustomCat').value.trim();
   const finalCategory = (catSelect === 'CUSTOM') ? `Другое (${customCat})` : catSelect;
+  const systemCategory = CATEGORY_MAP[catSelect] || 'custom';
 
   const name = document.getElementById('mFormName').value.trim();
   const phone = document.getElementById('mFormPhone').value.trim();
@@ -587,7 +618,7 @@ async function submitMastersForm(e) {
   await insertToSupabase('masters', {
     name: name,
     phone: phone,
-    category: 'custom',
+    category: systemCategory,
     category_title: finalCategory,
     service: service,
     city: district,
