@@ -235,25 +235,21 @@
     </div>
   </div>
 
-
   <!-- ==================== ВНУТРЕННЯЯ ШАПКА РАЗДЕЛОВ ==================== -->
   <header id="innerHeader" class="hidden bg-white border-b border-slate-200 sticky top-0 z-30 px-4 py-2.5 shadow-xs">
     <div class="max-w-md mx-auto flex items-center justify-between">
-      <button onclick="navigateTo('hub')" class="flex items-center gap-1.5 text-xs font-bold text-slate-700 hover:text-slate-900 py-1 pr-2">
+      <button onclick="navigateTo('hub')" class="flex items-center gap-1.5 text-xs font-bold text-slate-700 hover:text-slate-900 py-1 pr-2 active:scale-95 transition">
         <span>←</span>
         <span>Разделы</span>
       </button>
       
-      <div class="flex items-center gap-2 text-center">
-        <img src="Logo.jpg" alt="Город Своих" class="w-7 h-7 rounded-lg object-cover border border-slate-200">
-        <div>
-          <h2 id="innerHeaderTitle" class="text-sm font-extrabold text-slate-900 leading-tight">Мастера и услуги</h2>
-          <p class="text-[9px] text-slate-500 text-left">Город Своих</p>
-        </div>
+      <div class="flex items-center gap-2">
+        <img src="Logo.jpg" alt="Город Своих" class="w-7 h-7 rounded-lg object-cover border border-slate-200 shrink-0">
+        <h2 id="innerHeaderTitle" class="text-sm font-extrabold text-slate-900 leading-tight">Мастера и услуги</h2>
       </div>
 
       <button id="innerHeaderActionBtn" onclick="openContextModal()" 
-              class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1.5 rounded-xl border border-emerald-200 hover:bg-emerald-100 transition">
+              class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1.5 rounded-xl border border-emerald-200 hover:bg-emerald-100 transition active:scale-95">
         + Подать
       </button>
     </div>
@@ -500,25 +496,75 @@
     </div>
   </section>
 
-  <!-- ==================== 5. ПРОФИЛЬ: ГОРОД СВОИХ ПОМОГАЕТ ==================== -->
+    <!-- ==================== 5. ПРОФИЛЬ: ГОРОД СВОИХ ПОМОГАЕТ ==================== -->
   <section id="view-helps" class="hidden max-w-md mx-auto w-full px-4 pt-3 flex-1 pb-6">
-    <div style="background: linear-gradient(135deg, #0f766e 0%, #065f46 100%);" class="rounded-3xl p-4.5 text-white shadow-xs mb-4">
-      <div class="flex items-center justify-between">
-        <span class="text-[10px] uppercase font-bold tracking-wider bg-white/20 px-2.5 py-0.5 rounded-md">Взаимовыручка</span>
-        <span class="text-[11px] text-emerald-200 font-medium">Без коммерции</span>
+    
+    <!-- Главный баннер взаимовыручки -->
+    <div class="bg-gradient-to-r from-teal-700 via-emerald-700 to-teal-800 rounded-3xl p-5 text-white shadow-md mb-4 border border-emerald-600/30">
+      <div class="flex items-center justify-between gap-2 mb-2">
+        <span class="text-[10px] uppercase font-black tracking-wider bg-white/20 backdrop-blur-xs px-2.5 py-0.5 rounded-full border border-white/20">
+          Взаимовыручка
+        </span>
+        <span class="text-[11px] text-emerald-100 font-semibold">
+          Без коммерции
+        </span>
       </div>
-      <h2 class="text-lg font-black mt-1.5 leading-tight">Город Своих помогает</h2>
+      <h2 class="text-lg font-black mt-1 leading-tight text-white drop-shadow-xs">
+        Город Своих помогает
+      </h2>
+      <p class="text-xs text-emerald-50 mt-1.5 leading-relaxed">
+        Благотворительность, приюты, поиск пропавших питомцев, субботники и бескорыстная взаимопомощь жителей Гагры и всей Абхазии.
+      </p>
+      <div class="mt-3.5 pt-3 border-t border-white/20 flex items-center justify-between gap-2">
+        <a href="https://chat.whatsapp.com/GnHSLd8VWaxGboukz9s3FI" target="_blank" 
+           class="inline-flex items-center gap-1.5 bg-white hover:bg-emerald-50 text-slate-900 text-xs font-black px-3.5 py-2 rounded-xl transition shadow-xs active:scale-95">
+          <span>Чат добрых дел</span>
+          <span class="text-emerald-600 font-extrabold text-[10px]">↗</span>
+        </a>
+        <span class="text-[10px] text-emerald-100 font-medium text-right">
+          🐾 Приюты • 🌿 Эко • Добро
+        </span>
+      </div>
     </div>
 
-    <!-- Фильтры добрых дел -->
-    <div class="flex space-x-1.5 overflow-x-auto no-scrollbar pb-2 mb-3">
-      <button onclick="filterHelps('all')" class="help-chip active bg-slate-900 text-white text-xs font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap shadow-xs">Все</button>
-      <button onclick="filterHelps('animals')" class="help-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap">🐾 Животные</button>
-      <button onclick="filterHelps('eco')" class="help-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap">🌿 Эко и субботники</button>
-      <button onclick="filterHelps('care')" class="help-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap">🤝 Взаимопомощь</button>
-      <button onclick="filterHelps('events')" class="help-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap">🎈 Мероприятия</button>
+    <!-- Уровень 1: Основные направления помощи -->
+    <div class="flex space-x-1.5 overflow-x-auto no-scrollbar pb-1 mb-2">
+      <button onclick="filterHelps('all')" class="help-chip active bg-slate-900 text-white text-xs font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap shadow-xs">
+        Все
+      </button>
+      <button onclick="filterHelps('animals')" class="help-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap">
+        🐾 Животные
+      </button>
+      <button onclick="filterHelps('eco')" class="help-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap">
+        🌿 Эко и субботники
+      </button>
+      <button onclick="filterHelps('care')" class="help-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap">
+        🤝 Взаимовыручка
+      </button>
+      <button onclick="filterHelps('events')" class="help-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap">
+        🎈 Мероприятия
+      </button>
     </div>
 
+    <!-- Уровень 2: Подзакладки по животным (активируются при клике на «🐾 Животные») -->
+    <div id="animalSubBarContainer" class="hidden mb-3">
+      <div class="flex space-x-1.5 overflow-x-auto no-scrollbar p-1.5 bg-emerald-950/5 rounded-2xl border border-emerald-100" id="animalSubBar">
+        <button onclick="filterAnimalSub('all')" class="animal-sub-btn active bg-emerald-700 text-white text-[11px] font-bold px-3 py-1 rounded-xl whitespace-nowrap shadow-xs transition">
+          Все животные
+        </button>
+        <button onclick="filterAnimalSub('adopt')" class="animal-sub-btn bg-white text-slate-700 text-[11px] font-semibold px-3 py-1 rounded-xl whitespace-nowrap hover:bg-emerald-50 transition">
+          🏠 Ищут дом
+        </button>
+        <button onclick="filterAnimalSub('lost')" class="animal-sub-btn bg-white text-slate-700 text-[11px] font-semibold px-3 py-1 rounded-xl whitespace-nowrap hover:bg-emerald-50 transition">
+          🔍 Потеряшки
+        </button>
+        <button onclick="filterAnimalSub('shelter')" class="animal-sub-btn bg-white text-slate-700 text-[11px] font-semibold px-3 py-1 rounded-xl whitespace-nowrap hover:bg-emerald-50 transition">
+          🏥 Лечение и приюты
+        </button>
+      </div>
+    </div>
+
+    <!-- Список инициатив -->
     <div class="space-y-3" id="helpsContainer"></div>
 
         <!-- СКВОЗНОЙ РЕКЛАМНЫЙ БЛОК: СТАНЬ ТОПОМ НЕДЕЛИ -->
