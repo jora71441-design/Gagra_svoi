@@ -330,14 +330,14 @@
       }
     }
     
-   function filterPromosList() {
+       function filterPromosList() {
       const search = (document.getElementById('promosSearchInput')?.value || '').toLowerCase().trim();
       const list = document.getElementById('cardsList');
       list.innerHTML = '';
 
       const filtered = approvedMastersCache.filter(m => {
         if (!search) return true;
-        const txt = `${m.name \vert{}\vert{} ''}${m.phone || ''} ${m.service \vert{}\vert{} ''}${m.category_title || ''}`.toLowerCase();
+        const txt = `${m.name || ''} ${m.phone || ''} ${m.service || ''} ${m.category_title || ''}`.toLowerCase();
         return txt.includes(search);
       });
 
@@ -393,10 +393,12 @@
             </div>
             <span class="text-[11px] font-mono text-slate-500">${m.city || 'Гагра'}</span>
           </div>
-          <p class="text-xs text-slate-600 leading-relaxed">${m.service}</p>${m.social ? `<p class="text-[11px] text-blue-700 font-medium">🔗 ${m.social}</p>` : ''}
+          <p class="text-xs text-slate-600 leading-relaxed">${m.service}</p>
+          ${m.social ? `<p class="text-[11px] text-blue-700 font-medium">🔗 ${m.social}</p>` : ''}
 
           <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
-            <span class="font-mono text-slate-600">${phone}</span>${cleanPhone ? `<a href="https://wa.me/${cleanPhone}" target="_blank" class="text-emerald-700 font-semibold hover:underline">WhatsApp →</a>` : ''}
+            <span class="font-mono text-slate-600">${phone}</span>
+            ${cleanPhone ? `<a href="https://wa.me/${cleanPhone}" target="_blank" class="text-emerald-700 font-semibold hover:underline">WhatsApp →</a>` : ''}
           </div>
 
           <!-- Тарифные кнопки управления -->
@@ -459,7 +461,11 @@
     async function updateRecCount(id, count) {
       if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
       try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/set_master_recommendations`, { method: 'POST', headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/set_master_recommendations`, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({ master_id: id, count_val: count, secret_pin: adminPin })
@@ -484,25 +490,28 @@
     }
 
     async function deleteApprovedMaster(id, name) {
-      if (!confirm(`Точно удалить мастера "${name}" из базы каталога?`)) return; if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('rigid'); try { const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/delete_record`, {
+      if (!confirm(`Точно удалить мастера "${name}" из базы каталога?`)) return;
+      if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('rigid');
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/delete_record`, {
           method: 'POST',
           headers: {
             'apikey': SUPABASE_ANON_KEY,
-            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ table_name: 'masters', record_id: id, secret_pin: adminPin }) }); if (res.ok) { if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success'); loadApprovedMasters(); } else { alert('Ошибка при удалении мастера'); } } catch (e) { alert('Сетевой сбой при удалении'); } } ```  ---  ### Шаг 3. Обновляем витрину в `js/app.js`  В клиентском скрипте настраиваем отображение числа рекомендаций на карточке.  #### Точки замены в `js/app.js`: * **Начальный якорь:** `${m.starred ? `
-* **Конечный якорь:** `✓ Проверен\n          </span>\n        `}`
-
-Замени этот тернарный оператор бейджа на:
-
-```javascript
-        ${m.starred ? `
-          <span class="text-[10px] font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full whitespace-nowrap">
-            ⭐ Рекомендуют${(m.recommendations_count && m.recommendations_count > 1) ? ` (${m.recommendations_count})` : ''}
-          </span>
-        ` : `
-          <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full whitespace-nowrap">
-            ✓ Проверен
-          </span>
-        `}
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ table_name: 'masters', record_id: id, secret_pin: adminPin })
+        });
+        if (res.ok) {
+          if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+          loadApprovedMasters();
+        } else {
+          alert('Ошибка при удалении мастера');
+        }
+      } catch (e) {
+        alert('Сетевой сбой при удалении');
+      }
+    }
 
     async function toggleMasterStatus(id, actionType) {
       if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
