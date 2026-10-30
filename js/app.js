@@ -408,7 +408,7 @@ function matchesQuery(master, searchWords) {
   });
 }
 
-function renderMasters() {
+        function renderMasters() {
   const sInput = document.getElementById('searchInput');
   if (!sInput) return;
   const rawQuery = sInput.value.trim().toLowerCase();
@@ -420,7 +420,6 @@ function renderMasters() {
   if (!listEl) return;
 
   const filtered = masters.filter(m => {
-    // Совпадение по системному слагу или по вхождению в название сферы
     const matchesCat = (activeCategory === 'all') || 
                        (m.category === activeCategory) ||
                        (m.category_title && m.category_title.toLowerCase().includes(activeCategory));
@@ -430,8 +429,16 @@ function renderMasters() {
     return matchesCat && matchesSub && matchesSearch;
   });
 
-  // ЗАКРЕП В ТОПЕ: мастера с is_pinned всегда сортируются первыми
-  filtered.sort((a, b) => (b.is_pinned ? 1 : 0) - (a.is_pinned ? 1 : 0));
+  // КОНТЕКСТНАЯ СОРТИРОВКА:
+  // Во вкладке «Все» первым идет Топ каталога (is_top_all).
+  // Внутри выбранной категории первым идет Закреп раздела (is_pinned).
+  filtered.sort((a, b) => {
+    if (activeCategory === 'all') {
+      return (b.is_top_all ? 1 : 0) - (a.is_top_all ? 1 : 0);
+    } else {
+      return (b.is_pinned ? 1 : 0) - (a.is_pinned ? 1 : 0);
+    }
+  });
 
   if (countEl) countEl.textContent = filtered.length;
   listEl.innerHTML = '';
@@ -447,13 +454,31 @@ function renderMasters() {
     const waText = encodeURIComponent(`Здравствуйте, ${m.name}! Нашел ваш контакт в каталоге мастеров "Город Своих" (Гагра).`);
     const waLink = `https://wa.me/${cleanPhone}?text=${waText}`;
     const telLink = `tel:${m.phone}`;
-    const isPinned = !!m.is_pinned;
+
+    // Бейджи и золотая рамка выводятся строго в своем контексте
+    const isContextTop = (activeCategory === 'all' && m.is_top_all);
+    const isCategoryPin = (activeCategory !== 'all' && m.is_pinned);
+
+    let borderClass = 'border-slate-200/90 bg-white';
+    let promoBadge = '';
+
+    if (isContextTop) {
+      borderClass = 'border-amber-400 ring-2 ring-amber-300/60 bg-amber-50/15';
+      promoBadge = `
+        <span class="text-[10px] font-black bg-gradient-to-r from-amber-500 to-yellow-500 text-white px-2 py-0.5 rounded-md shadow-2xs">
+          🔥 Топ каталога
+        </span>
+      `;
+    } else if (isCategoryPin) {
+      borderClass = 'border-amber-400 ring-2 ring-amber-300/60 bg-amber-50/15';
+      promoBadge = `
+        <span class="text-[10px] font-bold bg-yellow-100 text-yellow-900 border border-yellow-300 px-2 py-0.5 rounded-md">
+          ⭐ В топе раздела
+        </span>
+      `;
+    }
 
     const card = document.createElement('div');
-    const borderClass = isPinned 
-      ? 'border-amber-400 ring-2 ring-amber-300/60 bg-amber-50/15' 
-      : 'border-slate-200/90 bg-white';
-
     card.className = `${borderClass} rounded-3xl p-4 border shadow-xs hover:border-slate-300 transition`;
     card.innerHTML = `
       <div class="flex items-start justify-between gap-2 mb-1.5">
@@ -462,11 +487,7 @@ function renderMasters() {
             <span class="text-[10px] font-bold bg-slate-100 text-slate-700 px-2 py-0.5 rounded-md">
               ${m.subcategory_title || m.category_title}
             </span>
-            ${isPinned ? `
-              <span class="text-[10px] font-black bg-gradient-to-r from-amber-500 to-yellow-500 text-white px-2 py-0.5 rounded-md shadow-2xs">
-                👑 В топе раздела
-              </span>
-            ` : ''}
+            ${promoBadge}
           </div>
           <h3 class="text-base font-bold text-slate-900 leading-snug mt-1">${m.name}</h3>
         </div>
