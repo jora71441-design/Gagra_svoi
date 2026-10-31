@@ -427,12 +427,17 @@ function renderRent() {
   if (!container) return;
   container.innerHTML = '';
 
-  const filtered = rentList.filter(item => {
-    // 1. Фильтр по городу (проверяем и city, и district)
+    const filtered = rentList.filter(item => {
+    // 1. Фильтр по городу: проверяем точное совпадение с городом или районом
     if (rentFilterState.city !== 'all') {
-      const itemCity = (item.city || item.district || '').toLowerCase();
       const filterCity = rentFilterState.city.toLowerCase();
-      if (!itemCity.includes(filterCity)) return false;
+      const itemCity = (item.city || '').toLowerCase();
+      const itemDistrict = (item.district || '').toLowerCase();
+
+      const inCity = itemCity.includes(filterCity);
+      const inDistrict = itemDistrict.includes(filterCity);
+
+      if (!inCity && !inDistrict) return false;
     }
 
     // 2. Фильтр по категории: Квартира vs Дом
@@ -479,8 +484,14 @@ function renderRent() {
 
     const photos = Array.isArray(item.photos) ? item.photos : [];
     const hasPhotos = photos.length > 0;
-    const itemCity = item.city || item.district || 'Гагра';
-    const itemDistrict = item.district ? (item.city && item.city !== item.district ? ` • ${item.district}` : '') : '';
+
+    // Нормализация города и района, чтобы не дублировалось «Гагра • Пицунда»
+    const abkhazCities = ['Гагра', 'Пицунда', 'Сухум', 'Цандрипш', 'Гудаута', 'Новый Афон', 'Ткуарчал', 'Очамчыра', 'Гал'];
+    const itemCity = item.city || 'Гагра';
+    let itemDistrict = '';
+    if (item.district && item.district !== itemCity && !abkhazCities.includes(item.district)) {
+      itemDistrict = ` • ${item.district}`;
+    }
 
     let mediaHtml = '';
     if (hasPhotos) {
@@ -1235,11 +1246,14 @@ async function submitRentForm(e) {
       btn.innerHTML = `<span>Сохранение заявки...</span>`;
     }
 
-    // Отправка в таблицу rent в Supabase
+        const chosenCity = document.getElementById('rFormDistrict').value.trim();
+
+    // Отправка в таблицу rent в Supabase с правильным полем city
     await insertToSupabase('rent', {
       title: type,
       price: price,
-      district: district,
+      city: chosenCity,       // Теперь город пишется строго в city
+      district: 'Центр',      // Дефолтный район, если пользователь не уточнил
       desc: desc,
       phone: phone,
       photos: uploadedPhotoUrls,
