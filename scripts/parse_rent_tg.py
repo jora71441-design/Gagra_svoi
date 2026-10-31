@@ -5,6 +5,8 @@ import json
 import os
 
 URL = "https://t.me/s/arenda_abkhazia_svoi"
+SUPABASE_URL = "https://yzbochrahmuhvryinajr.supabase.co"
+SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl6Ym9jaHJhaG11aHZyeWluYWpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMyNzYyODcsImV4cCI6MjEwODg1MjI4N30.dTjerKbrcLuTEr5xPKXkR43Df4ECaGA-ztCrGD_SO-A"
 
 def fetch_html():
     req = urllib.request.Request(
@@ -34,7 +36,7 @@ def parse_posts(raw_html):
 
         text_lower = clean_text.lower()
 
-        # 1. Отсекаем мемы, юмор и объявления администратора
+        # Фильтр юмора и админских объявлений
         stop_words = [
             "пятничное настроение", "посмеяться", "юмор", "мем", "анекдот",
             "если вы ищете жильё", "если вы ищите жилье", "пишите мне в личку",
@@ -43,25 +45,22 @@ def parse_posts(raw_html):
         if any(sw in text_lower for sw in stop_words):
             continue
 
-        # Маркеры реального объявления о сдаче
         listing_markers = [
             "сдаёт", "сдает", "сдаю", "аренд", "квартир", "студи",
-            "комнат", "коттедж", "таунхаус", "номер", "этаж"
+            "комнат", "коттедж", "таунхаус", "номер", "этаж", "домик"
         ]
         if not any(m in text_lower for m in listing_markers):
             continue
 
-        # 2. Извлечение CDN-фотографий Telegram
         photo_urls = re.findall(r"background-image:url\('([^']+)'\)", block)
         photos = list(dict.fromkeys(photo_urls))[:5]
 
-        # 3. Извлечение цены
         price_match = re.search(r'(\d[\d\s]{2,}\d|\d{2,})\s*(?:₽|руб|тыс|\.000)', clean_text, re.I)
         price = price_match.group(0).strip() if price_match else "Цена по запросу"
         if "₽" not in price and "руб" not in price and price != "Цена по запросу":
             price += " ₽ / мес"
 
-        # 4. Привязка к 9 официальным городам
+        # Город
         city = "Гагра"
         city_variants = {
             "Цандрипш": ["цандрипш", "цандрыпш", "гантиади"],
@@ -78,67 +77,95 @@ def parse_posts(raw_html):
                 city = target_city
                 break
 
-        # 5. Район
+        # Район
         district = "Центр"
         for d in ["Кемпинг", "Новая Гагра", "Старая Гагра", "Павильон", "Абаата", "Рынок", "Ущелье", "Маяк"]:
             if d.lower() in text_lower:
                 district = d
                 break
 
-        # 6. Определение: Квартира vs Дом (с защитой от 'рядом' и 'под домом')
+        # Категория: Квартира vs Дом
+        is_house = bool(re.search(r'\b(?:домик\w*|коттедж\w*|таунхаус\w*|частн\w+\s+дом\w*|отдельн\w+\s+дом\w*|этаж\s+(?:в\s+)?доме?|дача|дачн\w*|дом\s+под\s+ключ|сда[её]тся\s+(?:отдельный\s+)?дом\w*)\b', text_lower))
         is_flat = bool(re.search(r'\b(?:квартир\w*|студи\w*|\d+[- ]*к\b|\d+[- ]*комн\w*|апартамент\w*)', text_lower))
-        is_house = bool(re.search(r'\b(?:коттедж\w*|таунхаус\w*|частн\w+\s+дом\w*|отдельн\w+\s+дом\w*|этаж\s+(?:в\s+)?доме?|дача|дачн\w*|дом\s+под\s+ключ|сда[её]тся\s+дом|домик\w*)\b', text_lower))
 
-        if is_house and not is_flat:
-            category = "house"
-        else:
-            category = "flat"
+        category = "house" if (is_house and not is_flat) else "flat"
 
-        # 7. Определение срока
+        # Срок аренды
         is_season = any(w in text_lower for w in ["до мая", "до июня", "до лета", "помесячн", "на 1 мес", "на 2 мес", "на месяц", "на зим"])
         is_year = any(w in text_lower for w in ["на год", "круглый год", "круглогодичн", "без выселения", "без поднятия", "на длительн"])
 
-        if is_season and not is_year:
-            period = "season"
-            badge = "⏳ До лета"
-        else:
-            period = "year"
-            badge = "🔒 На год+"
+        period = "season" if (is_season and not is_year) else "year"
+        badge = "⏳ До лета" if period == "season" else "🔒 На год+"
 
         lines = [l.strip() for l in clean_text.split('\n') if l.strip()]
         title = lines[0][:50] if lines else "Аренда жилья"
 
         items.append({
-            "id": 0,
             "title": title,
             "price": price,
             "city": city,
             "district": district,
-            "category": category, # 'flat' | 'house'
-            "period": period,     # 'year' | 'season'
+            "category": category,
+            "period": period,
             "type": category,
             "badge": badge,
-            "desc": clean_text[:220] + "..." if len(clean_text) > 220 else clean_text,
+            "desc": clean_text[:250] + "..." if len(clean_text) > 250 else clean_text,
             "photos": photos,
             "status": "Свободно к заселению",
-            "tg_link": post_link
+            "tg_link": post_link,
+            "is_approved": True,
+            "is_active": True
         })
 
     items.reverse()
-    for idx, item in enumerate(items, 1):
-        item["id"] = idx
-
     return items
+
+def sync_to_supabase(items):
+    if not items:
+        return
+    
+    # Отправляем пачкой с директивой игнорировать дубли по tg_link
+    url = f"{SUPABASE_URL}/rest/v1/rent?on_conflict=tg_link"
+    data_bytes = json.dumps(items).encode('utf-8')
+
+    req = urllib.request.Request(
+        url,
+        data=data_bytes,
+        headers={
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': f'Bearer {SUPABASE_ANON_KEY}',
+            'Content-Type': 'application/json',
+            'Prefer': 'resolution=ignore-duplicates'
+        },
+        method='POST'
+    )
+    try:
+        with urllib.request.urlopen(req) as resp:
+            print("Синхронизация с Supabase выполнена успешно!")
+    except Exception as e:
+        print(f"Ошибка при синхронизации с Supabase: {e}")
 
 def main():
     os.makedirs("data", exist_ok=True)
     html_data = fetch_html()
     data = parse_posts(html_data)
-    
+
+    # 1. Запись в локальный json (как резерв)
+    for idx, item in enumerate(data, 1):
+        item["id"] = idx
     with open("data/rent.json", "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
-    
-    print(f"Готово! Спарсено объявлений: {len(data)}")
+
+    # 2. Синхронизация с Supabase (для кабинета модератора)
+    # Удаляем числовые id перед отправкой в БД, чтобы Supabase использовал свои автоинкрементные id
+    db_items = []
+    for it in data:
+        row = dict(it)
+        row.pop("id", None)
+        db_items.append(row)
+        
+    sync_to_supabase(db_items)
+    print(f"Готово! Обработано объектов: {len(data)}")
 
 if __name__ == "__main__":
     main()
