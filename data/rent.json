@@ -5,8 +5,10 @@
     "price": "18 000 ₽",
     "city": "Гагра",
     "district": "Центр",
+    "category": "house",
+    "period": "season",
     "type": "house",
-    "badge": "🏡 Дом / Коттедж",
+    "badge": "⏳ До лета",
     "desc": "🏠 Сдаётся двухэтажный домик в Гагре\n#Гагра\n\n📍 Район: Гагра\n📅 Срок: длительный (до июня)\n💰 Цена: 18 000 ₽/мес\n🏡 Что сдаётся: отдельное двухэтажное строение\n🛋 Условия:\n\n· Первый этаж: просторная кухня, плита, холодильник, ...",
     "photos": [
       "https://cdn4.telesco.pe/file/ANfiFER7PU5feJi3Bx1ALawKzSNZS-hLp5E2_elO7sgBKp8QKTjNjIwldjoCzSKuqpJxFc4QpYRdBNDDd-Vdcs2JAySsZrVmiU2RP-OGRF_7yYtE3jfgLSxH1e1-QM6Kv65ZGMD4y-Y_4_eEhZRUvCFXwzcVJBLT7KS4JhNuQBScV2QEmXf2gI5z-PvsSkMQHQRq0uicdHuYFZr904ty6u8fS0rEou2adLS5QrVibRxRt0JXm9MVNPE8P4fnVoJqMsvLAybDgVhQUvXSKCyqViaj-g1UMgHSOtXSA6Fk463BjH8sa-e-8LNfnK_wIxv8DEaUUoeKF0gcctNqm5N3nQ.jpg",
@@ -24,7 +26,9 @@
     "price": "45 000 ₽",
     "city": "Сухум",
     "district": "Центр",
-    "type": "season",
+    "category": "flat",
+    "period": "season",
+    "type": "flat",
     "badge": "⏳ До лета",
     "desc": "🏠 Сдаётся евродвушка в Сухуме (Центр)\n#Сухум \n\n📍 Адрес: центр города, ул. Воронова, 23. Напротив парк «Сказка». До центральной набережной и пляжа 5–7 минут ходьбы.\n📅 Срок: длительный (до июня 2027 г.), при заселении закл...",
     "photos": [
@@ -43,8 +47,10 @@
     "price": "25 000 ₽",
     "city": "Гагра",
     "district": "Центр",
-    "type": "house",
-    "badge": "🏡 Дом / Коттедж",
+    "category": "flat",
+    "period": "year",
+    "type": "flat",
+    "badge": "🔒 На год+",
     "desc": "🏠 Сдаётся 2-к квартира в Гагре\n#Гагра\n\n📍 Адрес: ул. Лакоба, 4 этаж. До моря 7 минут ходьбы. Через дорогу супермаркет, с двух сторон продуктовые магазины, под домом детская площадка, до рынка две остановки, рядом дельфина...",
     "photos": [
       "https://cdn4.telesco.pe/file/KRSzgH3eSdABsMh28Rn2IpqGaUOcR34HmKPNcj0PnzyztBhAmYs_eir08ZCuWxlEzSrp_P3mztBsH-9L9V9CQsCa7HFQdLS5JLsS6rbPQmXrOncmF8818xEYrVNsS_7zdoUBOnZ6Vy45Dez6nwEOV4Qd7NOUXD3KBfUVL24RC6_Uj4MKp0wvEGSnBsWK2SUxNHV3jwcSDeSODW7wzTO48QfoIoxjc9W3O27lFa06nS_QotJRLuqcB4ZwcnTR-J_Op2gNPvttTivICBkrzvH5Xafq3QkKMtz4YLbkkaphJCi2J8hfZMZbm3i5hqpZp3yzwwlG4ZNCdn7N5FdazntJSA.jpg",
@@ -62,7 +68,9 @@
     "price": "Цена по запросу",
     "city": "Сухум",
     "district": "Центр",
-    "type": "year",
+    "category": "flat",
+    "period": "year",
+    "type": "flat",
     "badge": "🔒 На год+",
     "desc": "🏠 Сдаётся 3-к квартира в Сухуме\n# Сухум \n\n📍 Адрес: ул. Ардзинба, 150, 4 этаж\n📅 Срок: до 15 июня\n💰 Цена: не указана (уточняйте у собственника)\n🏡 Что сдаётся: 3-комнатная квартира\n🛋 Условия: не указаны\n🐾 Животные: не указа...",
     "photos": [
@@ -81,8 +89,10 @@
     "price": "30 000 ₽",
     "city": "Гагра",
     "district": "Рынок",
-    "type": "house",
-    "badge": "🏡 Дом / Коттедж",
+    "category": "flat",
+    "period": "year",
+    "type": "flat",
+    "badge": "🔒 На год+",
     "desc": "🏠 Сдаётся 1-к квартира в Гагре (Центр)\n#Гагра\n\n📍 Район: центр города. Рядом рынок, детский сад, гостиница «Абхазия», отличный вид на море.\n📅 Срок: круглый год (без выселения на лето)\n💰 Цена: 30 000 ₽/мес\n🏡 Что сдаётся: о...",
     "photos": [
       "https://cdn4.telesco.pe/file/OtrYXu5N7M0IjW0F65t3SpVMxyZbXIcL-cXcmFS_E4VQenh0chgEDG9ID651kU48SnKRSPgdmrnQGPawkRxSkZW3H9buqwnY5TOxVJYy31xiptBlb38nRtU7n5Vh7dfZmnTd7NBDKo4sksboxaLizvTFfU7LQVupdUzMctyykb4y2xqv4vpWaRHIV1HimQp5Rp-9QlECdzAbzZ9Y3g7c6wcQAN7TL5ItEYfQmt33K3NSbEjVPUM0jK2ttzlDAEEzByyTx0bTVSwL3Q85tcUgjuXuxWyMaAWJkvKnaxeGMFJfQyQrVGiu6JUUy8C6uMnxsZ4eM9sABbT9iNu6MTl82Q.jpg",
@@ -100,8 +110,10 @@
     "price": "45 000 ₽",
     "city": "Сухум",
     "district": "Рынок",
-    "type": "house",
-    "badge": "🏡 Дом / Коттедж",
+    "category": "flat",
+    "period": "year",
+    "type": "flat",
+    "badge": "🔒 На год+",
     "desc": "🏠 Сдаётся 2-к квартира в Сухуме\n#Сухум \n\n📍 Адрес: ул. Почтовая, 35 (тихий, спокойный район; вокзал, рынок, набережная — всё в пешей доступности)\n📅 Срок: до мая (возможна круглогодичная сдача с повышением цены в летние ме...",
     "photos": [
       "https://cdn4.telesco.pe/file/Q-D_Za3zC-AXkEG67bBMz8V_e7Oh0Uv6GN8UNDX5cDavlIeeoGeokoRJ6sSNJIKFDj4SrXeLEZJimBMUE7DpSXdDF28rZitVPWZ2hz9mimV0iZTlnZTNfYbZv3iuqciwlyN8PMZH-CRk9b--M97YzOby3SXHQ3lrI-ye-sJHODcEkrVgvr64_8H9VthIzL2U7AXTrPeh19fhrMe8XmTJHcgEdwOSxczcTLeqhbuwsw0EDQpiMrbIV_H9fThEZGPVRc7hf_8kEFJzJB_V4SC8hzO-ymDtsPepXATGF8xHX9w1csdAXo5RtvWysGae9DOYTN9ryOnRH8iKtRJX-H13pA.jpg",
@@ -119,7 +131,9 @@
     "price": "35 000 ₽",
     "city": "Гагра",
     "district": "Центр",
-    "type": "year",
+    "category": "flat",
+    "period": "year",
+    "type": "flat",
     "badge": "🔒 На год+",
     "desc": "🏠 Сдаётся 2-к квартира в Гагре\n#Гагра \n\n📍 Адрес: ул. Абазга, 47/1, 3 этаж\n📅 Срок: круглый год\n💰 Цена: 35 000 ₽/мес (зима) + свет; 50 000 ₽/мес (лето)\n🏡 Что сдаётся: 2-комнатная квартира\n🛋 Условия: мебель, техника\n🐾 Живот...",
     "photos": [
@@ -134,46 +148,14 @@
   },
   {
     "id": 8,
-    "title": "💬 Если вы ищете жильё или хотите сдать своё - не с",
-    "price": "Цена по запросу",
-    "city": "Гагра",
-    "district": "Центр",
-    "type": "year",
-    "badge": "🔒 На год+",
-    "desc": "💬 Если вы ищете жильё или хотите сдать своё - не стесняйтесь, пишите мне в личку @rinata_tibay\n\nПомогу с оформлением и размещением объявления. Все свои! 🤝",
-    "photos": [
-      "//telegram.org/img/emoji/40/F09F92AC.png",
-      "//telegram.org/img/emoji/40/F09FA49D.png"
-    ],
-    "status": "Свободно к заселению",
-    "tg_link": "https://t.me/arenda_abkhazia_svoi/40"
-  },
-  {
-    "id": 9,
-    "title": "Пятничное настроение! А у нас в канале всё серьёзн",
-    "price": "Цена по запросу",
-    "city": "Гагра",
-    "district": "Центр",
-    "type": "year",
-    "badge": "🔒 На год+",
-    "desc": "Пятничное настроение! А у нас в канале всё серьёзно - только долгосрочная аренда. Но иногда можно и посмеяться 😄",
-    "photos": [
-      "https://cdn4.telesco.pe/file/X3kL6bqTHCE1e5cQ-hKKAM0TOscMc49iZf2bs17WaGTsi5EVpnoBdH5KoD7yeDB-Be6HuCm2IVpo9kZM60TT61xU0FWr34SJpuu7syxspZaEeDXfpmQR2f7P9muOSJMxAdxWxWJkSnUo5dKPhNqje7yqaGB6dOyL77Y6kj5IfgpsKN_IjTqj1f-l9RwSgHMA25h90x1S5qtFIlDhpQKctf-Er7aO3Iqa_jYfTf4iL6Ks2H5ghxTjBqgEgYrA4MIQrxzy033kdWE9264HUd0v1gnmhKVwYEX7Xu-Ps3rmQkbpr8ld3uWbp3DBFMsNHhlzb1tMPdQ1OWjATneOUltx4A.jpg",
-      "//telegram.org/img/emoji/40/F09F9884.png",
-      "//telegram.org/img/emoji/40/F09F9881.png",
-      "//telegram.org/img/emoji/40/F09FA4A3.png"
-    ],
-    "status": "Свободно к заселению",
-    "tg_link": "https://t.me/arenda_abkhazia_svoi/39"
-  },
-  {
-    "id": 10,
     "title": "🏠 Сдаётся 1-к квартира в Агудзере",
     "price": "20 000 ₽",
     "city": "Гагра",
     "district": "Центр",
-    "type": "house",
-    "badge": "🏡 Дом / Коттедж",
+    "category": "flat",
+    "period": "year",
+    "type": "flat",
+    "badge": "🔒 На год+",
     "desc": "🏠 Сдаётся 1-к квартира в Агудзере\n\n📍 Район: пос. Агудзера, Гулрыпшский район (рядом с центральной трассой)\n📅 Срок: не указан (уточняйте у собственника)\n💰 Цена: 20 000 ₽/мес + электроэнергия\n🏡 Что сдаётся: 1-комнатная ква...",
     "photos": [
       "https://cdn4.telesco.pe/file/maTYtrEa-BkUBzkfBFaO6jovZ55kCYIY7n8RKTAa89BahM1tEVzY_3waAA0JBk8qYYZ9fa7EBY4RTVSgWlM1ApenI3TgHd_kSsBK9F6pldwp-J469hOBHAxguunD17wHwfTL8zh6jwZLTHz_eJswDrxAc3xtiBqJ66tbaUO3HyDrQ45YcA3Y8ArbGsRFMNhCfpCtiGiV7yvFvAtc3nLpxAxVQXPNSXF3muOQOwP3p_XT9DCbvB1gFDTUq5BKAi_vHljnuN172grdiqPk6583gWWAnZIYAsbn04HJZtGU8F7MAnTOhFRfA5ofMWpuMDjTq4C0vWJA8Cs5rYJhy03tWg.jpg",
@@ -186,12 +168,14 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/38"
   },
   {
-    "id": 11,
+    "id": 9,
     "title": "🏠 Сдаётся 3-комнатная квартира в Сухуме",
     "price": "Цена по запросу",
     "city": "Сухум",
     "district": "Центр",
-    "type": "year",
+    "category": "flat",
+    "period": "year",
+    "type": "flat",
     "badge": "🔒 На год+",
     "desc": "🏠 Сдаётся 3-комнатная квартира в Сухуме\n#Сухум\n\n📍 Адрес: ул. Агумава, 1\n📅 Срок: долго\n💰 Цена: не указана (уточняйте у собственника)\n🏡 Что сдаётся: 3-комнатная квартира\n🛋 Условия: не указаны\n🐾 Животные: не указано\n📸 Фото:...",
     "photos": [
@@ -205,13 +189,15 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/37"
   },
   {
-    "id": 12,
+    "id": 10,
     "title": "🏠 Сдаётся 2-к квартира в Гагре",
     "price": "25 000 ₽",
     "city": "Гагра",
     "district": "Центр",
-    "type": "house",
-    "badge": "🏡 Дом / Коттедж",
+    "category": "flat",
+    "period": "year",
+    "type": "flat",
+    "badge": "🔒 На год+",
     "desc": "🏠 Сдаётся 2-к квартира в Гагре\n#Гагра \n\n📍 Адрес: ул. Лакоба, 4 этаж. До моря 7 минут ходьбы. Через дорогу супермаркет, с двух сторон продуктовые магазины, под домом детская площадка, до рынка две остановки, рядом дельфин...",
     "photos": [
       "https://cdn4.telesco.pe/file/cdAoNT7q0JiSI3Df8MXFN10sLzz6hf77AuMP9sRgAYC14Lguo0VIDYAOWA1xpDqgpgAcR7mq-eAihP9mGahtxjYKd82neCtTVYTv5Be9rEZFlvnM2WpFNr11_VhnERsG8o1Y6RxAVo2V1WZ894NAULogz5w8WZRysZuxNitL2-i37IUtgMa8NV23LRoxGJ32yeC6Sidcy5wwAej6DmJSWtBDhRTG6uL9ZYwV31kFmoVR4N-F_V9VhFYF0pu047JvFQHHjqKzlHRqykBTYPLqytrTBm9iPUFhEjCIJOPa5YvrhSS8wVqDgzE-WRxGH_PhAW68u5tuly_CMYJx2ERHVw.jpg",
@@ -224,12 +210,14 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/36"
   },
   {
-    "id": 13,
+    "id": 11,
     "title": "🏠 Сдаётся квартира в Сухуме (Центр)",
     "price": "40 000 ₽",
     "city": "Сухум",
     "district": "Центр",
-    "type": "season",
+    "category": "flat",
+    "period": "season",
+    "type": "flat",
     "badge": "⏳ До лета",
     "desc": "🏠 Сдаётся квартира в Сухуме (Центр)\n#Сухум\n\n📍 Адрес: центр города, ул. Абазинская\n📅 Срок: до июня\n💰 Цена: 40 000 ₽/мес\n🏡 Что сдаётся: квартира, 40 кв.м.\n🛋 Условия: все удобства, балкон\n🐾 Животные: не указано\n📸 Фото: есть...",
     "photos": [
@@ -243,12 +231,14 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/35"
   },
   {
-    "id": 14,
+    "id": 12,
     "title": "🏠 Сдаётся 1-к квартира в Гагре",
     "price": "Цена по запросу",
     "city": "Гагра",
     "district": "Центр",
-    "type": "year",
+    "category": "flat",
+    "period": "year",
+    "type": "flat",
     "badge": "🔒 На год+",
     "desc": "🏠 Сдаётся 1-к квартира в Гагре\n#Гагра \n\n📍 Адрес: ул. Абаазга (напротив прокуратуры)\n📅 Срок: круглый год\n💰 Цена: не указана (уточняйте у собственника)\n🏡 Что сдаётся: однокомнатная квартира\n🛋 Условия: не указаны\n🐾 Животные...",
     "photos": [
@@ -262,13 +252,15 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/34"
   },
   {
-    "id": 15,
+    "id": 13,
     "title": "🏠 Сдаются квартиры в Гагре (Кемпинг)",
     "price": "23 000 ₽",
     "city": "Гагра",
     "district": "Кемпинг",
-    "type": "house",
-    "badge": "🏡 Дом / Коттедж",
+    "category": "flat",
+    "period": "year",
+    "type": "flat",
+    "badge": "🔒 На год+",
     "desc": "🏠 Сдаются квартиры в Гагре (Кемпинг)\n#Гагра \n\n📍 Адрес: ул. Лакоба, 23А (частный дом, 3 этаж)\n📅 Срок: с октября по май включительно (также рассматривается долгосрочная аренда)\n💰 Цена:\n\n· 1-к (на 2–3 человек): 23 000 ₽/мес...",
     "photos": [
       "https://cdn4.telesco.pe/file/pbTu2tMQr-4XCDjeXuL5-sxvRWPIovcMCwk5R3pMTBIDKN9MAMRSQ_SP-cK7--TFnVMo5W6IwbH-ntsdQ4o-1blgi2OwziPzIs3I8L9sOAvJqMnit5CKClp2fdMez8Xkmi1u_pTM2UxJug02vjvbtByNsYdPWwCTmJtUNmNEVXsVxiGMM-RNftG2uQBJdPpiwem-_r5OM7ovGRCbhY1fCQKi0b7zjfBKNCSoVsJBccuVGSs5sO7ORwdDzH4HRlimS9QJUpLG1uhTQmKUysi6Ci2NFUbI0m53CAtLAVDqfrCisViuZ4DqoUBmK3LS_P5p7U-74Yet466CLxzP6zd9Og.jpg",
@@ -281,12 +273,14 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/33"
   },
   {
-    "id": 16,
+    "id": 14,
     "title": "🏠 Сдаётся 3-к квартира в Сухуме (поселок Агудзера)",
     "price": "40 000 ₽",
     "city": "Сухум",
     "district": "Центр",
-    "type": "year",
+    "category": "flat",
+    "period": "year",
+    "type": "flat",
     "badge": "🔒 На год+",
     "desc": "🏠 Сдаётся 3-к квартира в Сухуме (поселок Агудзера)\n#Сухум\n\n📍 Район: Новый район, второй круг, ул. Чалмаз\n📅 Срок: круглый год\n💰 Цена: 40 000 ₽/мес\n🏡 Что сдаётся: 3-комнатная квартира\n🛋 Условия: 9/9 этаж, лифт работает\n🐾 Ж...",
     "photos": [
@@ -300,12 +294,14 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/32"
   },
   {
-    "id": 17,
+    "id": 15,
     "title": "🏠 Сдаётся 3-к квартира в Сухуме (Новый район)",
     "price": "40 000 ₽",
     "city": "Сухум",
     "district": "Центр",
-    "type": "year",
+    "category": "flat",
+    "period": "year",
+    "type": "flat",
     "badge": "🔒 На год+",
     "desc": "🏠 Сдаётся 3-к квартира в Сухуме (Новый район)\n#Сухум\n\n📍 Район: Новый район, второй круг, ул. Чалмаз\n📅 Срок: круглый год\n💰 Цена: 40 000 ₽/мес\n🏡 Что сдаётся: 3-комнатная квартира\n🛋 Условия: 9/9 этаж, лифт работает\n🐾 Животн...",
     "photos": [
@@ -319,12 +315,14 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/31"
   },
   {
-    "id": 18,
+    "id": 16,
     "title": "🏠 Сдаётся 3-к квартира в Сухуме",
     "price": "50 000 ₽",
     "city": "Сухум",
     "district": "Центр",
-    "type": "year",
+    "category": "flat",
+    "period": "year",
+    "type": "flat",
     "badge": "🔒 На год+",
     "desc": "🏠 Сдаётся 3-к квартира в Сухуме\n#Сухум\n\n📍 Адрес: Сухум, турбаза, ул. Акиртава\n📅 Срок: круглый год (длительный)\n💰 Цена: 50 000 ₽/мес\n🏡 Что сдаётся: 3-комнатная квартира (2 отдельные спальни, просторный зал, отдельная кухн...",
     "photos": [
@@ -338,12 +336,14 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/30"
   },
   {
-    "id": 19,
+    "id": 17,
     "title": "🏠 Сдаётся 3-к квартира в Сухуме (Центр)",
     "price": "40 000 ₽",
     "city": "Сухум",
     "district": "Центр",
-    "type": "year",
+    "category": "flat",
+    "period": "year",
+    "type": "flat",
     "badge": "🔒 На год+",
     "desc": "🏠 Сдаётся 3-к квартира в Сухуме (Центр)\n#Сухум\n\n📍 Адрес: центр Сухума, ул. Ардзинба\n📅 Срок: круглый год\n💰 Цена: 40 000 ₽/мес + электричество\n🏡 Что сдаётся: 3-комнатная квартира\n🛋 Условия: не указаны\n🐾 Животные: не указан...",
     "photos": [
@@ -357,12 +357,14 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/29"
   },
   {
-    "id": 20,
+    "id": 18,
     "title": "🏠 Сдаётся квартира-студия в Гагре",
     "price": "35 000 ₽",
     "city": "Гагра",
     "district": "Центр",
-    "type": "year",
+    "category": "flat",
+    "period": "year",
+    "type": "flat",
     "badge": "🔒 На год+",
     "desc": "🏠 Сдаётся квартира-студия в Гагре\n#Гагра \n\n📍 Район: Гагра\n📅 Срок: с 1 ноября по 1 мая\n💰 Цена: 35 000 ₽/мес\n🏡 Что сдаётся: квартира-студия с дизайнерским ремонтом\n🛋 Условия: новая техника, всё для комфортного проживания\n👤...",
     "photos": [
