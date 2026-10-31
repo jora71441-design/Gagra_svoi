@@ -366,10 +366,13 @@ let rentList = [
   }
 ];
 
-let activeRentFilter = 'all';
+let rentFilterState = {
+  city: 'all',
+  type: 'all'
+};
 let rentDataLoaded = false;
 
-// Автоматическая загрузка базы из data/rent.json
+// Автоматическая загрузка спарсенной базы из data/rent.json
 async function loadRentData() {
   try {
     const res = await fetch('data/rent.json?v=' + Date.now());
@@ -397,16 +400,27 @@ function renderRent() {
   container.innerHTML = '';
 
   const filtered = rentList.filter(item => {
-    if (activeRentFilter === 'all') return true;
-    return item.type === activeRentFilter;
+    // 1. Фильтр по городу
+    if (rentFilterState.city !== 'all') {
+      const itemCity = (item.city || '').toLowerCase();
+      const filterCity = rentFilterState.city.toLowerCase();
+      if (!itemCity.includes(filterCity)) return false;
+    }
+
+    // 2. Фильтр по сроку и формату
+    if (rentFilterState.type !== 'all') {
+      if (item.type !== rentFilterState.type) return false;
+    }
+
+    return true;
   });
 
   if (filtered.length === 0) {
     container.innerHTML = `
       <div class="bg-white rounded-3xl p-6 text-center border border-slate-200 shadow-xs">
         <span class="text-3xl">🏠</span>
-        <p class="text-sm font-bold text-slate-800 mt-2">В этой категории пока нет свободных объектов</p>
-        <p class="text-xs text-slate-500 mt-1">Выберите другой фильтр или посмотрите все варианты в канале.</p>
+        <p class="text-sm font-bold text-slate-800 mt-2">Нет вариантов по заданным параметрам</p>
+        <p class="text-xs text-slate-500 mt-1">Попробуйте сбросить фильтры или выбрать другой город.</p>
       </div>
     `;
     return;
@@ -420,7 +434,6 @@ function renderRent() {
     
     const hasPhotos = Array.isArray(item.photos) && item.photos.length > 0;
 
-    // Слайдер со свайпом 3-5 фото или иконка-заглушка
     let mediaHtml = '';
     if (hasPhotos) {
       const photosImg = item.photos.map(url => `
@@ -432,7 +445,6 @@ function renderRent() {
           <div class="flex overflow-x-auto snap-x snap-mandatory no-scrollbar h-full w-full">
             ${photosImg}
           </div>
-          <!-- Затемнение под бейджи -->
           <div class="absolute inset-x-0 top-0 h-14 bg-gradient-to-b from-black/60 to-transparent pointer-events-none"></div>
           <span class="absolute top-3 left-3 bg-slate-900/80 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg backdrop-blur-xs">
             ${item.city} • ${item.district}
@@ -485,13 +497,24 @@ function renderRent() {
   });
 }
 
-function filterRent(filterType) {
-  activeRentFilter = filterType;
-  document.querySelectorAll('.rent-chip').forEach(btn => {
-    btn.className = "rent-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap hover:bg-sky-50 transition";
+function setRentCity(city) {
+  rentFilterState.city = city;
+  document.querySelectorAll('.rent-city-chip').forEach(btn => {
+    btn.className = "rent-city-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3 py-1.5 rounded-full whitespace-nowrap hover:bg-sky-50 transition";
   });
   if (window.event && window.event.target) {
-    window.event.target.className = "rent-chip active bg-slate-900 text-white text-xs font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap shadow-xs transition";
+    window.event.target.className = "rent-city-chip active bg-slate-900 text-white text-xs font-semibold px-3 py-1.5 rounded-full whitespace-nowrap shadow-xs transition";
+  }
+  renderRent();
+}
+
+function setRentType(type) {
+  rentFilterState.type = type;
+  document.querySelectorAll('.rent-type-chip').forEach(btn => {
+    btn.className = "rent-type-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3 py-1 rounded-full whitespace-nowrap hover:bg-sky-50 transition";
+  });
+  if (window.event && window.event.target) {
+    window.event.target.className = "rent-type-chip active bg-sky-600 text-white text-xs font-semibold px-3 py-1 rounded-full whitespace-nowrap shadow-xs transition";
   }
   renderRent();
 }
