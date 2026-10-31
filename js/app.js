@@ -168,11 +168,18 @@ function applyRoute() {
       titleEl.textContent = 'Аренда / сдача жилья';
       actionBtn.className = "text-xs font-bold text-sky-700 bg-sky-50 px-2.5 py-1.5 rounded-xl border border-sky-200 hover:bg-sky-100 transition";
       actionBtn.textContent = '+ Сдать жилье';
-    } else if (currentRoute === 'helps') {
+        } else if (currentRoute === 'helps') {
       titleEl.textContent = 'Город Своих помогает';
       actionBtn.className = "text-xs font-bold text-teal-800 bg-teal-50 px-2.5 py-1.5 rounded-xl border border-teal-200 hover:bg-teal-100 transition";
       actionBtn.textContent = '+ Инициатива';
     }
+  }
+
+  // Запуск отрисовки разделов при переходе
+  if (currentRoute === 'rent') {
+    renderRent();
+  } else if (currentRoute === 'helps') {
+    renderHelps();
   }
 
   window.scrollTo(0, 0);
@@ -340,6 +347,94 @@ function parseHelpsFromChat(text) {
   });
 
   return results.reverse();
+}
+
+// ==================== АРЕНДА И СДАЧА ЖИЛЬЯ ====================
+let rentList = [
+  {
+    id: 1,
+    title: "2-комнатная квартира с ремонтом",
+    price: "35 000 ₽ / мес",
+    city: "Гагра",
+    district: "Кемпинг",
+    type: "year", // 'year' (на год+), 'season' (до лета), 'house' (дома и квартиры)
+    badge: "🔒 Круглогодично",
+    desc: "Вся необходимая мебель, кондиционер, стиральная машина, автономное отопление. Фиксация цены без сезонных изменений.",
+    status: "Свободна к заселению",
+    tg_link: "https://t.me/arenda_abkhazia_svoi"
+  }
+];
+
+let activeRentFilter = 'all';
+
+function renderRent() {
+  const container = document.getElementById('rentContainer');
+  if (!container) return;
+  container.innerHTML = '';
+
+  const filtered = rentList.filter(item => {
+    if (activeRentFilter === 'all') return true;
+    return item.type === activeRentFilter;
+  });
+
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div class="bg-white rounded-3xl p-6 text-center border border-slate-200 shadow-xs">
+        <span class="text-3xl">🏠</span>
+        <p class="text-sm font-bold text-slate-800 mt-2">В этой категории пока нет свободных объектов</p>
+        <p class="text-xs text-slate-500 mt-1">Выберите другой фильтр или посмотрите все предложения в Telegram-канале.</p>
+      </div>
+    `;
+    return;
+  }
+
+  filtered.forEach(item => {
+    const isYear = item.type === 'year';
+    const badgeClass = isYear 
+      ? 'bg-amber-100 text-amber-900 border border-amber-300' 
+      : 'bg-sky-100 text-sky-900 border border-sky-300';
+    const icon = item.type === 'house' ? '🏡' : '🏢';
+
+    const card = document.createElement('div');
+    card.className = "bg-white rounded-3xl overflow-hidden border border-slate-200 shadow-xs hover:border-slate-300 transition";
+    card.innerHTML = `
+      <div class="h-36 bg-slate-100 flex items-center justify-center text-slate-400 relative">
+        <span class="absolute top-3 left-3 bg-slate-900/80 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg backdrop-blur-xs">
+          ${item.city} • ${item.district}
+        </span>
+        <span class="absolute top-3 right-3 text-[10px] font-bold px-2 py-0.5 rounded-md ${badgeClass}">
+          ${item.badge}
+        </span>
+        <span class="text-4xl">${icon}</span>
+      </div>
+      <div class="p-4">
+        <div class="flex justify-between items-start mb-1.5 gap-2">
+          <h3 class="text-base font-bold text-slate-900 leading-snug">${item.title}</h3>
+          <span class="text-xs font-black text-emerald-700 whitespace-nowrap">${item.price}</span>
+        </div>
+        <p class="text-xs text-slate-600 mb-3 leading-relaxed">${item.desc}</p>
+        <div class="flex items-center justify-between pt-2.5 border-t border-slate-100">
+          <span class="text-[11px] text-slate-500 font-medium">${item.status}</span>
+          <a href="${item.tg_link}" target="_blank" 
+             class="bg-sky-600 hover:bg-sky-700 text-white text-xs font-semibold px-3 py-1.5 rounded-xl transition active:scale-95">
+            Фото и видео в TG ↗
+          </a>
+        </div>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function filterRent(filterType) {
+  activeRentFilter = filterType;
+  document.querySelectorAll('.rent-chip').forEach(btn => {
+    btn.className = "rent-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap hover:bg-sky-50 transition";
+  });
+  if (window.event && window.event.target) {
+    window.event.target.className = "rent-chip active bg-slate-900 text-white text-xs font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap shadow-xs transition";
+  }
+  renderRent();
 }
 
 // ==================== РЕНДЕРИНГ ====================
