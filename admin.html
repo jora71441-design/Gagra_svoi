@@ -293,7 +293,7 @@
       list.innerHTML = '<div class="text-center py-10 text-slate-400 text-sm">Загружаем активные объекты...</div>';
 
       try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/rent?select=*&is_approved=eq.true&order=created_at.desc`, {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/rent?select=*&is_approved=eq.true&is_active=eq.true&order=created_at.desc`, {
           headers: {
             'apikey': SUPABASE_ANON_KEY,
             'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
@@ -581,10 +581,30 @@
       }
     }
 
-    async function unpublishRentItem(id) {
-      if (!confirm('Снять объект с публикации? Он будет помечен как сданный и удалён с витрины сайта.')) return;
-      await deleteItem('rent', id);
-      loadApprovedRent();
+        async function unpublishRentItem(id) {
+      if (!confirm('Пометить объект как сданный и скрыть с сайта?')) return;
+      if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/rent?id=eq.${id}`, {
+          method: 'PATCH',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ is_active: false })
+        });
+
+        if (res.ok) {
+          if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+          loadApprovedRent();
+        } else {
+          alert('Не удалось скрыть объект');
+        }
+      } catch (e) {
+        alert('Ошибка связи с базой данных');
+      }
     }
 
     // ==================== ПРОСМОТР ФОТО ====================
