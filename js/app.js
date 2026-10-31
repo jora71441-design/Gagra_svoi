@@ -357,17 +357,41 @@ let rentList = [
     price: "35 000 ₽ / мес",
     city: "Гагра",
     district: "Кемпинг",
-    type: "year", // 'year' (на год+), 'season' (до лета), 'house' (дома и квартиры)
+    type: "year",
     badge: "🔒 Круглогодично",
     desc: "Вся необходимая мебель, кондиционер, стиральная машина, автономное отопление. Фиксация цены без сезонных изменений.",
+    photos: [],
     status: "Свободна к заселению",
     tg_link: "https://t.me/arenda_abkhazia_svoi"
   }
 ];
 
 let activeRentFilter = 'all';
+let rentDataLoaded = false;
+
+// Автоматическая загрузка базы из data/rent.json
+async function loadRentData() {
+  try {
+    const res = await fetch('data/rent.json?v=' + Date.now());
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) {
+        rentList = data;
+      }
+    }
+  } catch (e) {
+    console.warn('Локальный rent.json пока недоступен, используется резервная база:', e);
+  }
+  rentDataLoaded = true;
+  renderRent();
+}
 
 function renderRent() {
+  if (!rentDataLoaded) {
+    loadRentData();
+    return;
+  }
+
   const container = document.getElementById('rentContainer');
   if (!container) return;
   container.innerHTML = '';
@@ -382,7 +406,7 @@ function renderRent() {
       <div class="bg-white rounded-3xl p-6 text-center border border-slate-200 shadow-xs">
         <span class="text-3xl">🏠</span>
         <p class="text-sm font-bold text-slate-800 mt-2">В этой категории пока нет свободных объектов</p>
-        <p class="text-xs text-slate-500 mt-1">Выберите другой фильтр или посмотрите все предложения в Telegram-канале.</p>
+        <p class="text-xs text-slate-500 mt-1">Выберите другой фильтр или посмотрите все варианты в канале.</p>
       </div>
     `;
     return;
@@ -393,20 +417,55 @@ function renderRent() {
     const badgeClass = isYear 
       ? 'bg-amber-100 text-amber-900 border border-amber-300' 
       : 'bg-sky-100 text-sky-900 border border-sky-300';
-    const icon = item.type === 'house' ? '🏡' : '🏢';
+    
+    const hasPhotos = Array.isArray(item.photos) && item.photos.length > 0;
+
+    // Слайдер со свайпом 3-5 фото или иконка-заглушка
+    let mediaHtml = '';
+    if (hasPhotos) {
+      const photosImg = item.photos.map(url => `
+        <img src="${url}" loading="lazy" class="snap-center w-full h-52 object-cover shrink-0 select-none pointer-events-none" alt="${item.title}">
+      `).join('');
+
+      mediaHtml = `
+        <div class="relative h-52 bg-slate-900 overflow-hidden">
+          <div class="flex overflow-x-auto snap-x snap-mandatory no-scrollbar h-full w-full">
+            ${photosImg}
+          </div>
+          <!-- Затемнение под бейджи -->
+          <div class="absolute inset-x-0 top-0 h-14 bg-gradient-to-b from-black/60 to-transparent pointer-events-none"></div>
+          <span class="absolute top-3 left-3 bg-slate-900/80 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg backdrop-blur-xs">
+            ${item.city} • ${item.district}
+          </span>
+          <span class="absolute top-3 right-3 text-[10px] font-bold px-2 py-0.5 rounded-md ${badgeClass}">
+            ${item.badge}
+          </span>
+          ${item.photos.length > 1 ? `
+            <span class="absolute bottom-2.5 right-3 bg-slate-900/70 text-white text-[10px] font-medium px-2 py-0.5 rounded-full backdrop-blur-xs">
+              📷 1/${item.photos.length} свайп →
+            </span>
+          ` : ''}
+        </div>
+      `;
+    } else {
+      const icon = item.type === 'house' ? '🏡' : '🏢';
+      mediaHtml = `
+        <div class="h-36 bg-slate-100 flex items-center justify-center text-slate-400 relative">
+          <span class="absolute top-3 left-3 bg-slate-900/80 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg backdrop-blur-xs">
+            ${item.city} • ${item.district}
+          </span>
+          <span class="absolute top-3 right-3 text-[10px] font-bold px-2 py-0.5 rounded-md ${badgeClass}">
+            ${item.badge}
+          </span>
+          <span class="text-4xl">${icon}</span>
+        </div>
+      `;
+    }
 
     const card = document.createElement('div');
     card.className = "bg-white rounded-3xl overflow-hidden border border-slate-200 shadow-xs hover:border-slate-300 transition";
     card.innerHTML = `
-      <div class="h-36 bg-slate-100 flex items-center justify-center text-slate-400 relative">
-        <span class="absolute top-3 left-3 bg-slate-900/80 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg backdrop-blur-xs">
-          ${item.city} • ${item.district}
-        </span>
-        <span class="absolute top-3 right-3 text-[10px] font-bold px-2 py-0.5 rounded-md ${badgeClass}">
-          ${item.badge}
-        </span>
-        <span class="text-4xl">${icon}</span>
-      </div>
+      ${mediaHtml}
       <div class="p-4">
         <div class="flex justify-between items-start mb-1.5 gap-2">
           <h3 class="text-base font-bold text-slate-900 leading-snug">${item.title}</h3>
@@ -417,7 +476,7 @@ function renderRent() {
           <span class="text-[11px] text-slate-500 font-medium">${item.status}</span>
           <a href="${item.tg_link}" target="_blank" 
              class="bg-sky-600 hover:bg-sky-700 text-white text-xs font-semibold px-3 py-1.5 rounded-xl transition active:scale-95">
-            Фото и видео в TG ↗
+            Пост в TG ↗
           </a>
         </div>
       </div>
