@@ -449,20 +449,57 @@
       </div>
     </div>
 
-        <!-- Быстрые плашки-фильтры по срокам и типу -->
-    <div class="flex space-x-1.5 overflow-x-auto no-scrollbar pb-2 mb-3" id="rentFilterBar">
-      <button onclick="filterRent('all')" class="rent-chip active bg-slate-900 text-white text-xs font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap shadow-xs transition">
-        Все варианты
-      </button>
-      <button onclick="filterRent('year')" class="rent-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap hover:bg-sky-50 transition">
-        🔒 На год+
-      </button>
-      <button onclick="filterRent('season')" class="rent-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap hover:bg-sky-50 transition">
-        ⏳ До лета / от 1 мес
-      </button>
-      <button onclick="filterRent('house')" class="rent-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap hover:bg-sky-50 transition">
-        🏡 Дома и квартиры
-      </button>
+    <!-- Панель фильтров: Город (9 городов Абхазии) + Срок/Формат -->
+    <div class="space-y-2 mb-3.5 mt-3">
+      <!-- 1. Выбор города -->
+      <div class="flex items-center space-x-1.5 overflow-x-auto no-scrollbar pb-0.5" id="rentCityFilterBar">
+        <button onclick="setRentCity('all')" class="rent-city-chip active bg-slate-900 text-white text-xs font-semibold px-3 py-1.5 rounded-full whitespace-nowrap shadow-xs transition">
+          Все города
+        </button>
+        <button onclick="setRentCity('Гагра')" class="rent-city-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3 py-1.5 rounded-full whitespace-nowrap hover:bg-sky-50 transition">
+          Гагра
+        </button>
+        <button onclick="setRentCity('Цандрипш')" class="rent-city-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3 py-1.5 rounded-full whitespace-nowrap hover:bg-sky-50 transition">
+          Цандрипш
+        </button>
+        <button onclick="setRentCity('Пицунда')" class="rent-city-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3 py-1.5 rounded-full whitespace-nowrap hover:bg-sky-50 transition">
+          Пицунда
+        </button>
+        <button onclick="setRentCity('Гудаута')" class="rent-city-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3 py-1.5 rounded-full whitespace-nowrap hover:bg-sky-50 transition">
+          Гудаута
+        </button>
+        <button onclick="setRentCity('Новый Афон')" class="rent-city-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3 py-1.5 rounded-full whitespace-nowrap hover:bg-sky-50 transition">
+          Новый Афон
+        </button>
+        <button onclick="setRentCity('Сухум')" class="rent-city-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3 py-1.5 rounded-full whitespace-nowrap hover:bg-sky-50 transition">
+          Сухум
+        </button>
+        <button onclick="setRentCity('Очамчыра')" class="rent-city-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3 py-1.5 rounded-full whitespace-nowrap hover:bg-sky-50 transition">
+          Очамчыра
+        </button>
+        <button onclick="setRentCity('Ткуарчал')" class="rent-city-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3 py-1.5 rounded-full whitespace-nowrap hover:bg-sky-50 transition">
+          Ткуарчал
+        </button>
+        <button onclick="setRentCity('Гал')" class="rent-city-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3 py-1.5 rounded-full whitespace-nowrap hover:bg-sky-50 transition">
+          Гал
+        </button>
+      </div>
+
+      <!-- 2. Срок проживания и тип объекта -->
+      <div class="flex items-center space-x-1.5 overflow-x-auto no-scrollbar pb-1" id="rentTypeFilterBar">
+        <button onclick="setRentType('all')" class="rent-type-chip active bg-sky-600 text-white text-xs font-semibold px-3 py-1 rounded-full whitespace-nowrap shadow-xs transition">
+          Все форматы
+        </button>
+        <button onclick="setRentType('year')" class="rent-type-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3 py-1 rounded-full whitespace-nowrap hover:bg-sky-50 transition">
+          🔒 На год+
+        </button>
+        <button onclick="setRentType('season')" class="rent-type-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3 py-1 rounded-full whitespace-nowrap hover:bg-sky-50 transition">
+          ⏳ До лета / помесячно
+        </button>
+        <button onclick="setRentType('house')" class="rent-type-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3 py-1 rounded-full whitespace-nowrap hover:bg-sky-50 transition">
+          🏡 Дома и коттеджи
+        </button>
+      </div>
     </div>
 
     <!-- Динамический контейнер актуальных объектов -->
