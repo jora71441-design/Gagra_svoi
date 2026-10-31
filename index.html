@@ -449,32 +449,24 @@
       </div>
     </div>
 
-    <div class="space-y-3.5">
-      <div class="bg-white rounded-3xl overflow-hidden border border-slate-200 shadow-xs">
-        <div class="h-40 bg-slate-200 flex items-center justify-center text-slate-400 relative">
-          <span class="absolute top-3 left-3 bg-slate-900/80 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg backdrop-blur-xs">
-            Гагра • Кемпинг
-          </span>
-          <span class="text-4xl">🏢</span>
-        </div>
-        <div class="p-4">
-          <div class="flex justify-between items-start mb-1.5">
-            <h3 class="text-base font-bold text-slate-900 leading-snug">2-комнатная квартира с ремонтом</h3>
-            <span class="text-xs font-extrabold text-emerald-700 whitespace-nowrap ml-2">35 000 ₽ / мес</span>
-          </div>
-          <p class="text-xs text-slate-600 mb-3 leading-relaxed">
-            Вся необходимая мебель, стиральная машина, кондиционер, автономное отопление. Сдается на срок от 6 месяцев без выселения на лето.
-          </p>
-          <div class="flex items-center justify-between pt-2.5 border-t border-slate-100">
-            <span class="text-[11px] text-slate-500 font-medium">Свободна к заселению</span>
-            <a href="https://t.me/arenda_abkhazia_svoi" target="_blank" 
-               class="bg-sky-600 hover:bg-sky-700 text-white text-xs font-semibold px-3 py-1.5 rounded-xl transition">
-              Фото и видео в TG ↗
-            </a>
-          </div>
-        </div>
-      </div>
+        <!-- Быстрые плашки-фильтры по срокам и типу -->
+    <div class="flex space-x-1.5 overflow-x-auto no-scrollbar pb-2 mb-3" id="rentFilterBar">
+      <button onclick="filterRent('all')" class="rent-chip active bg-slate-900 text-white text-xs font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap shadow-xs transition">
+        Все варианты
+      </button>
+      <button onclick="filterRent('year')" class="rent-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap hover:bg-sky-50 transition">
+        🔒 На год+
+      </button>
+      <button onclick="filterRent('season')" class="rent-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap hover:bg-sky-50 transition">
+        ⏳ До лета / от 1 мес
+      </button>
+      <button onclick="filterRent('house')" class="rent-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap hover:bg-sky-50 transition">
+        🏡 Дома и квартиры
+      </button>
     </div>
+
+    <!-- Динамический контейнер актуальных объектов -->
+    <div class="space-y-3.5" id="rentContainer"></div>
 
     <!-- СКВОЗНОЙ РЕКЛАМНЫЙ БЛОК: СТАНЬ ТОПОМ НЕДЕЛИ -->
     <div class="mt-6 mb-2 p-4 rounded-3xl bg-slate-900 text-white shadow-xs border border-slate-800">
