@@ -292,8 +292,7 @@
       const list = document.getElementById('cardsList');
       list.innerHTML = '<div class="text-center py-10 text-slate-400 text-sm">Загружаем активные объекты...</div>';
 
-      try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/rent?select=*&is_approved=eq.true&is_active=eq.true&order=created_at.desc`, {
+      try {const res = await fetch(`${SUPABASE_URL}/rest/v1/rent?select=*&is_approved=eq.true&or=(is_active.is.null,is_active.eq.true)&order=id.desc`, {
           headers: {
             'apikey': SUPABASE_ANON_KEY,
             'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
