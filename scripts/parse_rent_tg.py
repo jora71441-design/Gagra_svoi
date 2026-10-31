@@ -1,4 +1,5 @@
 import urllib.request
+import urllib.error
 import re
 import html
 import json
@@ -124,7 +125,6 @@ def sync_to_supabase(items):
     if not items:
         return
     
-    # Отправляем пачкой с директивой игнорировать дубли по tg_link
     url = f"{SUPABASE_URL}/rest/v1/rent?on_conflict=tg_link"
     data_bytes = json.dumps(items).encode('utf-8')
 
@@ -141,31 +141,45 @@ def sync_to_supabase(items):
     )
     try:
         with urllib.request.urlopen(req) as resp:
-            print("Синхронизация с Supabase выполнена успешно!")
+            print("Успешно синхронизировано с Supabase!")
+    except urllib.error.HTTPError as e:
+        err_msg = e.read().decode('utf-8')
+        print(f"Ошибка Supabase HTTP {e.code}: {err_msg}")
+        raise e
     except Exception as e:
-        print(f"Ошибка при синхронизации с Supabase: {e}")
+        print(f"Сетевая ошибка: {e}")
+        raise e
 
 def main():
     os.makedirs("data", exist_ok=True)
     html_data = fetch_html()
     data = parse_posts(html_data)
 
-    # 1. Запись в локальный json (как резерв)
+    # 1. Запись в локальный json (как резервная копия)
     for idx, item in enumerate(data, 1):
         item["id"] = idx
     with open("data/rent.json", "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
-    # 2. Синхронизация с Supabase (для кабинета модератора)
-    # Удаляем числовые id перед отправкой в БД, чтобы Supabase использовал свои автоинкрементные id
+    # 2. Массив строго под колонки таблицы rent в Supabase (без лишних полей badge, status, type)
     db_items = []
     for it in data:
-        row = dict(it)
-        row.pop("id", None)
-        db_items.append(row)
+        db_items.append({
+            "title": it["title"],
+            "price": it["price"],
+            "city": it["city"],
+            "district": it["district"],
+            "category": it["category"],
+            "period": it["period"],
+            "desc": it["desc"],
+            "photos": it["photos"],
+            "tg_link": it["tg_link"],
+            "is_approved": True,
+            "is_active": True
+        })
         
     sync_to_supabase(db_items)
-    print(f"Готово! Обработано объектов: {len(data)}")
+    print(f"Готово! Обработано и передано объектов: {len(db_items)}")
 
 if __name__ == "__main__":
     main()
