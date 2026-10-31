@@ -449,9 +449,9 @@
       </div>
     </div>
 
-    <!-- Панель фильтров: Город (9 городов Абхазии) + Срок/Формат -->
-    <div class="space-y-2 mb-3.5 mt-3">
-      <!-- 1. Выбор города -->
+        <!-- Панель фильтров: 1. Город -> 2. Тип жилья -> 3. Срок проживания -->
+    <div class="space-y-1.5 mb-3.5 mt-2">
+      <!-- 1. Выбор города (9 городов Абхазии) -->
       <div class="flex items-center space-x-1.5 overflow-x-auto no-scrollbar pb-0.5" id="rentCityFilterBar">
         <button onclick="setRentCity('all')" class="rent-city-chip active bg-slate-900 text-white text-xs font-semibold px-3 py-1.5 rounded-full whitespace-nowrap shadow-xs transition">
           Все города
@@ -485,19 +485,29 @@
         </button>
       </div>
 
-      <!-- 2. Срок проживания и тип объекта -->
-      <div class="flex items-center space-x-1.5 overflow-x-auto no-scrollbar pb-1" id="rentTypeFilterBar">
-        <button onclick="setRentType('all')" class="rent-type-chip active bg-sky-600 text-white text-xs font-semibold px-3 py-1 rounded-full whitespace-nowrap shadow-xs transition">
+      <!-- 2. Тип объекта: Квартиры vs Дома -->
+      <div class="flex items-center space-x-1.5 overflow-x-auto no-scrollbar pb-0.5" id="rentCategoryFilterBar">
+        <button onclick="setRentCategory('all')" class="rent-cat-chip active bg-slate-900 text-white text-xs font-semibold px-3 py-1 rounded-full whitespace-nowrap shadow-xs transition">
           Все форматы
         </button>
-        <button onclick="setRentType('year')" class="rent-type-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3 py-1 rounded-full whitespace-nowrap hover:bg-sky-50 transition">
+        <button onclick="setRentCategory('flat')" class="rent-cat-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3 py-1 rounded-full whitespace-nowrap hover:bg-sky-50 transition">
+          🏢 Квартиры
+        </button>
+        <button onclick="setRentCategory('house')" class="rent-cat-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3 py-1 rounded-full whitespace-nowrap hover:bg-sky-50 transition">
+          🏡 Дома и коттеджи
+        </button>
+      </div>
+
+      <!-- 3. Срок проживания -->
+      <div class="flex items-center space-x-1.5 overflow-x-auto no-scrollbar pb-1" id="rentPeriodFilterBar">
+        <button onclick="setRentPeriod('all')" class="rent-period-chip active bg-sky-600 text-white text-xs font-semibold px-3 py-1 rounded-full whitespace-nowrap shadow-xs transition">
+          Любой срок
+        </button>
+        <button onclick="setRentPeriod('year')" class="rent-period-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3 py-1 rounded-full whitespace-nowrap hover:bg-sky-50 transition">
           🔒 На год+
         </button>
-        <button onclick="setRentType('season')" class="rent-type-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3 py-1 rounded-full whitespace-nowrap hover:bg-sky-50 transition">
+        <button onclick="setRentPeriod('season')" class="rent-period-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3 py-1 rounded-full whitespace-nowrap hover:bg-sky-50 transition">
           ⏳ До лета / помесячно
-        </button>
-        <button onclick="setRentType('house')" class="rent-type-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3 py-1 rounded-full whitespace-nowrap hover:bg-sky-50 transition">
-          🏡 Дома и коттеджи
         </button>
       </div>
     </div>
