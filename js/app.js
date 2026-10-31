@@ -391,7 +391,7 @@ function renderHelps() {
     const cleanPhone = (item.phone || '').replace(/[^0-9]/g, '');
     const linkHref = cleanPhone 
       ? `https://api.whatsapp.com/send?phone=${cleanPhone}&text=` + encodeURIComponent(`Здравствуйте! Пишу по поводу инициативы "${item.title}" на портале Город Своих.`)
-      : (item.chat_link || 'https://chat.whatsapp.com/GnHSLd8VWaxGboukz9s3FI');
+            : (item.chat_link || 'https://chat.whatsapp.com/CdowehMFvoy7E5uVBkGLRS?s=cl&p=a&iam=2');
 
     const card = document.createElement('div');
     card.className = "help-card bg-white rounded-3xl p-4 border border-slate-200 shadow-xs";
