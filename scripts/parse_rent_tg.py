@@ -131,4 +131,14 @@ def parse_posts(raw_html):
     return items
 
 def main():
-    os.makedirs("data", exist
+    os.makedirs("data", exist_ok=True)
+    html_data = fetch_html()
+    data = parse_posts(html_data)
+    
+    with open("data/rent.json", "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+    
+    print(f"Готово! Спарсено объявлений: {len(data)}")
+
+if __name__ == "__main__":
+    main()
