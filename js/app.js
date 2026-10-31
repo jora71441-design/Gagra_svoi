@@ -344,12 +344,49 @@ function parseHelpsFromChat(text) {
 
 // ==================== РЕНДЕРИНГ ====================
 
-function renderHelps(filterType = 'all') {
+let currentHelpsType = 'all';
+let currentAnimalSub = 'all';
+
+function renderHelps() {
   const container = document.getElementById('helpsContainer');
   if (!container) return;
   container.innerHTML = '';
 
-  const filtered = helpsData.filter(h => filterType === 'all' || h.type === filterType);
+  const filtered = helpsData.filter(item => {
+    // 1. Фильтр макро-направления
+    if (currentHelpsType !== 'all' && item.type !== currentHelpsType) {
+      return false;
+    }
+
+    // 2. Умная фильтрация подзакладок внутри раздела «Животные»
+    if (currentHelpsType === 'animals' && currentAnimalSub !== 'all') {
+      const fullTxt = `${item.title || ''} ${item.desc || ''}`.toLowerCase();
+      if (currentAnimalSub === 'adopt') {
+        // Ищут дом / пристрой
+        return /дом|пристрой|руки|щенок|щенят|котен|котят|малыш|отдам|семь/i.test(fullTxt);
+      } else if (currentAnimalSub === 'lost') {
+        // Потерянные и найденные
+        return /потер|пропал|нашл|найден|убежал|поиск|ошейник/i.test(fullTxt);
+      } else if (currentAnimalSub === 'shelter') {
+        // Лечение, корм, клиника, приют
+        return /приют|лечен|операц|клиник|вет|корм|сбор|стационар|стерил|вакцин/i.test(fullTxt);
+      }
+    }
+
+    return true;
+  });
+
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div class="bg-white rounded-3xl p-6 text-center border border-slate-200 shadow-xs">
+        <span class="text-3xl">🐾</span>
+        <p class="text-sm font-bold text-slate-800 mt-2">Пока нет активных записей в этой категории</p>
+        <p class="text-xs text-slate-500 mt-1">Вы можете предложить свою инициативу с помощью кнопки вверху.</p>
+      </div>
+    `;
+    return;
+  }
+
   filtered.forEach(item => {
     const cleanPhone = (item.phone || '').replace(/[^0-9]/g, '');
     const linkHref = cleanPhone 
@@ -368,7 +405,7 @@ function renderHelps(filterType = 'all') {
       <div class="flex items-center justify-between pt-2.5 border-t border-slate-100 text-xs">
         <span class="text-slate-500 font-medium">${item.city || 'Гагра'} • ${item.contact || 'Куратор'}</span>
         <a href="${linkHref}" target="_blank" 
-           class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-3 py-1.5 rounded-xl transition">
+           class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-3 py-1.5 rounded-xl transition active:scale-95">
           ${item.btn_text || 'Откликнуться'}
         </a>
       </div>
@@ -378,13 +415,44 @@ function renderHelps(filterType = 'all') {
 }
 
 function filterHelps(type) {
+  currentHelpsType = type;
+  currentAnimalSub = 'all';
+
+  // Переключение стилей кнопок первого уровня
   document.querySelectorAll('.help-chip').forEach(btn => {
     btn.className = "help-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap shadow-xs";
   });
   if (window.event && window.event.target) {
     window.event.target.className = "help-chip active bg-slate-900 text-white text-xs font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap shadow-xs";
   }
-  renderHelps(type);
+
+  // Показываем подзакладки только для животных
+  const subContainer = document.getElementById('animalSubBarContainer');
+  if (subContainer) {
+    subContainer.classList.toggle('hidden', type !== 'animals');
+  }
+
+  // Сбрасываем кнопки подзакладок на «Все животные»
+  document.querySelectorAll('.animal-sub-btn').forEach(btn => {
+    btn.className = "animal-sub-btn bg-white text-slate-700 text-[11px] font-semibold px-3 py-1 rounded-xl whitespace-nowrap hover:bg-emerald-50 transition";
+  });
+  const firstSub = document.querySelector('.animal-sub-btn');
+  if (firstSub) {
+    firstSub.className = "animal-sub-btn active bg-emerald-700 text-white text-[11px] font-bold px-3 py-1 rounded-xl whitespace-nowrap shadow-xs transition";
+  }
+
+  renderHelps();
+}
+
+function filterAnimalSub(subType) {
+  currentAnimalSub = subType;
+  document.querySelectorAll('.animal-sub-btn').forEach(btn => {
+    btn.className = "animal-sub-btn bg-white text-slate-700 text-[11px] font-semibold px-3 py-1 rounded-xl whitespace-nowrap hover:bg-emerald-50 transition";
+  });
+  if (window.event && window.event.target) {
+    window.event.target.className = "animal-sub-btn active bg-emerald-700 text-white text-[11px] font-bold px-3 py-1 rounded-xl whitespace-nowrap shadow-xs transition";
+  }
+  renderHelps();
 }
 
 function renderSubBar() {
