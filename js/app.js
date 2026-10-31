@@ -349,7 +349,7 @@ function parseHelpsFromChat(text) {
   return results.reverse();
 }
 
-// ==================== АРЕНДА И СДАЧА ЖИЛЬЯ ====================
+    // ==================== АРЕНДА И СДАЧА ЖИЛЬЯ ====================
 let rentList = [
   {
     id: 1,
@@ -357,8 +357,10 @@ let rentList = [
     price: "35 000 ₽ / мес",
     city: "Гагра",
     district: "Кемпинг",
-    type: "year",
-    badge: "🔒 Круглогодично",
+    category: "flat",
+    period: "year",
+    type: "flat",
+    badge: "🔒 На год+",
     desc: "Вся необходимая мебель, кондиционер, стиральная машина, автономное отопление. Фиксация цены без сезонных изменений.",
     photos: [],
     status: "Свободна к заселению",
@@ -368,7 +370,8 @@ let rentList = [
 
 let rentFilterState = {
   city: 'all',
-  type: 'all'
+  category: 'all', // 'flat' | 'house'
+  period: 'all'    // 'year' | 'season'
 };
 let rentDataLoaded = false;
 
@@ -407,9 +410,16 @@ function renderRent() {
       if (!itemCity.includes(filterCity)) return false;
     }
 
-    // 2. Фильтр по сроку и формату
-    if (rentFilterState.type !== 'all') {
-      if (item.type !== rentFilterState.type) return false;
+    // 2. Фильтр по категории: Квартира vs Дом
+    if (rentFilterState.category !== 'all') {
+      const itemCat = item.category || (item.type === 'house' ? 'house' : 'flat');
+      if (itemCat !== rentFilterState.category) return false;
+    }
+
+    // 3. Фильтр по сроку: На год+ vs До лета
+    if (rentFilterState.period !== 'all') {
+      const itemPeriod = item.period || (item.type === 'season' ? 'season' : 'year');
+      if (itemPeriod !== rentFilterState.period) return false;
     }
 
     return true;
@@ -427,11 +437,14 @@ function renderRent() {
   }
 
   filtered.forEach(item => {
-    const isYear = item.type === 'year';
-    const badgeClass = isYear 
+    const isYear = (item.period || item.type) !== 'season';
+    const periodBadge = isYear ? '🔒 На год+' : '⏳ До лета';
+    const periodClass = isYear 
       ? 'bg-amber-100 text-amber-900 border border-amber-300' 
       : 'bg-sky-100 text-sky-900 border border-sky-300';
     
+    const isHouse = (item.category === 'house' || item.type === 'house');
+    const catBadge = isHouse ? '🏡 Дом' : '🏢 Квартира';
     const hasPhotos = Array.isArray(item.photos) && item.photos.length > 0;
 
     let mediaHtml = '';
@@ -449,9 +462,14 @@ function renderRent() {
           <span class="absolute top-3 left-3 bg-slate-900/80 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg backdrop-blur-xs">
             ${item.city} • ${item.district}
           </span>
-          <span class="absolute top-3 right-3 text-[10px] font-bold px-2 py-0.5 rounded-md ${badgeClass}">
-            ${item.badge}
-          </span>
+          <div class="absolute top-3 right-3 flex items-center gap-1.5">
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-white/95 text-slate-800 shadow-xs">
+              ${catBadge}
+            </span>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-md ${periodClass}">
+              ${periodBadge}
+            </span>
+          </div>
           ${item.photos.length > 1 ? `
             <span class="absolute bottom-2.5 right-3 bg-slate-900/70 text-white text-[10px] font-medium px-2 py-0.5 rounded-full backdrop-blur-xs">
               📷 1/${item.photos.length} свайп →
@@ -460,15 +478,20 @@ function renderRent() {
         </div>
       `;
     } else {
-      const icon = item.type === 'house' ? '🏡' : '🏢';
+      const icon = isHouse ? '🏡' : '🏢';
       mediaHtml = `
         <div class="h-36 bg-slate-100 flex items-center justify-center text-slate-400 relative">
           <span class="absolute top-3 left-3 bg-slate-900/80 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg backdrop-blur-xs">
             ${item.city} • ${item.district}
           </span>
-          <span class="absolute top-3 right-3 text-[10px] font-bold px-2 py-0.5 rounded-md ${badgeClass}">
-            ${item.badge}
-          </span>
+          <div class="absolute top-3 right-3 flex items-center gap-1.5">
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-white text-slate-800 border border-slate-200">
+              ${catBadge}
+            </span>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-md ${periodClass}">
+              ${periodBadge}
+            </span>
+          </div>
           <span class="text-4xl">${icon}</span>
         </div>
       `;
@@ -502,19 +525,33 @@ function setRentCity(city) {
   document.querySelectorAll('.rent-city-chip').forEach(btn => {
     btn.className = "rent-city-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3 py-1.5 rounded-full whitespace-nowrap hover:bg-sky-50 transition";
   });
-  if (window.event && window.event.target) {
-    window.event.target.className = "rent-city-chip active bg-slate-900 text-white text-xs font-semibold px-3 py-1.5 rounded-full whitespace-nowrap shadow-xs transition";
+  const el = window.event && (window.event.currentTarget || window.event.target);
+  if (el) {
+    el.className = "rent-city-chip active bg-slate-900 text-white text-xs font-semibold px-3 py-1.5 rounded-full whitespace-nowrap shadow-xs transition";
   }
   renderRent();
 }
 
-function setRentType(type) {
-  rentFilterState.type = type;
-  document.querySelectorAll('.rent-type-chip').forEach(btn => {
-    btn.className = "rent-type-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3 py-1 rounded-full whitespace-nowrap hover:bg-sky-50 transition";
+function setRentCategory(cat) {
+  rentFilterState.category = cat;
+  document.querySelectorAll('.rent-cat-chip').forEach(btn => {
+    btn.className = "rent-cat-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3 py-1 rounded-full whitespace-nowrap hover:bg-sky-50 transition";
   });
-  if (window.event && window.event.target) {
-    window.event.target.className = "rent-type-chip active bg-sky-600 text-white text-xs font-semibold px-3 py-1 rounded-full whitespace-nowrap shadow-xs transition";
+  const el = window.event && (window.event.currentTarget || window.event.target);
+  if (el) {
+    el.className = "rent-cat-chip active bg-slate-900 text-white text-xs font-semibold px-3 py-1 rounded-full whitespace-nowrap shadow-xs transition";
+  }
+  renderRent();
+}
+
+function setRentPeriod(period) {
+  rentFilterState.period = period;
+  document.querySelectorAll('.rent-period-chip').forEach(btn => {
+    btn.className = "rent-period-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3 py-1 rounded-full whitespace-nowrap hover:bg-sky-50 transition";
+  });
+  const el = window.event && (window.event.currentTarget || window.event.target);
+  if (el) {
+    el.className = "rent-period-chip active bg-sky-600 text-white text-xs font-semibold px-3 py-1 rounded-full whitespace-nowrap shadow-xs transition";
   }
   renderRent();
 }
