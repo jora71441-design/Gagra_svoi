@@ -8,6 +8,8 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body { -webkit-tap-highlight-color: transparent; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
 <body class="bg-slate-100 text-slate-800 min-h-screen pb-16 font-sans">
@@ -27,16 +29,16 @@
     <!-- Вкладки разделов -->
     <div class="flex gap-1.5 mt-3 overflow-x-auto no-scrollbar">
       <button onclick="switchTab('masters')" id="tab-masters" class="tab-btn active px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap bg-slate-900 text-white">
-        🛠 Мастера <span id="badge-masters" class="ml-1 bg-white/20 text-white text-[10px] px-1.5 py-0.5 rounded-full hidden">0</span>
+        🛠 Мастера
       </button>
       <button onclick="switchTab('jobs')" id="tab-jobs" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-semibold transition whitespace-nowrap bg-white text-slate-600 border border-slate-200">
-        💼 Вакансии <span id="badge-jobs" class="ml-1 bg-slate-200 text-slate-700 text-[10px] px-1.5 py-0.5 rounded-full hidden">0</span>
+        💼 Вакансии
       </button>
       <button onclick="switchTab('rent')" id="tab-rent" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-semibold transition whitespace-nowrap bg-white text-slate-600 border border-slate-200">
-        🏠 Аренда <span id="badge-rent" class="ml-1 bg-slate-200 text-slate-700 text-[10px] px-1.5 py-0.5 rounded-full hidden">0</span>
+        🏠 Аренда
       </button>
       <button onclick="switchTab('helps')" id="tab-helps" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-semibold transition whitespace-nowrap bg-white text-slate-600 border border-slate-200">
-        🤝 Помощь <span id="badge-helps" class="ml-1 bg-slate-200 text-slate-700 text-[10px] px-1.5 py-0.5 rounded-full hidden">0</span>
+        🤝 Помощь
       </button>
       <button onclick="switchTab('promos')" id="tab-promos" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap bg-amber-50 text-amber-900 border border-amber-300">
         👑 Закрепы и Топ
@@ -48,8 +50,20 @@
   <main class="p-4 max-w-lg mx-auto">
     <div class="flex items-center justify-between mb-3">
       <span class="text-xs font-bold uppercase tracking-wider text-slate-500" id="sectionTitle">Заявки мастеров</span>
-      <button onclick="refreshCurrentTab()" class="text-xs font-semibold text-emerald-700 hover:text-emerald-800 flex items-center gap-1">
+      <button onclick="refreshCurrentTab()" class="text-xs font-semibold text-emerald-700 hover:text-emerald-800 flex items-center gap-1 active:scale-95 transition">
         ↻ Обновить
+      </button>
+    </div>
+
+    <!-- Подвкладки для Аренды (На модерации vs Активные) -->
+    <div id="rentSubNavBar" class="hidden mb-3 grid grid-cols-2 gap-2 bg-slate-200/70 p-1 rounded-2xl">
+      <button onclick="switchRentSubTab('pending')" id="rentSubBtn-pending" 
+              class="py-2 text-xs font-bold rounded-xl bg-slate-900 text-white transition shadow-xs">
+        ⏳ На модерации
+      </button>
+      <button onclick="switchRentSubTab('active')" id="rentSubBtn-active" 
+              class="py-2 text-xs font-semibold rounded-xl text-slate-600 hover:text-slate-900 transition">
+        ✅ На сайте (снять/сдано)
       </button>
     </div>
 
@@ -65,6 +79,86 @@
     </div>
   </main>
 
+  <!-- МОДАЛЬНОЕ ОКНО РЕДАКТИРОВАНИЯ ОБЪЕКТА АРЕНДЫ -->
+  <div id="rentEditModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl p-5 max-h-[90vh] overflow-y-auto space-y-3 shadow-2xl">
+      <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+        <h3 class="text-sm font-bold text-slate-900">✏️ Редактирование объекта</h3>
+        <button onclick="closeRentEditModal()" class="text-slate-400 hover:text-slate-700 text-xl font-bold leading-none p-1">✕</button>
+      </div>
+
+      <input type="hidden" id="editRentId">
+
+      <div>
+        <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Тип недвижимости</label>
+        <select id="editRentTitle" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-sky-500">
+          <option value="1-комн. квартира">1-комнатная квартира</option>
+          <option value="2-комн. квартира">2-комнатная квартира</option>
+          <option value="3-комн. квартира">3-комнатная квартира</option>
+          <option value="Частный дом / Коттедж">Частный дом / Коттедж</option>
+          <option value="Студия / Номер">Студия со всеми удобствами</option>
+        </select>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Цена в месяц</label>
+          <input type="text" id="editRentPrice" placeholder="35 000 ₽" 
+                 class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500">
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Город</label>
+          <select id="editRentCity" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2 py-2 text-xs text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-sky-500">
+            <option value="Гагра">Гагра</option>
+            <option value="Цандрипш">Цандрипш</option>
+            <option value="Пицунда">Пицунда</option>
+            <option value="Гудаута">Гудаута</option>
+            <option value="Новый Афон">Новый Афон</option>
+            <option value="Сухум">Сухум</option>
+            <option value="Ткуарчал">Ткуарчал</option>
+            <option value="Очамчыра">Очамчыра</option>
+            <option value="Гал">Гал</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Район / Улица</label>
+        <input type="text" id="editRentDistrict" placeholder="Центр, Кемпинг, ул. Абазгаа..." 
+               class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500">
+      </div>
+
+      <div>
+        <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Описание и условия</label>
+        <textarea id="editRentDesc" rows="3" 
+                  class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500"></textarea>
+      </div>
+
+      <div>
+        <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Телефон собственника</label>
+        <input type="tel" id="editRentPhone" 
+               class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-mono text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500">
+      </div>
+
+      <div class="pt-2 space-y-2">
+        <button onclick="saveRentEdit(true)" id="btnSaveAndApprove" 
+                class="w-full bg-emerald-600 hover:bg-emerald-700 active:scale-98 text-white font-bold py-3 px-4 rounded-xl text-xs transition shadow-xs flex items-center justify-center gap-1.5">
+          ✓ Сохранить и одобрить на сайт
+        </button>
+        <button onclick="saveRentEdit(false)" 
+                class="w-full bg-slate-900 hover:bg-slate-800 active:scale-98 text-white font-semibold py-2.5 px-4 rounded-xl text-xs transition">
+          💾 Только сохранить изменения
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ПОЛНОЭКРАННЫЙ ПРОСМОТР ФОТО -->
+  <div id="photoViewerModal" class="fixed inset-0 z-50 bg-black/90 hidden flex items-center justify-center p-4" onclick="closePhotoViewer()">
+    <button onclick="closePhotoViewer()" class="absolute top-4 right-4 text-white text-2xl font-bold bg-white/20 hover:bg-white/30 rounded-full w-10 h-10 flex items-center justify-center">✕</button>
+    <img id="photoViewerImg" src="" class="max-w-full max-h-[85vh] rounded-2xl object-contain shadow-2xl" onclick="event.stopPropagation()">
+  </div>
+
   <script>
     const tg = window.Telegram?.WebApp;
     if (tg) {
@@ -76,8 +170,10 @@
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl6Ym9jaHJhaG11aHZyeWluYWpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMyNzYyODcsImV4cCI6MjEwODg1MjI4N30.dTjerKbrcLuTEr5xPKXkR43Df4ECaGA-ztCrGD_SO-A';
 
     let currentTab = 'masters';
+    let rentSubTab = 'pending'; // 'pending' | 'active'
     let adminPin = localStorage.getItem('gsvoi_pin') || '7788';
     let approvedMastersCache = [];
+    let currentRentCache = [];
 
     function checkPin() {
       if (!adminPin) {
@@ -100,6 +196,9 @@
     function refreshCurrentTab() {
       if (currentTab === 'promos') {
         loadApprovedMasters();
+      } else if (currentTab === 'rent') {
+        if (rentSubTab === 'pending') loadPending('rent');
+        else loadApprovedRent();
       } else {
         loadPending(currentTab);
       }
@@ -122,10 +221,13 @@
       const pSearch = document.getElementById('promosSearchBar');
       if (pSearch) pSearch.classList.toggle('hidden', tab !== 'promos');
 
+      const rSubNav = document.getElementById('rentSubNavBar');
+      if (rSubNav) rSubNav.classList.toggle('hidden', tab !== 'rent');
+
       const titles = {
         masters: 'Заявки мастеров',
         jobs: 'Вакансии и резюме',
-        rent: 'Объекты аренды',
+        rent: 'Управление арендой жилья',
         helps: 'Инициативы взаимовыручки',
         promos: 'Управление закрепами и Топом'
       };
@@ -133,8 +235,27 @@
 
       if (tab === 'promos') {
         loadApprovedMasters();
+      } else if (tab === 'rent') {
+        if (rentSubTab === 'pending') loadPending('rent');
+        else loadApprovedRent();
       } else {
         loadPending(tab);
+      }
+    }
+
+    function switchRentSubTab(sub) {
+      rentSubTab = sub;
+      const btnPending = document.getElementById('rentSubBtn-pending');
+      const btnActive = document.getElementById('rentSubBtn-active');
+
+      if (sub === 'pending') {
+        btnPending.className = "py-2 text-xs font-bold rounded-xl bg-slate-900 text-white transition shadow-xs";
+        btnActive.className = "py-2 text-xs font-semibold rounded-xl text-slate-600 hover:text-slate-900 transition";
+        loadPending('rent');
+      } else {
+        btnActive.className = "py-2 text-xs font-bold rounded-xl bg-sky-700 text-white transition shadow-xs";
+        btnPending.className = "py-2 text-xs font-semibold rounded-xl text-slate-600 hover:text-slate-900 transition";
+        loadApprovedRent();
       }
     }
 
@@ -160,9 +281,35 @@
         }
 
         const items = await res.json();
+        if (table === 'rent') currentRentCache = items || [];
         renderCards(items, table);
       } catch (e) {
         list.innerHTML = '<div class="text-center py-10 text-red-500 text-xs">Ошибка соединения с базой</div>';
+      }
+    }
+
+    async function loadApprovedRent() {
+      const list = document.getElementById('cardsList');
+      list.innerHTML = '<div class="text-center py-10 text-slate-400 text-sm">Загружаем активные объекты...</div>';
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/rent?select=*&is_approved=eq.true&order=created_at.desc`, {
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+          }
+        });
+
+        if (!res.ok) {
+          list.innerHTML = `<div class="bg-red-50 border border-red-200 text-red-700 p-4 rounded-2xl text-xs">Не удалось загрузить объекты аренды</div>`;
+          return;
+        }
+
+        const items = await res.json();
+        currentRentCache = items || [];
+        renderActiveRentCards(items);
+      } catch (e) {
+        list.innerHTML = '<div class="text-center py-10 text-red-500 text-xs">Сетевой сбой при загрузке</div>';
       }
     }
 
@@ -187,7 +334,10 @@
 
         let mainContent = '';
         const phone = item.phone || '';
-        const cleanPhone = phone.replace(/[^0-9]/g, '');
+        let cleanPhone = phone.replace(/[^0-9]/g, '');
+        if (cleanPhone.length === 9 && cleanPhone.startsWith('9')) cleanPhone = '7' + cleanPhone;
+        if (cleanPhone.length === 10 && cleanPhone.startsWith('9')) cleanPhone = '7' + cleanPhone;
+        if (cleanPhone.startsWith('8') && cleanPhone.length === 11) cleanPhone = '7' + cleanPhone.slice(1);
 
         if (table === 'masters') {
           mainContent = `
@@ -214,16 +364,31 @@
             <p class="text-[11px] text-slate-500">${item.city || 'Гагра'} • ${item.contact || ''}</p>
           `;
         } else if (table === 'rent') {
+          const photos = Array.isArray(item.photos) ? item.photos : [];
+          let photosHtml = '';
+          if (photos.length > 0) {
+            photosHtml = `
+              <div class="flex gap-1.5 overflow-x-auto no-scrollbar py-1">
+                ${photos.map((p, pIdx) => `
+                  <div class="relative w-16 h-16 rounded-xl overflow-hidden border border-slate-200 shrink-0 cursor-pointer bg-slate-100 group" onclick="openPhotoViewer('${p}')">
+                    <img src="${p}" class="w-full h-full object-cover group-hover:scale-105 transition" loading="lazy">
+                  </div>
+                `).join('')}
+              </div>
+            `;
+          }
+
           mainContent = `
             <div class="flex items-start justify-between">
               <div>
                 <span class="text-[10px] font-bold bg-sky-50 text-sky-800 border border-sky-200 px-2 py-0.5 rounded-md">Аренда</span>
                 <h3 class="text-base font-bold text-slate-900 mt-1">${item.title}</h3>
               </div>
-              <span class="text-xs font-bold text-emerald-700">${item.price} ₽</span>
+              <span class="text-xs font-bold text-emerald-700">${item.price}</span>
             </div>
+            ${photosHtml}
             <p class="text-xs text-slate-600 leading-relaxed">${item.desc}</p>
-            <p class="text-[11px] text-slate-500">${item.district || 'Гагра'}</p>
+            <p class="text-[11px] text-slate-500 font-medium">📍 ${item.district || item.city || 'Гагра'}</p>
           `;
         } else if (table === 'helps') {
           mainContent = `
@@ -239,24 +404,202 @@
           `;
         }
 
+        let actionButtons = '';
+        if (table === 'rent') {
+          actionButtons = `
+            <div class="grid grid-cols-3 gap-1.5 pt-1">
+              <button onclick="openRentEditModal(${item.id})" class="bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-bold py-2.5 px-2 rounded-2xl text-xs transition flex items-center justify-center gap-1 active:scale-98">
+                ✏️ Правка
+              </button>
+              <button onclick="approveItem('${table}', ${item.id})" class="bg-emerald-600 hover:bg-emerald-700 active:scale-98 text-white font-bold py-2.5 px-2 rounded-2xl text-xs transition shadow-xs flex items-center justify-center gap-1">
+                ✓ Одобрить
+              </button>
+              <button onclick="deleteItem('${table}', ${item.id})" class="bg-slate-100 hover:bg-rose-50 hover:text-rose-700 active:scale-98 text-slate-700 font-semibold py-2.5 px-2 rounded-2xl text-xs transition flex items-center justify-center gap-1">
+                ✕ Отклонить
+              </button>
+            </div>
+          `;
+        } else {
+          actionButtons = `
+            <div class="grid grid-cols-2 gap-2 pt-1">
+              <button onclick="approveItem('${table}', ${item.id})" class="bg-emerald-600 hover:bg-emerald-700 active:scale-98 text-white font-bold py-2.5 px-3 rounded-2xl text-xs transition shadow-xs flex items-center justify-center gap-1">
+                ✓ Одобрить
+              </button>
+              <button onclick="deleteItem('${table}', ${item.id})" class="bg-slate-100 hover:bg-rose-50 hover:text-rose-700 active:scale-98 text-slate-700 font-semibold py-2.5 px-3 rounded-2xl text-xs transition flex items-center justify-center gap-1">
+                ✕ Отклонить
+              </button>
+            </div>
+          `;
+        }
+
         card.innerHTML = `
           ${mainContent}
           <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
             <span class="font-mono text-slate-600">${phone}</span>
             ${cleanPhone ? `<a href="https://wa.me/${cleanPhone}" target="_blank" class="text-emerald-700 font-semibold hover:underline">Написать в WhatsApp →</a>` : ''}
           </div>
+          ${actionButtons}
+        `;
+        list.appendChild(card);
+      });
+    }
+
+    function renderActiveRentCards(items) {
+      const list = document.getElementById('cardsList');
+      list.innerHTML = '';
+
+      if (!items || items.length === 0) {
+        list.innerHTML = `
+          <div class="bg-white rounded-3xl p-8 text-center border border-slate-200/80 shadow-xs">
+            <span class="text-3xl">🏠</span>
+            <p class="text-sm font-bold text-slate-800 mt-2">Нет опубликованных объявлений</p>
+            <p class="text-xs text-slate-500 mt-1">Одобрите входящие заявки во вкладке «На модерации».</p>
+          </div>
+        `;
+        return;
+      }
+
+      items.forEach(item => {
+        const card = document.createElement('div');
+        card.className = "bg-white rounded-3xl p-4 border border-slate-200 shadow-xs space-y-3";
+
+        const photos = Array.isArray(item.photos) ? item.photos : [];
+        let photosHtml = '';
+        if (photos.length > 0) {
+          photosHtml = `
+            <div class="flex gap-1.5 overflow-x-auto no-scrollbar py-1">
+              ${photos.map((p) => `
+                <div class="relative w-16 h-16 rounded-xl overflow-hidden border border-slate-200 shrink-0 cursor-pointer bg-slate-100" onclick="openPhotoViewer('${p}')">
+                  <img src="${p}" class="w-full h-full object-cover" loading="lazy">
+                </div>
+              `).join('')}
+            </div>
+          `;
+        }
+
+        const phone = item.phone || '';
+        let cleanPhone = phone.replace(/[^0-9]/g, '');
+        if (cleanPhone.length === 9 && cleanPhone.startsWith('9')) cleanPhone = '7' + cleanPhone;
+        if (cleanPhone.length === 10 && cleanPhone.startsWith('9')) cleanPhone = '7' + cleanPhone;
+        if (cleanPhone.startsWith('8') && cleanPhone.length === 11) cleanPhone = '7' + cleanPhone.slice(1);
+
+        card.innerHTML = `
+          <div class="flex items-start justify-between">
+            <div>
+              <span class="text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-md">✅ Опубликовано на сайте</span>
+              <h3 class="text-base font-bold text-slate-900 mt-1">${item.title}</h3>
+            </div>
+            <span class="text-xs font-bold text-emerald-700">${item.price}</span>
+          </div>
+          ${photosHtml}
+          <p class="text-xs text-slate-600 leading-relaxed">${item.desc}</p>
+          <p class="text-[11px] text-slate-500 font-medium">📍 ${item.district || item.city || 'Гагра'}</p>
+          
+          <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+            <span class="font-mono text-slate-600">${phone}</span>
+            ${cleanPhone ? `<a href="https://wa.me/${cleanPhone}" target="_blank" class="text-emerald-700 font-semibold hover:underline">WhatsApp →</a>` : ''}
+          </div>
+
           <div class="grid grid-cols-2 gap-2 pt-1">
-            <button onclick="approveItem('${table}', ${item.id})" class="bg-emerald-600 hover:bg-emerald-700 active:scale-98 text-white font-bold py-2.5 px-3 rounded-2xl text-xs transition shadow-xs flex items-center justify-center gap-1">
-              ✓ Одобрить
+            <button onclick="openRentEditModal(${item.id})" class="bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-2.5 px-3 rounded-2xl text-xs transition flex items-center justify-center gap-1 active:scale-98">
+              ✏️ Редактировать
             </button>
-            <button onclick="deleteItem('${table}', ${item.id})" class="bg-slate-100 hover:bg-rose-50 hover:text-rose-700 active:scale-98 text-slate-700 font-semibold py-2.5 px-3 rounded-2xl text-xs transition flex items-center justify-center gap-1">
-              ✕ Отклонить
+            <button onclick="unpublishRentItem(${item.id})" class="bg-rose-600 hover:bg-rose-700 text-white font-bold py-2.5 px-3 rounded-2xl text-xs transition flex items-center justify-center gap-1 active:scale-98 shadow-xs">
+              🔒 Снять (Сдано)
             </button>
           </div>
         `;
         list.appendChild(card);
       });
     }
+
+    // ==================== МОДАЛКА РЕДАКТИРОВАНИЯ АРЕНДЫ ====================
+
+    function openRentEditModal(id) {
+      const item = currentRentCache.find(x => x.id === id);
+      if (!item) return;
+
+      document.getElementById('editRentId').value = item.id;
+      document.getElementById('editRentTitle').value = item.title || '1-комн. квартира';
+      document.getElementById('editRentPrice').value = item.price || '';
+      document.getElementById('editRentCity').value = item.city || item.district || 'Гагра';
+      document.getElementById('editRentDistrict').value = item.district || '';
+      document.getElementById('editRentDesc').value = item.desc || '';
+      document.getElementById('editRentPhone').value = item.phone || '';
+
+      const btnSaveApprove = document.getElementById('btnSaveAndApprove');
+      if (rentSubTab === 'active') {
+        btnSaveApprove.classList.add('hidden');
+      } else {
+        btnSaveApprove.classList.remove('hidden');
+      }
+
+      document.getElementById('rentEditModal').classList.remove('hidden');
+    }
+
+    function closeRentEditModal() {
+      document.getElementById('rentEditModal').classList.add('hidden');
+    }
+
+    async function saveRentEdit(andApprove = false) {
+      const id = document.getElementById('editRentId').value;
+      const updatedData = {
+        title: document.getElementById('editRentTitle').value.trim(),
+        price: document.getElementById('editRentPrice').value.trim(),
+        city: document.getElementById('editRentCity').value.trim(),
+        district: document.getElementById('editRentDistrict').value.trim(),
+        desc: document.getElementById('editRentDesc').value.trim(),
+        phone: document.getElementById('editRentPhone').value.trim()
+      };
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/rent?id=eq.${id}`, {
+          method: 'PATCH',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=minimal'
+          },
+          body: JSON.stringify(updatedData)
+        });
+
+        if (!res.ok) {
+          throw new Error('Не удалось сохранить изменения');
+        }
+
+        closeRentEditModal();
+
+        if (andApprove) {
+          await approveItem('rent', id);
+        } else {
+          if (rentSubTab === 'pending') loadPending('rent');
+          else loadApprovedRent();
+        }
+      } catch (err) {
+        alert('Ошибка сохранения: ' + err.message);
+      }
+    }
+
+    async function unpublishRentItem(id) {
+      if (!confirm('Снять объект с публикации? Он будет помечен как сданный и удалён с витрины сайта.')) return;
+      await deleteItem('rent', id);
+      loadApprovedRent();
+    }
+
+    // ==================== ПРОСМОТР ФОТО ====================
+
+    function openPhotoViewer(url) {
+      document.getElementById('photoViewerImg').src = url;
+      document.getElementById('photoViewerModal').classList.remove('hidden');
+    }
+
+    function closePhotoViewer() {
+      document.getElementById('photoViewerModal').classList.add('hidden');
+      document.getElementById('photoViewerImg').src = '';
+    }
+
+    // ==================== СТАНДАРТНЫЕ ДЕЙСТВИЯ (ОДОБРИТЬ / УДАЛИТЬ) ====================
 
     async function approveItem(table, id) {
       if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
@@ -272,7 +615,8 @@
         });
         if (res.ok) {
           if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-          loadPending(table);
+          if (table === 'rent' && rentSubTab === 'active') loadApprovedRent();
+          else loadPending(table);
         } else {
           alert('Ошибка при одобрении записи');
         }
@@ -282,7 +626,7 @@
     }
 
     async function deleteItem(table, id) {
-      if (!confirm('Точно отклонить и удалить эту заявку?')) return;
+      if (table !== 'rent' && !confirm('Точно отклонить и удалить эту заявку?')) return;
       if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('rigid');
       try {
         const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/delete_record`, {
@@ -295,7 +639,8 @@
           body: JSON.stringify({ table_name: table, record_id: id, secret_pin: adminPin })
         });
         if (res.ok) {
-          loadPending(table);
+          if (table === 'rent' && rentSubTab === 'active') loadApprovedRent();
+          else loadPending(table);
         } else {
           alert('Ошибка при удалении');
         }
@@ -304,7 +649,7 @@
       }
     }
 
-    // ==================== ВЛАДКА: УПРАВЛЕНИЕ ЗАКРЕПАМИ ====================
+    // ==================== ВКЛАДКА: УПРАВЛЕНИЕ ЗАКРЕПАМИ ====================
 
     async function loadApprovedMasters() {
       const list = document.getElementById('cardsList');
@@ -330,7 +675,7 @@
       }
     }
     
-       function filterPromosList() {
+    function filterPromosList() {
       const search = (document.getElementById('promosSearchInput')?.value || '').toLowerCase().trim();
       const list = document.getElementById('cardsList');
       list.innerHTML = '';
