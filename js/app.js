@@ -375,8 +375,33 @@ let rentFilterState = {
 };
 let rentDataLoaded = false;
 
-// Автоматическая загрузка спарсенной базы из data/rent.json
+// 1. Сквозная загрузка: тянем напрямую из Supabase (все одобренные и активные)
 async function loadRentData() {
+  try {
+    const sUrl = (typeof SUPABASE_URL !== 'undefined') ? SUPABASE_URL : 'https://yzbochrahmuhvryinajr.supabase.co';
+    const sKey = (typeof SUPABASE_ANON_KEY !== 'undefined') ? SUPABASE_ANON_KEY : (typeof SUPABASE_KEY !== 'undefined' ? SUPABASE_KEY : '');
+
+    const res = await fetch(`${sUrl}/rest/v1/rent?select=*&is_approved=eq.true&or=(is_active.is.null,is_active.eq.true)&order=id.desc`, {
+      headers: {
+        'apikey': sKey,
+        'Authorization': `Bearer ${sKey}`
+      }
+    });
+
+    if (res.ok) {
+      const dbItems = await res.json();
+      if (Array.isArray(dbItems) && dbItems.length > 0) {
+        rentList = dbItems;
+        rentDataLoaded = true;
+        renderRent();
+        return;
+      }
+    }
+  } catch (e) {
+    console.warn('Ошибка загрузки из Supabase, пробуем data/rent.json:', e);
+  }
+
+  // Резервный фолбэк на локальный data/rent.json
   try {
     const res = await fetch('data/rent.json?v=' + Date.now());
     if (res.ok) {
@@ -386,7 +411,7 @@ async function loadRentData() {
       }
     }
   } catch (e) {
-    console.warn('Локальный rent.json пока недоступен, используется резервная база:', e);
+    console.error('Ошибка загрузки резервного rent.json:', e);
   }
   rentDataLoaded = true;
   renderRent();
@@ -403,23 +428,27 @@ function renderRent() {
   container.innerHTML = '';
 
   const filtered = rentList.filter(item => {
-    // 1. Фильтр по городу
+    // 1. Фильтр по городу (проверяем и city, и district)
     if (rentFilterState.city !== 'all') {
-      const itemCity = (item.city || '').toLowerCase();
+      const itemCity = (item.city || item.district || '').toLowerCase();
       const filterCity = rentFilterState.city.toLowerCase();
       if (!itemCity.includes(filterCity)) return false;
     }
 
     // 2. Фильтр по категории: Квартира vs Дом
     if (rentFilterState.category !== 'all') {
-      const itemCat = item.category || (item.type === 'house' ? 'house' : 'flat');
-      if (itemCat !== rentFilterState.category) return false;
+      const textForCat = ((item.category || item.type || '') + ' ' + (item.title || '')).toLowerCase();
+      const isHouse = textForCat.includes('дом') || textForCat.includes('коттедж') || textForCat.includes('house');
+      const actualCat = isHouse ? 'house' : 'flat';
+      if (actualCat !== rentFilterState.category) return false;
     }
 
     // 3. Фильтр по сроку: На год+ vs До лета
     if (rentFilterState.period !== 'all') {
-      const itemPeriod = item.period || (item.type === 'season' ? 'season' : 'year');
-      if (itemPeriod !== rentFilterState.period) return false;
+      const textForPeriod = ((item.period || item.type || '') + ' ' + (item.badge || '') + ' ' + (item.desc || '')).toLowerCase();
+      const isSeason = textForPeriod.includes('season') || textForPeriod.includes('до лета') || textForPeriod.includes('помесячн');
+      const actualPeriod = isSeason ? 'season' : 'year';
+      if (actualPeriod !== rentFilterState.period) return false;
     }
 
     return true;
@@ -437,19 +466,25 @@ function renderRent() {
   }
 
   filtered.forEach(item => {
-    const isYear = (item.period || item.type) !== 'season';
-    const periodBadge = isYear ? '🔒 На год+' : '⏳ До лета';
-    const periodClass = isYear 
-      ? 'bg-amber-100 text-amber-900 border border-amber-300' 
-      : 'bg-sky-100 text-sky-900 border border-sky-300';
+    const textForPeriod = ((item.period || item.type || '') + ' ' + (item.badge || '') + ' ' + (item.desc || '')).toLowerCase();
+    const isSeason = textForPeriod.includes('season') || textForPeriod.includes('до лета') || textForPeriod.includes('помесячн');
+    const periodBadge = isSeason ? '⏳ До лета' : '🔒 На год+';
+    const periodClass = isSeason 
+      ? 'bg-sky-100 text-sky-900 border border-sky-300' 
+      : 'bg-amber-100 text-amber-900 border border-amber-300';
     
-    const isHouse = (item.category === 'house' || item.type === 'house');
+    const textForCat = ((item.category || item.type || '') + ' ' + (item.title || '')).toLowerCase();
+    const isHouse = textForCat.includes('дом') || textForCat.includes('коттедж') || textForCat.includes('house');
     const catBadge = isHouse ? '🏡 Дом' : '🏢 Квартира';
-    const hasPhotos = Array.isArray(item.photos) && item.photos.length > 0;
+
+    const photos = Array.isArray(item.photos) ? item.photos : [];
+    const hasPhotos = photos.length > 0;
+    const itemCity = item.city || item.district || 'Гагра';
+    const itemDistrict = item.district ? (item.city && item.city !== item.district ? ` • ${item.district}` : '') : '';
 
     let mediaHtml = '';
     if (hasPhotos) {
-      const photosImg = item.photos.map(url => `
+      const photosImg = photos.map(url => `
         <img src="${url}" loading="lazy" class="snap-center w-full h-52 object-cover shrink-0 select-none pointer-events-none" alt="${item.title}">
       `).join('');
 
@@ -460,7 +495,7 @@ function renderRent() {
           </div>
           <div class="absolute inset-x-0 top-0 h-14 bg-gradient-to-b from-black/60 to-transparent pointer-events-none"></div>
           <span class="absolute top-3 left-3 bg-slate-900/80 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg backdrop-blur-xs">
-            ${item.city} • ${item.district}
+            ${itemCity}${itemDistrict}
           </span>
           <div class="absolute top-3 right-3 flex items-center gap-1.5">
             <span class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-white/95 text-slate-800 shadow-xs">
@@ -470,9 +505,9 @@ function renderRent() {
               ${periodBadge}
             </span>
           </div>
-          ${item.photos.length > 1 ? `
+          ${photos.length > 1 ? `
             <span class="absolute bottom-2.5 right-3 bg-slate-900/70 text-white text-[10px] font-medium px-2 py-0.5 rounded-full backdrop-blur-xs">
-              📷 1/${item.photos.length} свайп →
+              📷 1/${photos.length} свайп →
             </span>
           ` : ''}
         </div>
@@ -482,7 +517,7 @@ function renderRent() {
       mediaHtml = `
         <div class="h-36 bg-slate-100 flex items-center justify-center text-slate-400 relative">
           <span class="absolute top-3 left-3 bg-slate-900/80 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg backdrop-blur-xs">
-            ${item.city} • ${item.district}
+            ${itemCity}${itemDistrict}
           </span>
           <div class="absolute top-3 right-3 flex items-center gap-1.5">
             <span class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-white text-slate-800 border border-slate-200">
@@ -497,6 +532,11 @@ function renderRent() {
       `;
     }
 
+    const priceText = (item.price || '').includes('₽') ? item.price : `${item.price} ₽`;
+    const tgButton = item.tg_link 
+      ? `<a href="${item.tg_link}" target="_blank" class="bg-sky-600 hover:bg-sky-700 text-white text-xs font-semibold px-3 py-1.5 rounded-xl transition active:scale-95">Пост в TG ↗</a>`
+      : (item.phone ? `<a href="https://wa.me/${item.phone.replace(/[^0-9]/g, '')}" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-3 py-1.5 rounded-xl transition active:scale-95">WhatsApp ↗</a>` : '');
+
     const card = document.createElement('div');
     card.className = "bg-white rounded-3xl overflow-hidden border border-slate-200 shadow-xs hover:border-slate-300 transition";
     card.innerHTML = `
@@ -504,15 +544,12 @@ function renderRent() {
       <div class="p-4">
         <div class="flex justify-between items-start mb-1.5 gap-2">
           <h3 class="text-base font-bold text-slate-900 leading-snug">${item.title}</h3>
-          <span class="text-xs font-black text-emerald-700 whitespace-nowrap">${item.price}</span>
+          <span class="text-xs font-black text-emerald-700 whitespace-nowrap">${priceText}</span>
         </div>
         <p class="text-xs text-slate-600 mb-3 leading-relaxed">${item.desc}</p>
         <div class="flex items-center justify-between pt-2.5 border-t border-slate-100">
-          <span class="text-[11px] text-slate-500 font-medium">${item.status}</span>
-          <a href="${item.tg_link}" target="_blank" 
-             class="bg-sky-600 hover:bg-sky-700 text-white text-xs font-semibold px-3 py-1.5 rounded-xl transition active:scale-95">
-            Пост в TG ↗
-          </a>
+          <span class="text-[11px] text-slate-500 font-medium">Свободно</span>
+          ${tgButton}
         </div>
       </div>
     `;
