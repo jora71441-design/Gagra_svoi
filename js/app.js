@@ -1037,35 +1037,204 @@ async function submitJobsForm(e) {
   window.location.href = `https://api.whatsapp.com/send?phone=${rinataPhone}&text=` + encodeURIComponent(text);
 }
 
-// 3. Форма аренды: пишем в таблицу rent и открываем Telegram
-async function submitRentForm(e) {
-  e.preventDefault();
-  const type = document.getElementById('rFormType').value;
-  const price = document.getElementById('rFormPrice').value.trim();
-  const district = document.getElementById('rFormDistrict').value.trim();
-  const desc = document.getElementById('rFormDesc').value.trim();
-  const phone = document.getElementById('rFormPhone').value.trim();
+// ==================== ФОТО И ФОРМА АРЕНДЫ ====================
+let selectedRentPhotos = [];
 
-  // Отправка в Supabase (на модерацию)
-  await insertToSupabase('rent', {
-    title: type,
-    price: price,
-    district: district,
-    desc: desc,
-    phone: phone,
-    is_approved: false
+// Обработка выбора файлов (до 5 шт.)
+function handleRentPhotosSelected(input) {
+  const files = Array.from(input.files || []);
+  if (!files.length) return;
+
+  const remainingSlots = 5 - selectedRentPhotos.length;
+  if (remainingSlots <= 0) {
+    alert("Можно прикрепить максимум 5 фотографий");
+    input.value = '';
+    return;
+  }
+
+  const toAdd = files.slice(0, remainingSlots);
+  selectedRentPhotos.push(...toAdd);
+  input.value = '';
+  renderRentPhotoPreviews();
+}
+
+// Рендер миниатюр превью с кнопкой удаления
+function renderRentPhotoPreviews() {
+  const grid = document.getElementById('rPhotoPreviewGrid');
+  const countEl = document.getElementById('rPhotoCount');
+  if (!grid || !countEl) return;
+
+  countEl.textContent = `${selectedRentPhotos.length} из 5`;
+
+  if (selectedRentPhotos.length === 0) {
+    grid.innerHTML = '';
+    grid.classList.add('hidden');
+    return;
+  }
+
+  grid.classList.remove('hidden');
+  grid.innerHTML = selectedRentPhotos.map((file, idx) => {
+    const previewUrl = URL.createObjectURL(file);
+    return `
+      <div class="relative w-full aspect-square rounded-lg overflow-hidden border border-slate-200 bg-slate-100 group">
+        <img src="${previewUrl}" class="w-full h-full object-cover">
+        <button type="button" onclick="removeRentPhoto(${idx})" 
+                class="absolute top-1 right-1 bg-black/70 hover:bg-black text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px] leading-none transition">
+          ✕
+        </button>
+      </div>
+    `;
+  }).join('');
+}
+
+// Удаление фото из списка перед отправкой
+function removeRentPhoto(idx) {
+  selectedRentPhotos.splice(idx, 1);
+  renderRentPhotoPreviews();
+}
+
+// Сжатие изображения в браузере через Canvas (до 1200px по ширине, JPEG 80%)
+function compressRentPhoto(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (e) => {
+      const img = new Image();
+      img.src = e.target.result;
+      img.onload = () => {
+        let width = img.width;
+        let height = img.height;
+        const maxDim = 1200;
+
+        if (width > maxDim || height > maxDim) {
+          if (width > height) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+          } else {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
+        }
+
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+
+        canvas.toBlob((blob) => {
+          if (blob) resolve(blob);
+          else reject(new Error("Ошибка сжатия изображения"));
+        }, 'image/jpeg', 0.8);
+      };
+      img.onerror = reject;
+    };
+    reader.onerror = reject;
+  });
+}
+
+// Загрузка одного сжатого фото в бакет Supabase Storage (rent-photos)
+async function uploadRentPhotoToStorage(blob, fileName) {
+  if (typeof supabase !== 'undefined' && supabase.storage) {
+    const { data, error } = await supabase.storage.from('rent-photos').upload(fileName, blob, {
+      contentType: 'image/jpeg',
+      upsert: false
+    });
+    if (error) throw error;
+    const { data: pubData } = supabase.storage.from('rent-photos').getPublicUrl(fileName);
+    return pubData.publicUrl;
+  }
+
+  const sUrl = (typeof SUPABASE_URL !== 'undefined') ? SUPABASE_URL : '';
+  const sKey = (typeof SUPABASE_ANON_KEY !== 'undefined') ? SUPABASE_ANON_KEY : (typeof SUPABASE_KEY !== 'undefined' ? SUPABASE_KEY : '');
+
+  const res = await fetch(`${sUrl}/storage/v1/object/rent-photos/${fileName}`, {
+    method: 'POST',
+    headers: {
+      'apikey': sKey,
+      'Authorization': `Bearer ${sKey}`,
+      'Content-Type': 'image/jpeg'
+    },
+    body: blob
   });
 
-  const text = 
+  if (!res.ok) {
+    throw new Error('Ошибка загрузки фото в хранилище');
+  }
+  return `${sUrl}/storage/v1/object/public/rent-photos/${fileName}`;
+}
+
+// 3. Форма аренды: сжатие фото, загрузка в rent-photos, запись в таблицу rent и открытие TG
+async function submitRentForm(e) {
+  e.preventDefault();
+  const btn = document.getElementById('rFormSubmitBtn');
+  const originalBtnText = btn ? btn.innerHTML : 'Отправить на добавление ↗';
+
+  try {
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = `<span class="animate-spin">⏳</span><span>Загрузка фото...</span>`;
+    }
+
+    const type = document.getElementById('rFormType').value;
+    const price = document.getElementById('rFormPrice').value.trim();
+    const district = document.getElementById('rFormDistrict').value.trim();
+    const desc = document.getElementById('rFormDesc').value.trim();
+    const phone = document.getElementById('rFormPhone').value.trim();
+
+    // Загрузка фото в Supabase Storage
+    const uploadedPhotoUrls = [];
+    for (let i = 0; i < selectedRentPhotos.length; i++) {
+      if (btn) {
+        btn.innerHTML = `<span class="animate-spin">⏳</span><span>Загрузка фото ${i + 1}/${selectedRentPhotos.length}...</span>`;
+      }
+      const compressedBlob = await compressRentPhoto(selectedRentPhotos[i]);
+      const uniqueName = `rent_${Date.now()}_${Math.random().toString(36).slice(2, 7)}.jpg`;
+      const publicUrl = await uploadRentPhotoToStorage(compressedBlob, uniqueName);
+      uploadedPhotoUrls.push(publicUrl);
+    }
+
+    if (btn) {
+      btn.innerHTML = `<span>Сохранение заявки...</span>`;
+    }
+
+    // Отправка в таблицу rent в Supabase
+    await insertToSupabase('rent', {
+      title: type,
+      price: price,
+      district: district,
+      desc: desc,
+      phone: phone,
+      photos: uploadedPhotoUrls,
+      is_approved: false
+    });
+
+    const photoInfo = uploadedPhotoUrls.length > 0 
+      ? `\nФотографий прикреплено: ${uploadedPhotoUrls.length} шт.` 
+      : '';
+
+    const text = 
 `Здравствуйте, Рината! Хочу сдать жилье на долгий срок:
 Объект: ${type}
 Цена: ${price} / месяц
 Город: ${district}
 Описание: ${desc}
-Телефон: ${phone}`;
+Телефон: ${phone}${photoInfo}`;
 
-  closeModal();
-  window.open(`https://t.me/rinata_tibay?text=` + encodeURIComponent(text), '_blank');
+    selectedRentPhotos = [];
+    renderRentPhotoPreviews();
+    closeModal();
+    window.open(`https://t.me/rinata_tibay?text=` + encodeURIComponent(text), '_blank');
+
+  } catch (err) {
+    console.error('Ошибка отправки формы аренды:', err);
+    alert('Не удалось отправить форму с фото: ' + (err.message || 'попробуйте ещё раз'));
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = originalBtnText;
+    }
+  }
 }
 
 // 4. Форма инициатив взаимовыручки: пишем в таблицу helps и открываем WhatsApp
