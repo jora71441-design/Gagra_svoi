@@ -601,7 +601,32 @@
     // ==================== МОДАЛКА РЕДАКТИРОВАНИЯ АРЕНДЫ ====================
 
     function openRentEditModal(id) {
-        async function saveRentEdit(andApprove = false) {
+      const item = currentRentCache.find(x => x.id === id);
+      if (!item) return;
+
+      document.getElementById('editRentId').value = item.id;
+      document.getElementById('editRentTitle').value = item.title || '1-комн. квартира';
+      document.getElementById('editRentPrice').value = item.price || '';
+      document.getElementById('editRentCity').value = item.city || item.district || 'Гагра';
+      document.getElementById('editRentDistrict').value = item.district || '';
+      document.getElementById('editRentDesc').value = item.desc || '';
+      document.getElementById('editRentPhone').value = item.phone || '';
+
+      const btnSaveApprove = document.getElementById('btnSaveAndApprove');
+      if (rentSubTab === 'active') {
+        btnSaveApprove.classList.add('hidden');
+      } else {
+        btnSaveApprove.classList.remove('hidden');
+      }
+
+      document.getElementById('rentEditModal').classList.remove('hidden');
+    }
+
+    function closeRentEditModal() {
+      document.getElementById('rentEditModal').classList.add('hidden');
+    }
+
+    async function saveRentEdit(andApprove = false) {
       const id = document.getElementById('editRentId').value;
       const updatedData = {
         title: document.getElementById('editRentTitle').value.trim(),
@@ -715,32 +740,6 @@
     }
 
     async function unpublishRentItem(id) {
-      if (!confirm('Пометить объект как сданный и скрыть с сайта?')) return;
-      if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
-
-      try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/rent?id=eq.${id}`, {
-          method: 'PATCH',
-          headers: {
-            'apikey': SUPABASE_ANON_KEY,
-            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ is_active: false })
-        });
-
-        if (res.ok) {
-          if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-          loadApprovedRent();
-        } else {
-          alert('Не удалось скрыть объект');
-        }
-      } catch (e) {
-        alert('Ошибка связи с базой данных');
-      }
-    }
-
-        async function unpublishRentItem(id) {
       if (!confirm('Пометить объект как сданный и скрыть с сайта?')) return;
       if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
 
