@@ -363,7 +363,7 @@
             <p class="text-[11px] text-slate-500">${item.city || 'Гагра'} • ${item.contact || ''}</p>
           `;
         } else if (table === 'rent') {
-          const photos = Array.isArray(item.photos) ? item.photos : [];
+          const photos = (Array.isArray(item.photos) ? item.photos : []).filter(p => !p.includes('emoji'));
           let photosHtml = '';
           if (photos.length > 0) {
             photosHtml = `
@@ -443,7 +443,7 @@
       });
     }
 
-    function renderActiveRentCards(items) {
+      function renderActiveRentCards(items) {
       const list = document.getElementById('cardsList');
       list.innerHTML = '';
 
@@ -462,7 +462,8 @@
         const card = document.createElement('div');
         card.className = "bg-white rounded-3xl p-4 border border-slate-200 shadow-xs space-y-3";
 
-        const photos = Array.isArray(item.photos) ? item.photos : [];
+        // Отсекаем ссылки на системные эмодзи Telegram
+        const photos = (Array.isArray(item.photos) ? item.photos : []).filter(p => !p.includes('emoji'));
         let photosHtml = '';
         if (photos.length > 0) {
           photosHtml = `
