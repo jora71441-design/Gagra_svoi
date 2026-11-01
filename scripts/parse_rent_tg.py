@@ -50,7 +50,7 @@ def parse_posts(raw_html):
             "сдаёт", "сдает", "сдаю", "аренд", "квартир", "студи",
             "комнат", "коттедж", "таунхаус", "номер", "этаж", "домик"
         ]
-                if not any(m in text_lower for m in listing_markers):
+        if not any(m in text_lower for m in listing_markers):
             continue
 
         all_bgs = re.findall(r"background-image:url\('([^']+)'\)", block)
