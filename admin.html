@@ -239,9 +239,10 @@
     const SUPABASE_URL = 'https://yzbochrahmuhvryinajr.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl6Ym9jaHJhaG11aHZyeWluYWpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMyNzYyODcsImV4cCI6MjEwODg1MjI4N30.dTjerKbrcLuTEr5xPKXkR43Df4ECaGA-ztCrGD_SO-A';
 
-    let currentTab = 'masters';
+        let currentTab = 'masters';
     let rentSubTab = 'pending'; // 'pending' | 'active'
     let adminPin = localStorage.getItem('gsvoi_pin') || '7788';
+    let currentMastersCache = [];
     let approvedMastersCache = [];
     let currentRentCache = [];
 
