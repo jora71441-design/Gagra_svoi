@@ -773,6 +773,16 @@ function matchesQuery(master, searchWords) {
   });
 }
 
+  // Карта соответствия категорий (связывает системные слоги с русскими названиями)
+const CATEGORY_ALIASES = {
+  lifestyle: ['lifestyle', 'быт и здоровье', 'быт / здоровье', 'быт', 'здоровье', 'красота и уход', 'уход', 'макияж', 'массаж'],
+  appliances: ['appliances', 'техника', 'ремонт техники'],
+  engineering: ['engineering', 'сантехника', 'электрика', 'сантехника / свет', 'сантехника и электрика'],
+  finish: ['finish', 'отделка', 'ремонт и стройка', 'отделка и ремонт'],
+  construction: ['construction', 'строительство', 'сварка', 'стройка / сварка'],
+  auto: ['auto', 'авто', 'доставка', 'авто / доставка', 'автосервис']
+};
+
 function renderMasters() {
   const sInput = document.getElementById('searchInput');
   if (!sInput) return;
@@ -785,24 +795,44 @@ function renderMasters() {
   if (!listEl) return;
 
   const filtered = masters.filter(m => {
-    const matchesCat = (activeCategory === 'all') || 
-                       (m.category === activeCategory) ||
-                       (m.category_title && m.category_title.toLowerCase().includes(activeCategory));
+    // 1. Проверка категории: сопоставляет системный ключ с русскими названиями
+    let matchesCat = (activeCategory === 'all');
+    if (!matchesCat) {
+      const allowedAliases = CATEGORY_ALIASES[activeCategory] || [activeCategory];
+      const masterCat = (m.category || '').toLowerCase();
+      const masterCatTitle = (m.category_title || '').toLowerCase();
 
-    const matchesSub = (activeSubcategory === 'all') || (m.subcategory === activeSubcategory);
+      matchesCat = allowedAliases.some(alias => 
+        masterCat.includes(alias) || masterCatTitle.includes(alias)
+      );
+    }
+
+    // 2. Проверка подкатегории
+    const matchesSub = (activeSubcategory === 'all') || 
+                       (m.subcategory === activeSubcategory) ||
+                       (!m.subcategory && activeSubcategory === 'all');
+
+    // 3. Поиск по словам
     const matchesSearch = matchesQuery(m, searchWords);
+
     return matchesCat && matchesSub && matchesSearch;
   });
 
   // КОНТЕКСТНАЯ СОРТИРОВКА:
   // Во вкладке «Все» первым идет Топ каталога (is_top_all).
-  // Внутри выбранной категории первым идет Закреп раздела (is_pinned).
+  // Внутри выбранной категории первым ВСЕГДА идет Закреп раздела (is_pinned).
   filtered.sort((a, b) => {
     if (activeCategory === 'all') {
-      return (b.is_top_all ? 1 : 0) - (a.is_top_all ? 1 : 0);
+      const aTop = !!a.is_top_all;
+      const bTop = !!b.is_top_all;
+      if (aTop !== bTop) return bTop ? 1 : -1;
     } else {
-      return (b.is_pinned ? 1 : 0) - (a.is_pinned ? 1 : 0);
+      const aPin = !!a.is_pinned;
+      const bPin = !!b.is_pinned;
+      if (aPin !== bPin) return bPin ? 1 : -1;
     }
+    // Вторичная сортировка по числу рекомендаций
+    return (b.recommendations_count || 0) - (a.recommendations_count || 0);
   });
 
   if (countEl) countEl.textContent = filtered.length;
