@@ -488,6 +488,21 @@
               </button>
             </div>
           `;
+        } else if (table === 'masters') {
+          pendingMastersCache = items;
+          actionButtons = `
+            <div class="grid grid-cols-3 gap-1.5 pt-1">
+              <button onclick="openMasterEditModal(${item.id}, 'pending')" class="bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-bold py-2.5 px-2 rounded-2xl text-xs transition flex items-center justify-center gap-1 active:scale-98">
+                ✏️ Правка
+              </button>
+              <button onclick="approveItem('${table}', ${item.id})" class="bg-emerald-600 hover:bg-emerald-700 active:scale-98 text-white font-bold py-2.5 px-2 rounded-2xl text-xs transition shadow-xs flex items-center justify-center gap-1">
+                ✓ Одобрить
+              </button>
+              <button onclick="deleteItem('${table}', ${item.id})" class="bg-slate-100 hover:bg-rose-50 hover:text-rose-700 active:scale-98 text-slate-700 font-semibold py-2.5 px-2 rounded-2xl text-xs transition flex items-center justify-center gap-1">
+                ✕ Отклонить
+              </button>
+            </div>
+          `;
         } else {
           actionButtons = `
             <div class="grid grid-cols-2 gap-2 pt-1">
@@ -926,7 +941,7 @@
             </button>
           </div>
 
-          <!-- Панель статуса доверия, счетчика и удаления -->
+                    <!-- Панель статуса доверия, счетчика и удаления -->
           <div class="pt-2 border-t border-slate-100 flex items-center justify-between gap-2 flex-wrap">
             <div class="flex items-center gap-1.5">
               <button onclick="toggleMasterStatus(${m.id}, 'star')" 
@@ -957,10 +972,16 @@
               ` : ''}
             </div>
 
-            <button onclick="deleteApprovedMaster(${m.id}, '${safeName}')" 
-                    class="text-[11px] font-semibold text-slate-400 hover:text-rose-600 flex items-center gap-1 py-1 px-2 rounded-lg hover:bg-rose-50 transition active:scale-95">
-              🗑 Удалить
-            </button>
+            <div class="flex items-center gap-1.5">
+              <button onclick="openMasterEditModal(${m.id}, 'approved')" 
+                      class="text-[11px] font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 flex items-center gap-1 py-1 px-2.5 rounded-lg transition active:scale-95">
+                ✏️ Изменить
+              </button>
+              <button onclick="deleteApprovedMaster(${m.id}, '${safeName}')" 
+                      class="text-[11px] font-semibold text-slate-400 hover:text-rose-600 flex items-center gap-1 py-1 px-2 rounded-lg hover:bg-rose-50 transition active:scale-95">
+                🗑 Удалить
+              </button>
+            </div>
           </div>
         `;
         list.appendChild(card);
