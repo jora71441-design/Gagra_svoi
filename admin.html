@@ -351,9 +351,9 @@
           return;
         }
 
-                const items = await res.json();
+        const items = await res.json();
         if (table === 'rent') currentRentCache = items || [];
-        if (table === 'masters') pendingMastersCache = items || [];
+        if (table === 'masters') currentMastersCache = items || [];
         renderCards(items, table);
       } catch (e) {
         list.innerHTML = '<div class="text-center py-10 text-red-500 text-xs">Ошибка соединения с базой</div>';
@@ -385,7 +385,7 @@
       }
     }
 
-            function renderCards(items, table) {
+    function renderCards(items, table) {
       const list = document.getElementById('cardsList');
       list.innerHTML = '';
 
@@ -441,7 +441,7 @@
           if (photos.length > 0) {
             photosHtml = `
               <div class="flex gap-1.5 overflow-x-auto no-scrollbar py-1">
-                ${photos.map((p, pIdx) => `
+                ${photos.map((p) => `
                   <div class="relative w-16 h-16 rounded-xl overflow-hidden border border-slate-200 shrink-0 cursor-pointer bg-slate-100 group" onclick="openPhotoViewer('${p}')">
                     <img src="${p}" class="w-full h-full object-cover group-hover:scale-105 transition" loading="lazy">
                   </div>
@@ -492,16 +492,15 @@
             </div>
           `;
         } else if (table === 'masters') {
-          pendingMastersCache = items;
           actionButtons = `
             <div class="grid grid-cols-3 gap-1.5 pt-1">
-              <button onclick="openMasterEditModal('${item.id}', 'pending')" class="bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-bold py-2.5 px-2 rounded-2xl text-xs transition flex items-center justify-center gap-1 active:scale-98">
+              <button onclick="openMasterEditModal(${item.id})" class="bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-bold py-2.5 px-2 rounded-2xl text-xs transition flex items-center justify-center gap-1 active:scale-98">
                 ✏️ Правка
               </button>
-              <button onclick="approveItem('${table}', '${item.id}')" class="bg-emerald-600 hover:bg-emerald-700 active:scale-98 text-white font-bold py-2.5 px-2 rounded-2xl text-xs transition shadow-xs flex items-center justify-center gap-1">
+              <button onclick="approveItem('${table}', ${item.id})" class="bg-emerald-600 hover:bg-emerald-700 active:scale-98 text-white font-bold py-2.5 px-2 rounded-2xl text-xs transition shadow-xs flex items-center justify-center gap-1">
                 ✓ Одобрить
               </button>
-              <button onclick="deleteItem('${table}', '${item.id}')" class="bg-slate-100 hover:bg-rose-50 hover:text-rose-700 active:scale-98 text-slate-700 font-semibold py-2.5 px-2 rounded-2xl text-xs transition flex items-center justify-center gap-1">
+              <button onclick="deleteItem('${table}', ${item.id})" class="bg-slate-100 hover:bg-rose-50 hover:text-rose-700 active:scale-98 text-slate-700 font-semibold py-2.5 px-2 rounded-2xl text-xs transition flex items-center justify-center gap-1">
                 ✕ Отклонить
               </button>
             </div>
@@ -550,7 +549,6 @@
         const card = document.createElement('div');
         card.className = "bg-white rounded-3xl p-4 border border-slate-200 shadow-xs space-y-3";
 
-        // Отсекаем ссылки на системные эмодзи Telegram
         const photos = (Array.isArray(item.photos) ? item.photos : []).filter(p => !p.includes('emoji'));
         let photosHtml = '';
         if (photos.length > 0) {
@@ -669,64 +667,44 @@
       }
     }
 
-        // ==================== МОДАЛКА РЕДАКТИРОВАНИЯ МАСТЕРА ====================
+    // ==================== МОДАЛКА РЕДАКТИРОВАНИЯ МАСТЕРА ====================
 
-    let pendingMastersCache = [];
-    let masterEditSource = 'pending'; // 'pending' | 'approved'
-
-    function openMasterEditModal(id, source = 'pending') {
-      try {
-        masterEditSource = source;
-        const list = (source === 'approved' ? approvedMastersCache : pendingMastersCache) || [];
-
-        // 1. Поиск с гарантированным строковым сравнением
-        let item = list.find(x => String(x.id) === String(id));
-        if (!item) {
-          item = pendingMastersCache.find(x => String(x.id) === String(id)) || 
-                 approvedMastersCache.find(x => String(x.id) === String(id));
-        }
-
-        if (!item) {
-          alert('Запись ID ' + id + ' не найдена в кэше. Нажмите «↻ Обновить».');
-          return;
-        }
-
-        // 2. Проверка модального окна в DOM
-        const modal = document.getElementById('masterEditModal');
-        if (!modal) {
-          alert('Ошибка: тег #masterEditModal не найден в разметке admin.html!');
-          return;
-        }
-
-        // 3. Безопасная запись значений без риска упасть на null
-        const setField = (elemId, val) => {
-          const el = document.getElementById(elemId);
-          if (el) el.value = val !== undefined && val !== null ? val : '';
-        };
-
-        setField('editMasterId', item.id);
-        setField('editMasterName', item.name);
-        setField('editMasterPhone', item.phone);
-        setField('editMasterCity', item.city || 'Гагра');
-        setField('editMasterCategory', item.category_title);
-        setField('editMasterService', item.service);
-        setField('editMasterSocial', item.social);
-
-        const btnSaveApprove = document.getElementById('btnSaveAndApproveMaster');
-        if (btnSaveApprove) {
-          if (source === 'approved') btnSaveApprove.classList.add('hidden');
-          else btnSaveApprove.classList.remove('hidden');
-        }
-
-        // 4. Открытие окна
-        modal.classList.remove('hidden');
-      } catch (err) {
-        alert('Сбой при открытии формы: ' + err.message);
+    function openMasterEditModal(id) {
+      const item = currentMastersCache.find(x => x.id == id);
+      if (!item) {
+        alert('Карточка мастера не найдена в памяти. Обновите вкладку.');
+        return;
       }
+
+      const modal = document.getElementById('masterEditModal');
+      if (!modal) {
+        alert('Ошибка: в HTML admin.html отсутствует контейнер <div id="masterEditModal">!');
+        return;
+      }
+
+      document.getElementById('editMasterId').value = item.id;
+      document.getElementById('editMasterName').value = item.name || '';
+      document.getElementById('editMasterPhone').value = item.phone || '';
+      document.getElementById('editMasterCity').value = item.city || 'Гагра';
+      document.getElementById('editMasterCategory').value = item.category_title || '';
+      document.getElementById('editMasterService').value = item.service || '';
+      document.getElementById('editMasterSocial').value = item.social || '';
+
+      const btnSaveApprove = document.getElementById('btnSaveAndApproveMaster');
+      if (btnSaveApprove) {
+        if (currentTab === 'promos') {
+          btnSaveApprove.classList.add('hidden');
+        } else {
+          btnSaveApprove.classList.remove('hidden');
+        }
+      }
+
+      modal.classList.remove('hidden');
     }
 
     function closeMasterEditModal() {
-      document.getElementById('masterEditModal').classList.add('hidden');
+      const modal = document.getElementById('masterEditModal');
+      if (modal) modal.classList.add('hidden');
     }
 
     async function saveMasterEdit(andApprove = false) {
@@ -761,7 +739,7 @@
         if (andApprove) {
           await approveItem('masters', id);
         } else {
-          if (masterEditSource === 'approved') loadApprovedMasters();
+          if (currentTab === 'promos') loadApprovedMasters();
           else loadPending('masters');
         }
       } catch (err) {
@@ -876,13 +854,15 @@
           return;
         }
 
-        approvedMastersCache = await res.json();
+        const data = await res.json();
+        currentMastersCache = data || [];
+        approvedMastersCache = currentMastersCache;
         filterPromosList();
       } catch (e) {
         list.innerHTML = '<div class="text-center py-10 text-red-500 text-xs">Сетевой сбой при загрузке мастеров</div>';
       }
     }
-    
+
     function filterPromosList() {
       const search = (document.getElementById('promosSearchInput')?.value || '').toLowerCase().trim();
       const list = document.getElementById('cardsList');
