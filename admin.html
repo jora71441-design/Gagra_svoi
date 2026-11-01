@@ -382,7 +382,8 @@
       }
     }
 
-    function renderCards(items, table) {
+
+            function renderCards(items, table) {
       const list = document.getElementById('cardsList');
       list.innerHTML = '';
 
@@ -503,7 +504,6 @@
               </button>
             </div>
           `;
-        }
         } else {
           actionButtons = `
             <div class="grid grid-cols-2 gap-2 pt-1">
@@ -529,7 +529,7 @@
       });
     }
 
-      function renderActiveRentCards(items) {
+    function renderActiveRentCards(items) {
       const list = document.getElementById('cardsList');
       list.innerHTML = '';
 
