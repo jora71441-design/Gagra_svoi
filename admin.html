@@ -141,11 +141,81 @@
       </div>
 
       <div class="pt-2 space-y-2">
+            <div class="pt-2 space-y-2">
         <button onclick="saveRentEdit(true)" id="btnSaveAndApprove" 
                 class="w-full bg-emerald-600 hover:bg-emerald-700 active:scale-98 text-white font-bold py-3 px-4 rounded-xl text-xs transition shadow-xs flex items-center justify-center gap-1.5">
           ✓ Сохранить и одобрить на сайт
         </button>
         <button onclick="saveRentEdit(false)" 
+                class="w-full bg-slate-900 hover:bg-slate-800 active:scale-98 text-white font-semibold py-2.5 px-4 rounded-xl text-xs transition">
+          💾 Только сохранить изменения
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- МОДАЛЬНОЕ ОКНО РЕДАКТИРОВАНИЯ МАСТЕРА -->
+  <div id="masterEditModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl p-5 max-h-[90vh] overflow-y-auto space-y-3 shadow-2xl">
+      <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+        <h3 class="text-sm font-bold text-slate-900">✏️ Редактирование мастера</h3>
+        <button onclick="closeMasterEditModal()" class="text-slate-400 hover:text-slate-700 text-xl font-bold leading-none p-1">✕</button>
+      </div>
+
+      <input type="hidden" id="editMasterId">
+
+      <div>
+        <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Имя специалиста</label>
+        <input type="text" id="editMasterName" placeholder="Иван Иванов" 
+               class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500">
+      </div>
+
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Телефон</label>
+          <input type="tel" id="editMasterPhone" placeholder="+7 940 ..." 
+                 class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-mono text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Город</label>
+          <select id="editMasterCity" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2 py-2 text-xs text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500">
+            <option value="Гагра">Гагра</option>
+            <option value="Цандрипш">Цандрипш</option>
+            <option value="Пицунда">Пицунда</option>
+            <option value="Гудаута">Гудаута</option>
+            <option value="Новый Афон">Новый Афон</option>
+            <option value="Сухум">Сухум</option>
+            <option value="Ткуарчал">Ткуарчал</option>
+            <option value="Очамчыра">Очамчыра</option>
+            <option value="Гал">Гал</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Категория / Направление</label>
+        <input type="text" id="editMasterCategory" placeholder="Сантехника, Электрика, Автосервис..." 
+               class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+      </div>
+
+      <div>
+        <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Описание услуг</label>
+        <textarea id="editMasterService" rows="3" placeholder="Какие работы выполняет..." 
+                  class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
+      </div>
+
+      <div>
+        <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Ссылка на портфолио / соцсеть</label>
+        <input type="text" id="editMasterSocial" placeholder="t.me/... или instagram.com/..." 
+               class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+      </div>
+
+      <div class="pt-2 space-y-2">
+        <button onclick="saveMasterEdit(true)" id="btnSaveAndApproveMaster" 
+                class="w-full bg-emerald-600 hover:bg-emerald-700 active:scale-98 text-white font-bold py-3 px-4 rounded-xl text-xs transition shadow-xs flex items-center justify-center gap-1.5">
+          ✓ Сохранить и одобрить на сайт
+        </button>
+        <button onclick="saveMasterEdit(false)" 
                 class="w-full bg-slate-900 hover:bg-slate-800 active:scale-98 text-white font-semibold py-2.5 px-4 rounded-xl text-xs transition">
           💾 Только сохранить изменения
         </button>
@@ -516,32 +586,7 @@
     // ==================== МОДАЛКА РЕДАКТИРОВАНИЯ АРЕНДЫ ====================
 
     function openRentEditModal(id) {
-      const item = currentRentCache.find(x => x.id === id);
-      if (!item) return;
-
-      document.getElementById('editRentId').value = item.id;
-      document.getElementById('editRentTitle').value = item.title || '1-комн. квартира';
-      document.getElementById('editRentPrice').value = item.price || '';
-      document.getElementById('editRentCity').value = item.city || item.district || 'Гагра';
-      document.getElementById('editRentDistrict').value = item.district || '';
-      document.getElementById('editRentDesc').value = item.desc || '';
-      document.getElementById('editRentPhone').value = item.phone || '';
-
-      const btnSaveApprove = document.getElementById('btnSaveAndApprove');
-      if (rentSubTab === 'active') {
-        btnSaveApprove.classList.add('hidden');
-      } else {
-        btnSaveApprove.classList.remove('hidden');
-      }
-
-      document.getElementById('rentEditModal').classList.remove('hidden');
-    }
-
-    function closeRentEditModal() {
-      document.getElementById('rentEditModal').classList.add('hidden');
-    }
-
-    async function saveRentEdit(andApprove = false) {
+        async function saveRentEdit(andApprove = false) {
       const id = document.getElementById('editRentId').value;
       const updatedData = {
         title: document.getElementById('editRentTitle').value.trim(),
@@ -578,6 +623,105 @@
         }
       } catch (err) {
         alert('Ошибка сохранения: ' + err.message);
+      }
+    }
+
+    // ==================== МОДАЛКА РЕДАКТИРОВАНИЯ МАСТЕРА ====================
+
+    let pendingMastersCache = [];
+    let masterEditSource = 'pending'; // 'pending' | 'approved'
+
+    function openMasterEditModal(id, source = 'pending') {
+      masterEditSource = source;
+      const list = source === 'approved' ? approvedMastersCache : pendingMastersCache;
+      const item = list.find(x => x.id === id);
+      if (!item) return;
+
+      document.getElementById('editMasterId').value = item.id;
+      document.getElementById('editMasterName').value = item.name || '';
+      document.getElementById('editMasterPhone').value = item.phone || '';
+      document.getElementById('editMasterCity').value = item.city || 'Гагра';
+      document.getElementById('editMasterCategory').value = item.category_title || '';
+      document.getElementById('editMasterService').value = item.service || '';
+      document.getElementById('editMasterSocial').value = item.social || '';
+
+      const btnSaveApprove = document.getElementById('btnSaveAndApproveMaster');
+      if (source === 'approved') {
+        btnSaveApprove.classList.add('hidden');
+      } else {
+        btnSaveApprove.classList.remove('hidden');
+      }
+
+      document.getElementById('masterEditModal').classList.remove('hidden');
+    }
+
+    function closeMasterEditModal() {
+      document.getElementById('masterEditModal').classList.add('hidden');
+    }
+
+    async function saveMasterEdit(andApprove = false) {
+      const id = document.getElementById('editMasterId').value;
+      const updatedData = {
+        name: document.getElementById('editMasterName').value.trim(),
+        phone: document.getElementById('editMasterPhone').value.trim(),
+        city: document.getElementById('editMasterCity').value.trim(),
+        category_title: document.getElementById('editMasterCategory').value.trim(),
+        service: document.getElementById('editMasterService').value.trim(),
+        social: document.getElementById('editMasterSocial').value.trim()
+      };
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/masters?id=eq.${id}`, {
+          method: 'PATCH',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=minimal'
+          },
+          body: JSON.stringify(updatedData)
+        });
+
+        if (!res.ok) {
+          throw new Error('Не удалось сохранить изменения');
+        }
+
+        closeMasterEditModal();
+
+        if (andApprove) {
+          await approveItem('masters', id);
+        } else {
+          if (masterEditSource === 'approved') loadApprovedMasters();
+          else loadPending('masters');
+        }
+      } catch (err) {
+        alert('Ошибка сохранения: ' + err.message);
+      }
+    }
+
+    async function unpublishRentItem(id) {
+      if (!confirm('Пометить объект как сданный и скрыть с сайта?')) return;
+      if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/rent?id=eq.${id}`, {
+          method: 'PATCH',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ is_active: false })
+        });
+
+        if (res.ok) {
+          if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+          loadApprovedRent();
+        } else {
+          alert('Не удалось скрыть объект');
+        }
+      } catch (e) {
+        alert('Ошибка связи с базой данных');
       }
     }
 
