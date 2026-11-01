@@ -673,47 +673,54 @@
     let masterEditSource = 'pending'; // 'pending' | 'approved'
 
     function openMasterEditModal(id, source = 'pending') {
-      masterEditSource = source;
-      const list = source === 'approved' ? approvedMastersCache : pendingMastersCache;
-      
-      // Сравниваем ID с приведением к строке, исключая несовпадение типов
-      let item = list.find(x => String(x.id) === String(id));
-      
-      // Резервный поиск по второму списку, если источник не совпал
-      if (!item) {
-        item = pendingMastersCache.find(x => String(x.id) === String(id)) || 
-               approvedMastersCache.find(x => String(x.id) === String(id));
-      }
+      try {
+        masterEditSource = source;
+        const list = (source === 'approved' ? approvedMastersCache : pendingMastersCache) || [];
 
-      if (!item) {
-        alert('Данные мастера не найдены в памяти (ID: ' + id + '). Нажмите «↻ Обновить» вверху.');
-        return;
-      }
-
-      const modal = document.getElementById('masterEditModal');
-      if (!modal) {
-        alert('Ошибка: модальное окно masterEditModal не найдено в HTML разметке.');
-        return;
-      }
-
-      if (document.getElementById('editMasterId')) document.getElementById('editMasterId').value = item.id;
-      if (document.getElementById('editMasterName')) document.getElementById('editMasterName').value = item.name || '';
-      if (document.getElementById('editMasterPhone')) document.getElementById('editMasterPhone').value = item.phone || '';
-      if (document.getElementById('editMasterCity')) document.getElementById('editMasterCity').value = item.city || 'Гагра';
-      if (document.getElementById('editMasterCategory')) document.getElementById('editMasterCategory').value = item.category_title || '';
-      if (document.getElementById('editMasterService')) document.getElementById('editMasterService').value = item.service || '';
-      if (document.getElementById('editMasterSocial')) document.getElementById('editMasterSocial').value = item.social || '';
-
-      const btnSaveApprove = document.getElementById('btnSaveAndApproveMaster');
-      if (btnSaveApprove) {
-        if (source === 'approved') {
-          btnSaveApprove.classList.add('hidden');
-        } else {
-          btnSaveApprove.classList.remove('hidden');
+        // 1. Поиск с гарантированным строковым сравнением
+        let item = list.find(x => String(x.id) === String(id));
+        if (!item) {
+          item = pendingMastersCache.find(x => String(x.id) === String(id)) || 
+                 approvedMastersCache.find(x => String(x.id) === String(id));
         }
-      }
 
-      modal.classList.remove('hidden');
+        if (!item) {
+          alert('Запись ID ' + id + ' не найдена в кэше. Нажмите «↻ Обновить».');
+          return;
+        }
+
+        // 2. Проверка модального окна в DOM
+        const modal = document.getElementById('masterEditModal');
+        if (!modal) {
+          alert('Ошибка: тег #masterEditModal не найден в разметке admin.html!');
+          return;
+        }
+
+        // 3. Безопасная запись значений без риска упасть на null
+        const setField = (elemId, val) => {
+          const el = document.getElementById(elemId);
+          if (el) el.value = val !== undefined && val !== null ? val : '';
+        };
+
+        setField('editMasterId', item.id);
+        setField('editMasterName', item.name);
+        setField('editMasterPhone', item.phone);
+        setField('editMasterCity', item.city || 'Гагра');
+        setField('editMasterCategory', item.category_title);
+        setField('editMasterService', item.service);
+        setField('editMasterSocial', item.social);
+
+        const btnSaveApprove = document.getElementById('btnSaveAndApproveMaster');
+        if (btnSaveApprove) {
+          if (source === 'approved') btnSaveApprove.classList.add('hidden');
+          else btnSaveApprove.classList.remove('hidden');
+        }
+
+        // 4. Открытие окна
+        modal.classList.remove('hidden');
+      } catch (err) {
+        alert('Сбой при открытии формы: ' + err.message);
+      }
     }
 
     function closeMasterEditModal() {
