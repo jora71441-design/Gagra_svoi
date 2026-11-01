@@ -666,7 +666,7 @@
       }
     }
 
-    // ==================== МОДАЛКА РЕДАКТИРОВАНИЯ МАСТЕРА ====================
+        // ==================== МОДАЛКА РЕДАКТИРОВАНИЯ МАСТЕРА ====================
 
     let pendingMastersCache = [];
     let masterEditSource = 'pending'; // 'pending' | 'approved'
@@ -674,25 +674,45 @@
     function openMasterEditModal(id, source = 'pending') {
       masterEditSource = source;
       const list = source === 'approved' ? approvedMastersCache : pendingMastersCache;
-      const item = list.find(x => x.id === id);
-      if (!item) return;
-
-      document.getElementById('editMasterId').value = item.id;
-      document.getElementById('editMasterName').value = item.name || '';
-      document.getElementById('editMasterPhone').value = item.phone || '';
-      document.getElementById('editMasterCity').value = item.city || 'Гагра';
-      document.getElementById('editMasterCategory').value = item.category_title || '';
-      document.getElementById('editMasterService').value = item.service || '';
-      document.getElementById('editMasterSocial').value = item.social || '';
-
-      const btnSaveApprove = document.getElementById('btnSaveAndApproveMaster');
-      if (source === 'approved') {
-        btnSaveApprove.classList.add('hidden');
-      } else {
-        btnSaveApprove.classList.remove('hidden');
+      
+      // Сравниваем ID с приведением к строке, исключая несовпадение типов
+      let item = list.find(x => String(x.id) === String(id));
+      
+      // Резервный поиск по второму списку, если источник не совпал
+      if (!item) {
+        item = pendingMastersCache.find(x => String(x.id) === String(id)) || 
+               approvedMastersCache.find(x => String(x.id) === String(id));
       }
 
-      document.getElementById('masterEditModal').classList.remove('hidden');
+      if (!item) {
+        alert('Данные мастера не найдены в памяти (ID: ' + id + '). Нажмите «↻ Обновить» вверху.');
+        return;
+      }
+
+      const modal = document.getElementById('masterEditModal');
+      if (!modal) {
+        alert('Ошибка: модальное окно masterEditModal не найдено в HTML разметке.');
+        return;
+      }
+
+      if (document.getElementById('editMasterId')) document.getElementById('editMasterId').value = item.id;
+      if (document.getElementById('editMasterName')) document.getElementById('editMasterName').value = item.name || '';
+      if (document.getElementById('editMasterPhone')) document.getElementById('editMasterPhone').value = item.phone || '';
+      if (document.getElementById('editMasterCity')) document.getElementById('editMasterCity').value = item.city || 'Гагра';
+      if (document.getElementById('editMasterCategory')) document.getElementById('editMasterCategory').value = item.category_title || '';
+      if (document.getElementById('editMasterService')) document.getElementById('editMasterService').value = item.service || '';
+      if (document.getElementById('editMasterSocial')) document.getElementById('editMasterSocial').value = item.social || '';
+
+      const btnSaveApprove = document.getElementById('btnSaveAndApproveMaster');
+      if (btnSaveApprove) {
+        if (source === 'approved') {
+          btnSaveApprove.classList.add('hidden');
+        } else {
+          btnSaveApprove.classList.remove('hidden');
+        }
+      }
+
+      modal.classList.remove('hidden');
     }
 
     function closeMasterEditModal() {
