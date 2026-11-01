@@ -53,7 +53,14 @@ def parse_posts(raw_html):
         if not any(m in text_lower for m in listing_markers):
             continue
 
-        photo_urls = re.findall(r"background-image:url\('([^']+)'\)", block)
+                all_bgs = re.findall(r"background-image:url\('([^']+)'\)", block)
+        # Отсекаем эмодзи Telegram и аватарки, оставляем только реальные фотографии
+        photo_urls = [
+            u for u in all_bgs 
+            if 'emoji' not in u.lower() 
+            and 'userpic' not in u.lower() 
+            and 'avatar' not in u.lower()
+        ]
         photos = list(dict.fromkeys(photo_urls))[:5]
 
         price_match = re.search(r'(\d[\d\s]{2,}\d|\d{2,})\s*(?:₽|руб|тыс|\.000)', clean_text, re.I)
