@@ -482,7 +482,7 @@ function renderRent() {
     const isHouse = textForCat.includes('дом') || textForCat.includes('коттедж') || textForCat.includes('house');
     const catBadge = isHouse ? '🏡 Дом' : '🏢 Квартира';
 
-    const photos = Array.isArray(item.photos) ? item.photos : [];
+    const photos = (Array.isArray(item.photos) ? item.photos : []).filter(p => !p.includes('emoji'));
     const hasPhotos = photos.length > 0;
 
     // Нормализация города и района, чтобы не дублировалось «Гагра • Пицунда»
