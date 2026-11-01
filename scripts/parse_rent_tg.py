@@ -98,12 +98,26 @@ def parse_posts(raw_html):
 
         category = "house" if (is_house and not is_flat) else "flat"
 
-        # Срок аренды
-        is_season = any(w in text_lower for w in ["до мая", "до июня", "до лета", "помесячн", "на 1 мес", "на 2 мес", "на месяц", "на зим"])
-        is_year = any(w in text_lower for w in ["на год", "круглый год", "круглогодичн", "без выселения", "без поднятия", "на длительн"])
+        # Срок аренды: гибкое распознавание сезонности (до/по май, июнь, зима)
+        season_patterns = [
+            r'(?:до|по)\s*(?:\d{1,2}\s*)?(?:мая|мае|июн|лета)',
+            r'по\s*май',
+            r'до\s*май',
+            r'на\s*зим',
+            r'зимовк',
+            r'помесячн',
+            r'на\s*\d+\s*мес',
+            r'\(сезон\)'
+        ]
+        is_season = any(re.search(p, text_lower) for p in season_patterns)
 
-        period = "season" if (is_season and not is_year) else "year"
-        badge = "⏳ До лета" if period == "season" else "🔒 На год+"
+        # Приоритет: если есть ограничение «до/по май/июнь», это сезонная аренда
+        if is_season:
+            period = "season"
+            badge = "⏳ До лета"
+        else:
+            period = "year"
+            badge = "🔒 На год+"
 
         lines = [l.strip() for l in clean_text.split('\n') if l.strip()]
         title = lines[0][:50] if lines else "Аренда жилья"
