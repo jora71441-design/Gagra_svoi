@@ -448,11 +448,13 @@ function renderRent() {
       if (actualCat !== rentFilterState.category) return false;
     }
 
-    // 3. Фильтр по сроку: На год+ vs До лета
+        // 3. Фильтр по сроку: На год+ vs До лета
+    const textForSeasonCheck = ((item.period || '') + ' ' + (item.desc || '')).toLowerCase();
+    const isSeasonItem = item.period === 'season' || 
+      /(?:до|по)\s*(?:\d{1,2}\s*)?(?:мая|мае|июн|лета)|по\s*май|до\s*май|помесячн|на\s*зим|\(сезон\)/i.test(textForSeasonCheck);
+
     if (rentFilterState.period !== 'all') {
-      const textForPeriod = ((item.period || item.type || '') + ' ' + (item.badge || '') + ' ' + (item.desc || '')).toLowerCase();
-      const isSeason = textForPeriod.includes('season') || textForPeriod.includes('до лета') || textForPeriod.includes('помесячн');
-      const actualPeriod = isSeason ? 'season' : 'year';
+      const actualPeriod = isSeasonItem ? 'season' : 'year';
       if (actualPeriod !== rentFilterState.period) return false;
     }
 
@@ -471,8 +473,7 @@ function renderRent() {
   }
 
   filtered.forEach(item => {
-    const textForPeriod = ((item.period || item.type || '') + ' ' + (item.badge || '') + ' ' + (item.desc || '')).toLowerCase();
-    const isSeason = textForPeriod.includes('season') || textForPeriod.includes('до лета') || textForPeriod.includes('помесячн');
+    const isSeason = isSeasonItem;
     const periodBadge = isSeason ? '⏳ До лета' : '🔒 На год+';
     const periodClass = isSeason 
       ? 'bg-sky-100 text-sky-900 border border-sky-300' 
