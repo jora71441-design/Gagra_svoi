@@ -472,8 +472,11 @@ function renderRent() {
     return;
   }
 
-  filtered.forEach(item => {
-    const isSeason = isSeasonItem;
+    filtered.forEach(item => {
+    const textForSeason = ((item.period || '') + ' ' + (item.desc || '')).toLowerCase();
+    const isSeason = item.period === 'season' || 
+      /(?:до|по)\s*(?:\d{1,2}\s*)?(?:мая|мае|июн|лета)|по\s*май|до\s*май|помесячн|на\s*зим|\(сезон\)/i.test(textForSeason);
+
     const periodBadge = isSeason ? '⏳ До лета' : '🔒 На год+';
     const periodClass = isSeason 
       ? 'bg-sky-100 text-sky-900 border border-sky-300' 
