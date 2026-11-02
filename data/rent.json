@@ -1,5 +1,22 @@
 [
   {
+    "title": "🏠 Сдаётся квартира в Гагре",
+    "price": "32 000 ₽",
+    "city": "Гагра",
+    "district": "Центр",
+    "category": "flat",
+    "period": "season",
+    "type": "flat",
+    "badge": "⏳ До лета",
+    "desc": "🏠 Сдаётся квартира в Гагре\n#Гагра\n\n📍 Адрес: ул. Абазгаа, 49/4, 3 этаж (центр города, всё в шаговой доступности)\n📅 Срок: длительный (до лета)\n💰 Цена: 32 000 ₽/мес (коммуналка входит в стоимость)\n🏡 Что сдаётся: квартира со всеми удобствами\n🛋 Условия: в...",
+    "photos": [],
+    "status": "Свободно к заселению",
+    "tg_link": "https://t.me/arenda_abkhazia_svoi/50",
+    "is_approved": true,
+    "is_active": true,
+    "id": 1
+  },
+  {
     "title": "🏠 Сдаётся 1-к квартира в Сухуме (Синон)",
     "price": "30 000 ₽",
     "city": "Сухум",
@@ -16,7 +33,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/49",
     "is_approved": true,
     "is_active": true,
-    "id": 1
+    "id": 2
   },
   {
     "title": "🏠 Сдаётся двухэтажный домик в Гагре",
@@ -35,7 +52,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/48",
     "is_approved": true,
     "is_active": true,
-    "id": 2
+    "id": 3
   },
   {
     "title": "🏠 Сдаётся евродвушка в Сухуме (Центр)",
@@ -54,7 +71,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/47",
     "is_approved": true,
     "is_active": true,
-    "id": 3
+    "id": 4
   },
   {
     "title": "🏠 Сдаётся 2-к квартира в Гагре",
@@ -73,7 +90,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/46",
     "is_approved": true,
     "is_active": true,
-    "id": 4
+    "id": 5
   },
   {
     "title": "🏠 Сдаётся 3-к квартира в Сухуме",
@@ -92,7 +109,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/45",
     "is_approved": true,
     "is_active": true,
-    "id": 5
+    "id": 6
   },
   {
     "title": "🏠 Сдаётся 1-к квартира в Гагре (Центр)",
@@ -111,7 +128,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/44",
     "is_approved": true,
     "is_active": true,
-    "id": 6
+    "id": 7
   },
   {
     "title": "🏠 Сдаётся 2-к квартира в Сухуме",
@@ -130,7 +147,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/43",
     "is_approved": true,
     "is_active": true,
-    "id": 7
+    "id": 8
   },
   {
     "title": "🏠 Сдаётся 2-к квартира в Гагре",
@@ -149,7 +166,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/42",
     "is_approved": true,
     "is_active": true,
-    "id": 8
+    "id": 9
   },
   {
     "title": "🏠 Сдаётся 1-к квартира в Агудзере",
@@ -168,7 +185,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/38",
     "is_approved": true,
     "is_active": true,
-    "id": 9
+    "id": 10
   },
   {
     "title": "🏠 Сдаётся 3-комнатная квартира в Сухуме",
@@ -187,7 +204,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/37",
     "is_approved": true,
     "is_active": true,
-    "id": 10
+    "id": 11
   },
   {
     "title": "🏠 Сдаётся 2-к квартира в Гагре",
@@ -206,7 +223,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/36",
     "is_approved": true,
     "is_active": true,
-    "id": 11
+    "id": 12
   },
   {
     "title": "🏠 Сдаётся квартира в Сухуме (Центр)",
@@ -225,7 +242,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/35",
     "is_approved": true,
     "is_active": true,
-    "id": 12
+    "id": 13
   },
   {
     "title": "🏠 Сдаётся 1-к квартира в Гагре",
@@ -244,7 +261,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/34",
     "is_approved": true,
     "is_active": true,
-    "id": 13
+    "id": 14
   },
   {
     "title": "🏠 Сдаются квартиры в Гагре (Кемпинг)",
@@ -263,7 +280,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/33",
     "is_approved": true,
     "is_active": true,
-    "id": 14
+    "id": 15
   },
   {
     "title": "🏠 Сдаётся 3-к квартира в Сухуме (поселок Агудзера)",
@@ -282,7 +299,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/32",
     "is_approved": true,
     "is_active": true,
-    "id": 15
+    "id": 16
   },
   {
     "title": "🏠 Сдаётся 3-к квартира в Сухуме (Новый район)",
@@ -301,7 +318,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/31",
     "is_approved": true,
     "is_active": true,
-    "id": 16
+    "id": 17
   },
   {
     "title": "🏠 Сдаётся 3-к квартира в Сухуме",
@@ -318,25 +335,6 @@
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/30",
-    "is_approved": true,
-    "is_active": true,
-    "id": 17
-  },
-  {
-    "title": "🏠 Сдаётся 3-к квартира в Сухуме (Центр)",
-    "price": "40 000 ₽",
-    "city": "Сухум",
-    "district": "Центр",
-    "category": "flat",
-    "period": "year",
-    "type": "flat",
-    "badge": "🔒 На год+",
-    "desc": "🏠 Сдаётся 3-к квартира в Сухуме (Центр)\n#Сухум\n\n📍 Адрес: центр Сухума, ул. Ардзинба\n📅 Срок: круглый год\n💰 Цена: 40 000 ₽/мес + электричество\n🏡 Что сдаётся: 3-комнатная квартира\n🛋 Условия: не указаны\n🐾 Животные: не указано\n📸 Фото: есть (по запросу)\n\n📞...",
-    "photos": [
-      "https://cdn4.telesco.pe/file/b9N8f7tyoSAkpKtgAyZw9_mgp401mvoo2GAjeT43PGOjyZPa7wrdEzKw5pbI0R6FmKkbFGCAG0n1UwmrxEPxbLLAj1EyLBiUvblDJHL4j5ZQ8IJ0NN4znJQCqcpK3cGneJbx2YAiNmslRZgTo9EYyRr3OCjm5TxzTffsGOfnB1awirTfUOouir-8mX64stqaJiVUyK_topiy3aUCWSp2HPVdIvT7grKpkmWHzbexylmvaBqhxtMiylRfJW3eE-B7QNulzUT9CTCnKZWIAzOxUOH3XVv5iBtbTN6vr2e-9P_8RjlrHI3kiLumW9uNACndmPcLQaCdlzL_09TCZyhohQ.jpg"
-    ],
-    "status": "Свободно к заселению",
-    "tg_link": "https://t.me/arenda_abkhazia_svoi/29",
     "is_approved": true,
     "is_active": true,
     "id": 18
