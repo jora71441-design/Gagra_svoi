@@ -1,5 +1,22 @@
 [
   {
+    "title": "🔍 Ищут жильё в Сухуме",
+    "price": "Цена по запросу",
+    "city": "Сухум",
+    "district": "Центр",
+    "category": "flat",
+    "period": "year",
+    "type": "flat",
+    "badge": "🔒 На год+",
+    "desc": "🔍 Ищут жильё в Сухуме\n#Сухум\n\n👤 Кто: семья граждан Абхазии (работающие, порядочные)\n🏠 Что ищут: дом, чтобы смотреть за ним, или вариант с проживанием в доме, где нужен уход за человеком\n📍 Город: Сухум\n💰 Бюджет: не указан\n📅 Срок: не указан\n\n📞 Для связ...",
+    "photos": [],
+    "status": "Свободно к заселению",
+    "tg_link": "https://t.me/arenda_abkhazia_svoi/51",
+    "is_approved": true,
+    "is_active": true,
+    "id": 1
+  },
+  {
     "title": "🏠 Сдаётся квартира в Гагре",
     "price": "32 000 ₽",
     "city": "Гагра",
@@ -14,7 +31,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/50",
     "is_approved": true,
     "is_active": true,
-    "id": 1
+    "id": 2
   },
   {
     "title": "🏠 Сдаётся 1-к квартира в Сухуме (Синон)",
@@ -27,13 +44,13 @@
     "badge": "🔒 На год+",
     "desc": "🏠 Сдаётся 1-к квартира в Сухуме (Синон)\n#Сухум\n\n📍 Район: г. Сухум, Синон. 5 этаж 5-этажного дома\n📅 Срок: длительный (без выселения летом)\n💰 Цена: 30 000 ₽/мес + свет + интернет\n🏡 Что сдаётся: однокомнатная квартира со всеми удобствами\n🛋 Условия: нова...",
     "photos": [
-      "https://cdn4.telesco.pe/file/r1KYf4h_MauwQOlJTIbiObWlJ5NY0vd3P08mn_9uVqPQDki3ojMsoD_GIkZg-bLJBqE5pPitmRKedR5QW-pt91b8ewfw8QacKU_cwx2P3f5rI9TR2HPdL9KsOYo2GDfRVXXZZGNwtkw614OtutmZqPCTBfZm2UA425nWYmrdVLTX_1_bZPHQkycShem22kvdVJgPpFMikPxaSf49yVjb99oMnwIkc6oY7A7-2zdBwtZCKJPyG5qposVOE1ziHrVpWEbVBsTR4bVDsMm2AmKk8_S71DIfHmUf77W0pNtcRX1idAqn-OMBTLZf6Mp4A4bqK7vZ8aH3BKrOUpBAkWJHIQ.jpg"
+      "https://cdn4.telesco.pe/file/T4S8zrhgp8nWdJiGp6dEQOoXVge9Wv5KAnatSS7li3j1T349YU9rVTDOuWQ8JSxV8yckdWqAtnoGkzHEnWUtn4QdUOM5Zp6AN7ke_mSF0FV8R4VQ4cyhy1laZEN1D4QSe3LL0326-TJdBUIdwXITv4UyX8irOKRo9diHfJT6UcrrMoU6NWD6G-KEiqe51S07EB_i4TCUBWTBDUTO-4zM7sw__-aSKeakosmnr2Pvg6DdHf-HnH4HXINbHWuGBWP9zCiPTBq6kEauOfPf0t92WOHQEggbPJJnPSFOW_wgeYq_PpAn49Hr5yxSI4Ni0Ccg2XbhL7PqWnkis-rdbi3vpw.jpg"
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/49",
     "is_approved": true,
     "is_active": true,
-    "id": 2
+    "id": 3
   },
   {
     "title": "🏠 Сдаётся двухэтажный домик в Гагре",
@@ -46,13 +63,13 @@
     "badge": "⏳ До лета",
     "desc": "🏠 Сдаётся двухэтажный домик в Гагре\n#Гагра\n\n📍 Район: Гагра\n📅 Срок: длительный (до июня)\n💰 Цена: 18 000 ₽/мес\n🏡 Что сдаётся: отдельное двухэтажное строение\n🛋 Условия:\n\n· Первый этаж: просторная кухня, плита, холодильник, посуда, обеденная зона.\n· Втор...",
     "photos": [
-      "https://cdn4.telesco.pe/file/SIO1vxKweVGDsnadtPuuLwT9EvpdP9xvr3dIQu7pps61uLCIDIQRM3pGxxHbt0VPrA7Sj8fJ2jJvSmiTI_vvULGklb12pOHALVq9ZUenuU7uF6XhHilSysNEQYM98ZFkCOos6x_hcGCTgYiNYPwow94Yi-EK9WnZKUNhjFlgsn8hwr4NBOvq6GQkgFyGc_s026rIzaxRPpAM9PlLJqVOKF_goiYN5pa1dUpgrM18Szg5PmJ5KtG5_lxjUg8rsM_ajghrWogYqMdTmQzB6b_G8A1po_1TqO7DMOY4btYUSM6gwXG9wssxuoHQNIY05-SYz7HfKcRXHvA9xZTOaBA1Bg.jpg"
+      "https://cdn4.telesco.pe/file/Z5PtczY7GhiAjjwHOcR8UTksS4Ciyn64OkuhHQsDmbiaefgpGVIDp3HXwgt8raPm19BRS8w6DHnYf2IbVAoOHojNOH7la0NVynyjFcny-ZfA2bFWAEMPZjmWcCQQjFxp9qyDi9Xkz581ygsGi0hMEt4d8F6dF6OeUAEkDMAdp4ghu0Whqnp_AJuYuot6y94t85RRAKyYhMhNzCvP9LHrgIDIsYh7m18tMmJaHQkegYTnghJ702ffBGJxAncU3NtjqUsWSEPqPCTeTsdyyGx1CMNH0gQDz4L6oe8Du8axAbYlsyK3gcPiZERTQowwutLmSSMbRnVnqQPQ23RAZuurPg.jpg"
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/48",
     "is_approved": true,
     "is_active": true,
-    "id": 3
+    "id": 4
   },
   {
     "title": "🏠 Сдаётся евродвушка в Сухуме (Центр)",
@@ -65,13 +82,13 @@
     "badge": "⏳ До лета",
     "desc": "🏠 Сдаётся евродвушка в Сухуме (Центр)\n#Сухум \n\n📍 Адрес: центр города, ул. Воронова, 23. Напротив парк «Сказка». До центральной набережной и пляжа 5–7 минут ходьбы.\n📅 Срок: длительный (до июня 2027 г.), при заселении заключается договор\n💰 Цена: 45 000...",
     "photos": [
-      "https://cdn4.telesco.pe/file/c0UlZuhXcGF_tZ9-rtUz0qB4O76-awx0o9n3mNx2n6JdYdXBcLVkZNOKowlLT7WhCLncdz41kJUSZPKTWzpav8eFVmPCEVX0gqf282IL5G6llUjJdufoBGPuMzgy6i36xM-_8HahohYFj12uVSh3NtsXzUaVrC3pgqF_0ufV8z-q0_3dQOBZOsP8oKYIEimga0Fp7_UvpMca9AGSbAZsMEoZ3BldlhQXK_VUtz9uITMe6D2Gfwu3DnpRk1zUztsnsiiPhW40O6JNsyWK6IWjmgnkJu5WRpagW4QHsAul_qSIveUahPQeggv1Z_G8dtYN3uIFLHEWKhfdvawFVp0xHw.jpg"
+      "https://cdn4.telesco.pe/file/OaB0Yaf9nuxFKU5hrsEgE3EpP1s-z82Ax0MQ73mPrtu1LPq7WJw9yPSWPzONxSnaE109Eu4eEB3Egeer4B6tUBPn2W961iPbqhHsEVRoGiq1AjFzVgEX97TmZRxvNKtDXhsw_pv0qw0-q9rY_uHqLIvrjkfkiKW5UxvBS_5_KAyHplj06UKjyhA--7S4VL84YQwa4BzygPqK7vnBegEqdfpeLBcsXUAypaFm-KzaePZnJ6lxkfQqs-yijsD_VjQtmppf637q3cRk8uelrwW38TiE8VwuTV7BOuR1jI5f4XfnVNHbkvIGDhqYA9THnsWyny6v2bRGgQ1PWyF_gPNqqQ.jpg"
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/47",
     "is_approved": true,
     "is_active": true,
-    "id": 4
+    "id": 5
   },
   {
     "title": "🏠 Сдаётся 2-к квартира в Гагре",
@@ -84,13 +101,13 @@
     "badge": "🔒 На год+",
     "desc": "🏠 Сдаётся 2-к квартира в Гагре\n#Гагра\n\n📍 Адрес: ул. Лакоба, 4 этаж. До моря 7 минут ходьбы. Через дорогу супермаркет, с двух сторон продуктовые магазины, под домом детская площадка, до рынка две остановки, рядом дельфинарий.\n📅 Срок: ноябрь – май\n💰 Це...",
     "photos": [
-      "https://cdn4.telesco.pe/file/MXlC1bXi9yCIaw_cXet1EgqutsaYO1cxTd57wefDAzhpwKM2cmK0tDjgklEjG-95awRk9j9w9yBR03ajW1cetG9mPSObgZnlzKwuZaauFbH-02yJMG8kl3i3GEeOVJyi-PardpHVpDsfZufH-yiwZYWPxbKiwV9FaD0U8hNVP3YOWeL-aYIY3h6htwRbKzRaDTTc5R7CN0Uq67l3zTQcNNXZ9MH-UfuXERHzxcSC04A_zehyNKBEeUPnVmyYMnY3J7PtvUS6Pm2xV9xTRdPU5FLbzP5dZKxIaxndKl4MGudsVDNLS1Fp_zwKDkBv_r5_ssoIpZlQF4DMzGpL-lAWRQ.jpg"
+      "https://cdn4.telesco.pe/file/jDOzyhj7BmabCgoiwnRARK4Zt_f-rGaZDS5SMtQEaSo7G7eU9hfRahuBjveq4TqbJtZkOrWdOw8xEXvNxHTe4SbK1osHFPK_FJYoY63N1lbxnQIXaP6TMOyNQRLKAWhLwtXXb46mmTeLLFvmmj6UczabzvWy5o92-K71L4fjo6DtRakRGFuzMCWUBeOgiey4yvRZ7-YnZPIjnK_5Zz4_OaCD25SbI87oqmGYOu7tRl9IV8fkc1e20MlVrqv7hxgcH4gtaYRWErZKXiIOGCxLBTqYU2OdckGRVLMZg98pyiRszxzWZwnFyzuDwTzOsjLMhLae_lnGzMtTARbz9UTYWQ.jpg"
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/46",
     "is_approved": true,
     "is_active": true,
-    "id": 5
+    "id": 6
   },
   {
     "title": "🏠 Сдаётся 3-к квартира в Сухуме",
@@ -103,13 +120,13 @@
     "badge": "⏳ До лета",
     "desc": "🏠 Сдаётся 3-к квартира в Сухуме\n# Сухум \n\n📍 Адрес: ул. Ардзинба, 150, 4 этаж\n📅 Срок: до 15 июня\n💰 Цена: не указана (уточняйте у собственника)\n🏡 Что сдаётся: 3-комнатная квартира\n🛋 Условия: не указаны\n🐾 Животные: не указано\n📸 Фото: есть (по запросу)\n\n...",
     "photos": [
-      "https://cdn4.telesco.pe/file/n8Qytyt6wSeSg9ZjLaI8v38iJgiErbxnDdPhknAq1s5pTuD1NU13sL6phlPYD3GB7jEIIGP65LCf4cyi2i6F-wp23CajooNG-vfUvYYy2XDN1Gkwy-1HdvvDPmma5yNSokn91ahJERtN-Avcw0COcA1mKM03-TkrdCLYh3tFXi8fCaH7lp61CtcdInfiOYaO-txtOXN9YdIjBpvBtKqAFaDBG1zgGw-6j1LROToJ13iZCo4a1YHktWcDhS-Ea5gZPQas3wkzrcq1OdpufuIkGRREnRKnnnan2l6Iw3bdP4IL8cW-HJaAm2UPK53qtRdo2to1hbFggnJSsau1MxSi-g.jpg"
+      "https://cdn4.telesco.pe/file/fPVWW0ZnnOmXBmJg-_AoVV96sw87JCrRwOEdLWeyVgcqsywGBk_HUrKXZKu8RAQWjDkCqQ6gIhl1Si5_pkJ5jAEiVTyj40HqKVtmGqU8BPwibR0-DCzR28P3pY8HD-j0XdnghGj2inkwooaac9ei4AaQS82UXr5jtz5OfDndK3mQyzfBaUDqT9FsZX5QqRdthIc5zjD8sw_NEeKYKRc-3NozGkbSnCiHonii6lNuePoQDH6J8gY15zBsSAKGsgO3z1CUS9EhF6jLxzLTDmM_bHkFR0z72q1Hij4DEuCzs5awQZ1m9dgb6tse1pdUWKsxBL8q9ZukYzAwnci-Q6M5Og.jpg"
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/45",
     "is_approved": true,
     "is_active": true,
-    "id": 6
+    "id": 7
   },
   {
     "title": "🏠 Сдаётся 1-к квартира в Гагре (Центр)",
@@ -122,13 +139,13 @@
     "badge": "🔒 На год+",
     "desc": "🏠 Сдаётся 1-к квартира в Гагре (Центр)\n#Гагра\n\n📍 Район: центр города. Рядом рынок, детский сад, гостиница «Абхазия», отличный вид на море.\n📅 Срок: круглый год (без выселения на лето)\n💰 Цена: 30 000 ₽/мес\n🏡 Что сдаётся: однокомнатная квартира, 15 этаж...",
     "photos": [
-      "https://cdn4.telesco.pe/file/tCMYx9lq3okEwx1junmVKsKs-K50WeGxHnHel-AkGw9TTkqvwEM1ZHnzvXkYujBY1CE4tO0zzHgdkCW5JSPIqSVGgXQ2OT3IvnhsZf0iXsIWucTfY-W2Oq2I0bMPvDlTYUsJK0kzyQTCWqMmzKDhlmDOR_vjMyUz2SlN5yvd6A5iJgH-pNy8xGAK54vVUKsIidhp_saBdv4OPUzzOQZpb-_7qt5GbjTMhV-3wvaKh-d5dLq1rikVc27DaLoIa6cBPfB7eerz-CvCPt9MXaEoA_b4GJVYMqUrPbNyRTvIDDv2MyqkWxsOjC5j5iJJGdJiAg66pvbRcGUwD8NfwJ8cAA.jpg"
+      "https://cdn4.telesco.pe/file/kefoS4Q21JfEhik0JgVfiUc6vxZEd_1oE1iKDwpXiAFgEukPAxrsP1W3c0y6hFJHJ0CC96POgoSLlR1NlI-10GVFWp7FgUwSuia4e9UafnA940mhnsSji6O865lM8zS4i2TeBAgXZSg-m0b5HqxOnsQbY3UrjE-epyRnlkKrZp1rKzzTgyssoZPUn1ljfrwpMBV0K4gY0BE48GTqC9TafQfvwznZ3ZULvY8A_GlreF96RmhtFBwh94uJSBZE-9TmfnC2nQqOVjEozgk_-z0BDqwgNEwHOjBvvxFrD9t9BpYtJo6aHeARSx-LTt_QWMbWlgyav4doyf28uBAnj1HhxA.jpg"
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/44",
     "is_approved": true,
     "is_active": true,
-    "id": 7
+    "id": 8
   },
   {
     "title": "🏠 Сдаётся 2-к квартира в Сухуме",
@@ -141,13 +158,13 @@
     "badge": "⏳ До лета",
     "desc": "🏠 Сдаётся 2-к квартира в Сухуме\n#Сухум \n\n📍 Адрес: ул. Почтовая, 35 (тихий, спокойный район; вокзал, рынок, набережная — всё в пешей доступности)\n📅 Срок: до мая (возможна круглогодичная сдача с повышением цены в летние месяцы)\n💰 Цена: 45 000 ₽/мес + с...",
     "photos": [
-      "https://cdn4.telesco.pe/file/vJOnnbMVGsw_EqJd8WcR5vc14bnmx9J6uHrSjnpmHSSIVN5O0dgXCm9CNh_Fr3LLyXtuqoPfqMa2vgVj9lDibaMSm97hkiKru_HK4u_ImMPJpAKHrLOVbOkKz8w2pKBoHOpsAuQNndxUyR_7pr-305Vqv5XzGmJy92kpBwjlBLCwg6Oz0LLUJZmHAoYuA25iuSYZoVl1eJf0IWQEe3PhuiHHPH5hIYIUd1vCmMCuRoGsBkyMwQ1eIjgAjQcmFv8FbSnm4KGP7khMfnbamQSRkfQG6Tro6oiHB121mk-LWCnK6B5pQ9Nag7A6OEd8Ad27Z9Lu7ee8z49g23DFwhgDMw.jpg"
+      "https://cdn4.telesco.pe/file/u3b2f1VFs3P8pel9EBoGFlTetWCXWWRSUgHM3VHzmvscfbDAGKGKd8q94eich9mmpIXUD2fMcrF_DSz0kQ4E3zorcXgIIkgFgsWsiy7yy98iAPLZqyfDwgxRiIWjvpCmCR1Dkac_WQ8qgtLc01TCktKJ0cqFBjB5dZd1ykxi2-ayjj4jjxX-sTvo9AbB6QLpwYdf1Bfnr-0-AtANAlT7iPWXv2lao03YM31QS_wILfqiNrngmk4cLnYsAGgSbvgCjBkxHeHE7PFubnrWdnnBkn0hXatPs2EYjCbKwvO_awpHPhxNwqZwqUxXRbTx00jk9zQna_zWn24HMUFRYszLgQ.jpg"
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/43",
     "is_approved": true,
     "is_active": true,
-    "id": 8
+    "id": 9
   },
   {
     "title": "🏠 Сдаётся 2-к квартира в Гагре",
@@ -160,13 +177,13 @@
     "badge": "🔒 На год+",
     "desc": "🏠 Сдаётся 2-к квартира в Гагре\n#Гагра \n\n📍 Адрес: ул. Абазга, 47/1, 3 этаж\n📅 Срок: круглый год\n💰 Цена: 35 000 ₽/мес (зима) + свет; 50 000 ₽/мес (лето)\n🏡 Что сдаётся: 2-комнатная квартира\n🛋 Условия: мебель, техника\n🐾 Животные: не указано\n📸 Фото: прикре...",
     "photos": [
-      "https://cdn4.telesco.pe/file/m2Fewdsmd7KWxJEWF81xmbxanaSlM2KMBTEMpOP3y9jS-nSSuPobHW44yPNJzesErmYowRtXBk024h1cUjVviwbKUQsOSjD-SvLyIjL11JoJcmQe48pZq8TKxo7MC9hTrZnYtWE-K2HT_QVbCROc1HCxDIGrVlR2LPE0UL2OXAagQWA9e1tiiF9Gyfxxgg4EWGVfZH3x4bs2L6FvN2nMHwn5uigN4pzIAk_gyr2tOzuxMfI4iyzkKWB6_ZyIKhCyQYHwsSVRiq-rk7Q8FT5-ZagOX7XNMV8qVVLBIOyMWHO1JFAWesJ0iqDhhicjjOs0j2lk3kbSMT2PAy0LVHOGnA.jpg"
+      "https://cdn4.telesco.pe/file/qvvmIVkn1rI16WCPYxnyDfpaMMryrqoFe0eDu3hgO_0IicuHx93b_xEyHwCThy_R50o-BJ1p8uulsS0Hfp0U1lZ7OZgelXKwZVu-4fpGOcRvtHaUknHIwLmxJcvGmEq3f1n6OyestD0_7F2_qM1DRN0LcTSXGXjep8eM7oQNt0ijHGP1a9h3j-M0xZfZnkC4PTlHbK-s5762-GoLuBiE_JMrdXn96NEhNlrRUTj-AP7e-kHKwtE-gEaYZwzgN_JZDl-wul66Z7vndw6sZ3zkUvpCVlMcqM1IzNJ3o5SQKq4oMmSIRo_K-3Ckoqi_cPMkNpLarnhTUq3kDjo32CBZBQ.jpg"
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/42",
     "is_approved": true,
     "is_active": true,
-    "id": 9
+    "id": 10
   },
   {
     "title": "🏠 Сдаётся 1-к квартира в Агудзере",
@@ -179,13 +196,13 @@
     "badge": "🔒 На год+",
     "desc": "🏠 Сдаётся 1-к квартира в Агудзере\n\n📍 Район: пос. Агудзера, Гулрыпшский район (рядом с центральной трассой)\n📅 Срок: не указан (уточняйте у собственника)\n💰 Цена: 20 000 ₽/мес + электроэнергия\n🏡 Что сдаётся: 1-комнатная квартира\n🛋 Условия: все удобства,...",
     "photos": [
-      "https://cdn4.telesco.pe/file/gu1nOTRG-6Us0zANjMGS7h9g50c4Kle6ycAfQhyE7H3upJNGQohmYeugsJbl3A83qZAD8oBfr2lb7BvkQYx9gJVDzuonF-1JR8lpsRTLUp5UhUXyUa2oIzNHTTKBDHfwimk3dtIyy_V6MLNuCoZOt_Krr2oB-QZNiS7PWCTKqXcC5SRqzdzuSW3weN1x5IbyfKt01zV39Mh1vGZYu7YmgdpamDXbW6ha6wbuKC-A_Sia5EGaJ_ToTJExcmXzUpdiqyuhAKqOZaL-AjQ3HGXdSC8BIZkOA0471s3P-AmmhyThNky2Wl8V3r5TWxE5uoDIAoBqD5xy-POjsn5NEy9r7w.jpg"
+      "https://cdn4.telesco.pe/file/oE1t2Jz-M2RnT3r971h4NRbiBpm1WMc2vPE03AK1lJO2UsDehXl-dkLk6wuE_XAYwLnNIrxWoo-fhgYC9n5uJq9CjbtDghf_y4rFQZin2YmgGf7ljz02yY9SymBlmtZ-3RvBjGjLiVhujTjgEhJ-8a-XSVpADLdZ-y6CV00EOs2p3eTqkM3zA-8gbRk6Lt8KZablr06AJ2nhtH4URoWfEDk4w4GVLP1lQbtOC3qXdP_LW-p5_ze1MoGH1AfIXIosA3CLqaBIl86j7SBxweuKFsk7xgs5kt7jsxHdwUaDi4ycVrH13FuyYJNfh91iiMEPJ434LyKxicq8g7s_AyQglw.jpg"
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/38",
     "is_approved": true,
     "is_active": true,
-    "id": 10
+    "id": 11
   },
   {
     "title": "🏠 Сдаётся 3-комнатная квартира в Сухуме",
@@ -198,13 +215,13 @@
     "badge": "🔒 На год+",
     "desc": "🏠 Сдаётся 3-комнатная квартира в Сухуме\n#Сухум\n\n📍 Адрес: ул. Агумава, 1\n📅 Срок: долго\n💰 Цена: не указана (уточняйте у собственника)\n🏡 Что сдаётся: 3-комнатная квартира\n🛋 Условия: не указаны\n🐾 Животные: не указано\n📸 Фото: есть (по запросу)\n\n📞 Для связ...",
     "photos": [
-      "https://cdn4.telesco.pe/file/pUgP1Mk_sqpk5CXk-LfZMO3bpzGTeaOrHZ2zkfeq2OBmdFPq9zqdiaUvktjkSJmdZJElo8PRTvVhnSecOuqgqa0OS79bBQFberlMyOYIBzNI0bcr24TuUfaB6FFN9Moh6EArLiTqnhR1u1PdaKeO6urw37_uzj88pt4vjGrcg5lWdk1r68yNBzkbgsQJgQaTQUiNkVxjqHZ26WhKlAdIn_1gKG7Bo437X5EQQHpWIP2cP_2Jpg3_tgjVcIt3jVsjfQDX0eE0Pi0ZSU5eiLPEazcfuIwJ-uGOnFesXEYXR8tNIQ37mf8qHBkTXrPGM6AjR0J2gvDRBRUYqICbHvoNww.jpg"
+      "https://cdn4.telesco.pe/file/rnsFVl42HCgR_0gZZR4qN_IPMbr-SuXr2uRevba9_ed5EY5XBS4LlQifbJMxP7hZaR-RLnnx2Ll1W4LqHGNHb7La2xn0yEP3qmq_XtFQ86XBt5m_zNK06_tK5ov0zOGetvOGEt3JXLhf-8LiEiFsHweLa0lsoV3ulxLTzsKSc2CZqTSNJKiD67RpM7rDtxPlWPZuoxS1PAtQiED26gFi_hLz2vGAiJpGWK7jOBzG3hoyPYSIJ4bY1blRekHhIK1b1apjTJTb-DBDfQPCYJQlwoxv2Y5xaIVPCdPbfvXHpQpx8JNfuzz8t-Rzt-DZFJ4S11cQfz30YJSohfegjGEBJA.jpg"
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/37",
     "is_approved": true,
     "is_active": true,
-    "id": 11
+    "id": 12
   },
   {
     "title": "🏠 Сдаётся 2-к квартира в Гагре",
@@ -217,13 +234,13 @@
     "badge": "🔒 На год+",
     "desc": "🏠 Сдаётся 2-к квартира в Гагре\n#Гагра \n\n📍 Адрес: ул. Лакоба, 4 этаж. До моря 7 минут ходьбы. Через дорогу супермаркет, с двух сторон продуктовые магазины, под домом детская площадка, до рынка две остановки, рядом дельфинарий.\n📅 Срок: ноябрь – май\n💰 Ц...",
     "photos": [
-      "https://cdn4.telesco.pe/file/hCA5jzVq7M2KWEnu983Z94NPE3GWtX-iROQhI9x27lBybnqXxw-_y946k2pujgsc7CiFPE5Ti_uVYndGv5zj3bp1Ne5GU7_zT0dJUD8mu6b-UO4g6EnqoYfJUveyNb3HoGbvTU70fHYkf4N8YihYp-Rxynfb8RjwBuV5ZDSWKuUMlM1BhhSv8L4AKJl2VCAlB4bxWHv0q4NkyXJHClS7nKl3tf22uU6Tf9bTz3RAk2EN3U3CVBbdxultZoIhkR9r7ePPZJpxQacEAb6-Fau_EWBreZ0TkqfNBz8zMSZZ3Aqn2sfHaa1Ps7yz3TF85zzmACatrJ8RAZHJVLzNleltBw.jpg"
+      "https://cdn4.telesco.pe/file/YFO4eh7oRt4hAgZcHLxnZ4Hss3-YA4AmXqZ7pvknmMXjraJwyuQNmXPpowYpp5EzE0s5xkQf6VFofID2pbxrLZVPJVsXyS7ur5fyweczrc2euPmJGgWE-58WHKE6BIBgVOnJog-dvW3Ithrrs1cCM5D5-qOMl5bVFa1EGtu_WcFAw-rVi9b0BvsaH3kHABW1_8Npd5n3XiFbm1VeUg8gCoDHt9P89kXFGt4g-ldc1csp2ssC5W9nEZSG-tRWMeee171dfKtFZ0MWhqMivmCeJ8qTaT3u7zCTFI3baLXTvkm8t-2K1kSHgf0TcBgoZLJECEbj063gUfCYk34D_HKf6Q.jpg"
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/36",
     "is_approved": true,
     "is_active": true,
-    "id": 12
+    "id": 13
   },
   {
     "title": "🏠 Сдаётся квартира в Сухуме (Центр)",
@@ -236,13 +253,13 @@
     "badge": "⏳ До лета",
     "desc": "🏠 Сдаётся квартира в Сухуме (Центр)\n#Сухум\n\n📍 Адрес: центр города, ул. Абазинская\n📅 Срок: до июня\n💰 Цена: 40 000 ₽/мес\n🏡 Что сдаётся: квартира, 40 кв.м.\n🛋 Условия: все удобства, балкон\n🐾 Животные: не указано\n📸 Фото: есть (по запросу)\n\n📞 Для связи нап...",
     "photos": [
-      "https://cdn4.telesco.pe/file/Har6soAK9IxQPRxl3Ej3mK9yZvyp69NKp68oqVuUyw3LUtCgG9GFNID1EDqDNvUyEppOJrnfkTeJgQLakVwege2pIQ4WqusEvrmJl_In46wmgIxaKWqjhvnhduzEvc489QwQ0yEM3rCzOSIy_f-I5cIWrki8E4hfyEj3-YHeDjj1sbNFFMPL4dfNUFj9ZWPtv0eQxZc1i2vSSw16brQYf_Dy1_XsCFJ0Zpd56_xMLNvZqR23he4c2XRHd3q-P5yfkNq1goRgjI_H4verR5REZam2BctybvqOMDqGi2weNEzFJIopBn2bj2WVQG1-K2jTdnjlvfrotfP0eFNcMCj6mA.jpg"
+      "https://cdn4.telesco.pe/file/Q7L443jg1ruxZ1Ff4Qj7Gf4HDTzXEc-fb6fjYbM8ocnsesR0p3eIwrFJONG-8oR31zMn2FYVOY1w0ZT-OpcQU6LGA55_pSk2n5WWBdaJrUIjfxKl-xu_2L0tlnYDqp3xgjQzygQttfVNr2HMA5f263F6y7AEHeGuJ_vcdgKoFI44NycThvqUD4QFKXMsDvW7NfQ6UyMjQCyA4cZ6ystd0DMTY4kcH-l3HWyVUmDb2dn2l7MIS1cAmbwkTqM1pLxBZWeKc_LiKEixauvSBDG1PPwDzMRzQEM7IK8Swvl90CCWfBnHgI0dYL1yINegBl5Sdw0e-YDIc2L7ZT2lcW5Mng.jpg"
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/35",
     "is_approved": true,
     "is_active": true,
-    "id": 13
+    "id": 14
   },
   {
     "title": "🏠 Сдаётся 1-к квартира в Гагре",
@@ -255,13 +272,13 @@
     "badge": "🔒 На год+",
     "desc": "🏠 Сдаётся 1-к квартира в Гагре\n#Гагра \n\n📍 Адрес: ул. Абаазга (напротив прокуратуры)\n📅 Срок: круглый год\n💰 Цена: не указана (уточняйте у собственника)\n🏡 Что сдаётся: однокомнатная квартира\n🛋 Условия: не указаны\n🐾 Животные: не указано\n📸 Фото: есть (по ...",
     "photos": [
-      "https://cdn4.telesco.pe/file/ReZWxuhc51e9Zhm2YYk5XJpZcFBNpecudXm4qAsQwUWjZKBkKa1vkFQuAqlTlcdCG88d3BbWMRqkFYCQxT73jN1SGaCvpddIY5YBiqTl_0TrlFUPrLtt22UmLaV18iiQsHj0QA-f6e2Pxl4nrH5IipWYlWNnLa3oTt7FNCyUmXT-RZAg2TH5rItfzQYysLOTsjwymdKoJraaDQ22F_DcW_buipYJet5M95jUSJReAeWxTUySFCrZR0OgbdSEDrVS9e1lUWASZsv2GphtbwxcEU2YCx-4HrJhkwMFRm-J_RHOkngvOUjbzehnFCH_P1aedg05TFiTur8IBiCrYH4CEQ.jpg"
+      "https://cdn4.telesco.pe/file/DEXxQvAZwGEwLel9LCJOX5Q4X-oyx46leYwXYmIOCWpY39p2nrvVUTTD4qlCiyLqUliHEh2Uco5d0kqU24RE11lUylPcXhxEkdPI6zoDiM0SAGdPUmLTtlK5Kedc1spMlU6b7-xkLfduPf-FGrR2DnkqGRh9rOfm601UWJ-Mq_MUvNgX8fz7IaeOKTRrybNAtZvbL_-x6ZQOoS6G00I5WId2e0OhCpsKrzcfJt2qPRDuTctVneGa6ZBpv_23cqI6uUoTFm5sZD1MTjdiSS9fV6PVvFmaBKCYen88Yh5S0H9ZO1gUz4zlCKhpFCPbhqDKieOkqSxhcYKnQIJUxXyUrA.jpg"
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/34",
     "is_approved": true,
     "is_active": true,
-    "id": 14
+    "id": 15
   },
   {
     "title": "🏠 Сдаются квартиры в Гагре (Кемпинг)",
@@ -274,13 +291,13 @@
     "badge": "⏳ До лета",
     "desc": "🏠 Сдаются квартиры в Гагре (Кемпинг)\n#Гагра \n\n📍 Адрес: ул. Лакоба, 23А (частный дом, 3 этаж)\n📅 Срок: с октября по май включительно (также рассматривается долгосрочная аренда)\n💰 Цена:\n\n· 1-к (на 2–3 человек): 23 000 ₽/мес (сезон) / 35 000 ₽/мес (долго...",
     "photos": [
-      "https://cdn4.telesco.pe/file/qqWHjRNgLrhpyqKY7upuwJoDdbjCQxUNKImqcwEHD4O4yd9BFpISih2yC7w2LyD5DvAcJt5rcx03ILH4FSBirxEmg6TkYV2_kNgGA7Hzs0i_lNxylggXG9RtMcS2340UvfmYFCQTzf-44oABnSB0cBdxgjyFZ_VJW-irOq4J2eCbq2lLe_nQjVKcy9FcsDJlwhIuYMevnevjN5rfF-29gTWsMopk4sVz2sF_gGIsJ-1sUBtnvzNipX37iGRPGxI70S5U579XWmlBUnvvjIJt64IrGzvFILwvgL3ElTtdmavc7KYzm9IM1eCS39Msw_BA4-Niehpkk7kyVDjzHr3gJQ.jpg"
+      "https://cdn4.telesco.pe/file/mBIQuRc_kdFied2QQKswDjcuMg64ajnpztcYpZKBvW3muhSRunAFdd7RI24QSIrJHRIx7YypaHHaexyGXzFE63n_s0j3qxWoJXRousvZjY6tT5Rbi4sCddtUQMf-d08m_LmC3yRp4a3R3B_Bku9Ssh_zRACbu5zwi0tuQw2PJ3YYOHCZlTJmgnN64_8Ibr0nIWRfgNuaZec45Dqm11ptLNQbQNmEKYOYFBYv0SPkLXz7ReRMHMW00v2_b2e_SpDt9lin2rgED-SRK_mXxUzT01mugGs_4u7QFmrM7TSGEuIeA2R4ISNn4_ngIjQXaNIjAejJKzz2f8Xmy6875eXTxA.jpg"
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/33",
     "is_approved": true,
     "is_active": true,
-    "id": 15
+    "id": 16
   },
   {
     "title": "🏠 Сдаётся 3-к квартира в Сухуме (поселок Агудзера)",
@@ -293,13 +310,13 @@
     "badge": "🔒 На год+",
     "desc": "🏠 Сдаётся 3-к квартира в Сухуме (поселок Агудзера)\n#Сухум\n\n📍 Район: Новый район, второй круг, ул. Чалмаз\n📅 Срок: круглый год\n💰 Цена: 40 000 ₽/мес\n🏡 Что сдаётся: 3-комнатная квартира\n🛋 Условия: 9/9 этаж, лифт работает\n🐾 Животные: не указано\n📸 Фото: ес...",
     "photos": [
-      "https://cdn4.telesco.pe/file/puMyS_8A1NhAwBh4uAMhJsKRm-PyaSR3oGNCeegi0L9esu1xIGCiBKkUD4421C3zP3nJd2-39b6WId-Tn0Ctj4U9UlaazMVcKnaX-dcM7jkR-AuiN93mifXb7chJZLzYchV1vij_L8UwZSe1winOW0UHFc8EIPV_dIB_uo9y69mvthzQihxkrt8wSeABJ9jqDwSWI0Kf0sMsFExY1SHaRyIdE293nRxYnRdPCLBLwHZPJsKwlXJsW8OnabEoVPnO0MSkv9sMAIdE_VdcoTe6akqMrRjj9ncwku4kUV8C13AzJEVYrQM3ui-Q4MOIGLPSpL-lB7JKO0x_eU1JNhGCjA.jpg"
+      "https://cdn4.telesco.pe/file/UhK93k5SevanVc8TNIICA6EGibnEC83ydz3sMuiAFvIpo-roZO9KjxGXHK_gaSAv0Z0-k3-1WzD_6n7ILzFm-MF1Kk7Am4nSy5yhbPvLFVzlzar85yG9COBaEOnHSbiH5UkMOZYHHJsNOS1B1Y46I7fwK-Yzfu93xIBjzdgQOE09aYmK5Jl2CMzwIjyIcbcBMyoIwEt1NPaqLGSpTenvlr1d5F5r1UWUNiZbvTPHJdgJqzhpIyySYr_G5BY4X-w03ja2B9NHp3VbAx0zCPfIJS6b07ikLqZK_qLnj062zDq5Gi0PYu6O8heUS0LiR_1idDtI3gSzy567O53ELP9Hgg.jpg"
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/32",
     "is_approved": true,
     "is_active": true,
-    "id": 16
+    "id": 17
   },
   {
     "title": "🏠 Сдаётся 3-к квартира в Сухуме (Новый район)",
@@ -312,29 +329,10 @@
     "badge": "🔒 На год+",
     "desc": "🏠 Сдаётся 3-к квартира в Сухуме (Новый район)\n#Сухум\n\n📍 Район: Новый район, второй круг, ул. Чалмаз\n📅 Срок: круглый год\n💰 Цена: 40 000 ₽/мес\n🏡 Что сдаётся: 3-комнатная квартира\n🛋 Условия: 9/9 этаж, лифт работает\n🐾 Животные: не указано\n📸 Фото: есть (п...",
     "photos": [
-      "https://cdn4.telesco.pe/file/cKPbt2nZ60Gq57GQnoeI5UGTx-abw0D3w7HDDFsqu1vNO-De83KJKtG4kDgLE-XUsEii7wtxkUV4TLsMiDvQJXPSNesN80BMc6ZCRkEiPz-ZbKkbJtWSeWQmuhTrhXV6UiHbqHLlh6a7umj3EuK5T4zRTpKZmF3y_Iul5Ad1OmotuD-flsLcjR4vQqFzK8prCSyVI9sFayfy2JfvKmImQpKNrWSilps7J2gudO55SvwLoriBC2HCmEBna7NpoZCutuHmayR6-qcl8cxiPgWY7txmj8D8SW2WLlVKKU88Kd5ukLjeAs2lRNJWs7FzljqlLJHtVSoDx8y252HIo8C3NA.jpg"
+      "https://cdn4.telesco.pe/file/MqxZkshFFIXF1KihhyOtNvNI4Bd882efFblAeRNvgS8xV-za1nBg_w0ECucoBzicfpZ7zjByWz1hcAa4X7YzOZejcxo0OEx6EFXG4-0bPXX_-jE9KSKyVZ3CB1wtPvR5bI7FNJ6Ucc9zdZeSyENmKOg849q7zNNwCGU0TF3g6w_4gTCrpXEj_MWDY-21XDoK4RU9wQK4YrqRA09tAbPY9ZxMKLGoPLYJz62S4gfUTMspqIq_ucTMn1tVDrWd_UKgtDV0UXLMN03fDhVe0oA3ap0-q1KShvV-uo7akd3NCCqbEHdko7aE6GUW_AZxcRz_xpYL9Kryl7lMTLbOzF2a3w.jpg"
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/31",
-    "is_approved": true,
-    "is_active": true,
-    "id": 17
-  },
-  {
-    "title": "🏠 Сдаётся 3-к квартира в Сухуме",
-    "price": "50 000 ₽",
-    "city": "Сухум",
-    "district": "Центр",
-    "category": "flat",
-    "period": "year",
-    "type": "flat",
-    "badge": "🔒 На год+",
-    "desc": "🏠 Сдаётся 3-к квартира в Сухуме\n#Сухум\n\n📍 Адрес: Сухум, турбаза, ул. Акиртава\n📅 Срок: круглый год (длительный)\n💰 Цена: 50 000 ₽/мес\n🏡 Что сдаётся: 3-комнатная квартира (2 отдельные спальни, просторный зал, отдельная кухня, санузел и душ раздельно, 3 ...",
-    "photos": [
-      "https://cdn4.telesco.pe/file/IuY_RwSriJ3Abr29Iy9AhkRTB1x1XV0Zx82PNuDYIVGrzoKBY8QhrPGoG35hwyNhb6r7zWwsy6mEIY_afWv7BVdatlaXl1ppcJ54RYEAuvZ43-cQWZ7qAKXav4ijvuLlFVc4ZXTYjfeA0FBxKC-K8hjnnSLVYE5WZ4nlQQcKvMzSL_xpwue7o-x37HiWDXDA6V0lKcEwEU79ncSmcztc4eST907mMMMqFanV681VtvK5ooGil5wqoukW0f1jHe_BZilpmCg6-SVp3BQVkyU4NaSFGMvA2iaySgDeWuRxG7Pxwod0REG0bfyg0qVUD0wcEMHc6b0453x-nrgSfHhQhA.jpg"
-    ],
-    "status": "Свободно к заселению",
-    "tg_link": "https://t.me/arenda_abkhazia_svoi/30",
     "is_approved": true,
     "is_active": true,
     "id": 18
