@@ -1,0 +1,9 @@
+BEGIN:VCARD
+VERSION:3.0
+N:;Инал;;;
+FN:Инал
+item1.TEL;waid=79407223283:+7 940 722-32-83
+item1.X-ABLabel:Мобильный
+item2.TEL;waid=79111379309:+7 911 137-93-09
+item2.X-ABLabel:Мобильный
+END:VCARD
