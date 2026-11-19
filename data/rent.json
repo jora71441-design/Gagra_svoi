@@ -14,7 +14,7 @@
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/68",
-    "is_approved": true,
+    "is_approved": false,
     "is_active": true,
     "id": 1
   },
@@ -33,7 +33,7 @@
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/67",
-    "is_approved": true,
+    "is_approved": false,
     "is_active": true,
     "id": 2
   },
@@ -52,7 +52,7 @@
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/66",
-    "is_approved": true,
+    "is_approved": false,
     "is_active": true,
     "id": 3
   },
@@ -71,7 +71,7 @@
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/65",
-    "is_approved": true,
+    "is_approved": false,
     "is_active": true,
     "id": 4
   },
@@ -90,7 +90,7 @@
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/64",
-    "is_approved": true,
+    "is_approved": false,
     "is_active": true,
     "id": 5
   },
@@ -109,7 +109,7 @@
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/62",
-    "is_approved": true,
+    "is_approved": false,
     "is_active": true,
     "id": 6
   },
@@ -128,7 +128,7 @@
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/61",
-    "is_approved": true,
+    "is_approved": false,
     "is_active": true,
     "id": 7
   },
@@ -145,7 +145,7 @@
     "photos": [],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/57",
-    "is_approved": true,
+    "is_approved": false,
     "is_active": true,
     "id": 8
   },
@@ -162,7 +162,7 @@
     "photos": [],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/56",
-    "is_approved": true,
+    "is_approved": false,
     "is_active": true,
     "id": 9
   },
@@ -179,7 +179,7 @@
     "photos": [],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/55",
-    "is_approved": true,
+    "is_approved": false,
     "is_active": true,
     "id": 10
   },
@@ -198,7 +198,7 @@
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/54",
-    "is_approved": true,
+    "is_approved": false,
     "is_active": true,
     "id": 11
   },
@@ -217,7 +217,7 @@
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/53",
-    "is_approved": true,
+    "is_approved": false,
     "is_active": true,
     "id": 12
   },
@@ -236,26 +236,9 @@
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/52",
-    "is_approved": true,
+    "is_approved": false,
     "is_active": true,
     "id": 13
-  },
-  {
-    "title": "🔍 Ищут жильё в Сухуме",
-    "price": "Цена по запросу",
-    "city": "Сухум",
-    "district": "Центр",
-    "category": "flat",
-    "period": "year",
-    "type": "flat",
-    "badge": "🔒 На год+",
-    "desc": "🔍 Ищут жильё в Сухуме\n#Сухум\n\n👤 Кто: семья граждан Абхазии (работающие, порядочные)\n🏠 Что ищут: дом, чтобы смотреть за ним, или вариант с проживанием в доме, где нужен уход за человеком\n📍 Город: Сухум\n💰 Бюджет: не указан\n📅 Срок: не указан\n\n📞 Для связ...",
-    "photos": [],
-    "status": "Свободно к заселению",
-    "tg_link": "https://t.me/arenda_abkhazia_svoi/51",
-    "is_approved": true,
-    "is_active": true,
-    "id": 14
   },
   {
     "title": "🏠 Сдаётся квартира в Гагре",
@@ -270,9 +253,9 @@
     "photos": [],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/50",
-    "is_approved": true,
+    "is_approved": false,
     "is_active": true,
-    "id": 15
+    "id": 14
   },
   {
     "title": "🏠 Сдаётся 1-к квартира в Сухуме (Синон)",
@@ -289,9 +272,9 @@
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/49",
-    "is_approved": true,
+    "is_approved": false,
     "is_active": true,
-    "id": 16
+    "id": 15
   },
   {
     "title": "🏠 Сдаётся двухэтажный домик в Гагре",
@@ -308,9 +291,9 @@
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/48",
-    "is_approved": true,
+    "is_approved": false,
     "is_active": true,
-    "id": 17
+    "id": 16
   },
   {
     "title": "🏠 Сдаётся евродвушка в Сухуме (Центр)",
@@ -327,9 +310,9 @@
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/47",
-    "is_approved": true,
+    "is_approved": false,
     "is_active": true,
-    "id": 18
+    "id": 17
   },
   {
     "title": "🏠 Сдаётся 2-к квартира в Гагре",
@@ -346,9 +329,9 @@
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/46",
-    "is_approved": true,
+    "is_approved": false,
     "is_active": true,
-    "id": 19
+    "id": 18
   },
   {
     "title": "🏠 Сдаётся 3-к квартира в Сухуме",
@@ -365,9 +348,9 @@
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/45",
-    "is_approved": true,
+    "is_approved": false,
     "is_active": true,
-    "id": 20
+    "id": 19
   },
   {
     "title": "🏠 Сдаётся 1-к квартира в Гагре (Центр)",
@@ -384,9 +367,9 @@
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/44",
-    "is_approved": true,
+    "is_approved": false,
     "is_active": true,
-    "id": 21
+    "id": 20
   },
   {
     "title": "🏠 Сдаётся 2-к квартира в Сухуме",
@@ -403,9 +386,9 @@
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/43",
-    "is_approved": true,
+    "is_approved": false,
     "is_active": true,
-    "id": 22
+    "id": 21
   },
   {
     "title": "🏠 Сдаётся 2-к квартира в Гагре",
@@ -422,9 +405,9 @@
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/42",
-    "is_approved": true,
+    "is_approved": false,
     "is_active": true,
-    "id": 23
+    "id": 22
   },
   {
     "title": "🏠 Сдаётся 1-к квартира в Агудзере",
@@ -441,9 +424,9 @@
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/38",
-    "is_approved": true,
+    "is_approved": false,
     "is_active": true,
-    "id": 24
+    "id": 23
   },
   {
     "title": "🏠 Сдаётся 3-комнатная квартира в Сухуме",
@@ -460,9 +443,9 @@
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/37",
-    "is_approved": true,
+    "is_approved": false,
     "is_active": true,
-    "id": 25
+    "id": 24
   },
   {
     "title": "🏠 Сдаётся 2-к квартира в Гагре",
@@ -479,9 +462,9 @@
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/36",
-    "is_approved": true,
+    "is_approved": false,
     "is_active": true,
-    "id": 26
+    "id": 25
   },
   {
     "title": "🏠 Сдаётся квартира в Сухуме (Центр)",
@@ -498,9 +481,9 @@
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/35",
-    "is_approved": true,
+    "is_approved": false,
     "is_active": true,
-    "id": 27
+    "id": 26
   },
   {
     "title": "🏠 Сдаётся 1-к квартира в Гагре",
@@ -517,9 +500,9 @@
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/34",
-    "is_approved": true,
+    "is_approved": false,
     "is_active": true,
-    "id": 28
+    "id": 27
   },
   {
     "title": "🏠 Сдаются квартиры в Гагре (Кемпинг)",
@@ -536,9 +519,9 @@
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/33",
-    "is_approved": true,
+    "is_approved": false,
     "is_active": true,
-    "id": 29
+    "id": 28
   },
   {
     "title": "🏠 Сдаётся 3-к квартира в Сухуме (поселок Агудзера)",
@@ -555,9 +538,9 @@
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/32",
-    "is_approved": true,
+    "is_approved": false,
     "is_active": true,
-    "id": 30
+    "id": 29
   },
   {
     "title": "🏠 Сдаётся 3-к квартира в Сухуме (Новый район)",
@@ -574,9 +557,9 @@
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/31",
-    "is_approved": true,
+    "is_approved": false,
     "is_active": true,
-    "id": 31
+    "id": 30
   },
   {
     "title": "🏠 Сдаётся 3-к квартира в Сухуме",
@@ -593,9 +576,9 @@
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/30",
-    "is_approved": true,
+    "is_approved": false,
     "is_active": true,
-    "id": 32
+    "id": 31
   },
   {
     "title": "🏠 Сдаётся 3-к квартира в Сухуме (Центр)",
@@ -612,9 +595,9 @@
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/29",
-    "is_approved": true,
+    "is_approved": false,
     "is_active": true,
-    "id": 33
+    "id": 32
   },
   {
     "title": "🏠 Сдаётся квартира-студия в Гагре",
@@ -631,9 +614,9 @@
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/28",
-    "is_approved": true,
+    "is_approved": false,
     "is_active": true,
-    "id": 34
+    "id": 33
   },
   {
     "title": "🏠 Сдаётся 3-к квартира в Сухуме (Центр)",
@@ -650,9 +633,9 @@
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/27",
-    "is_approved": true,
+    "is_approved": false,
     "is_active": true,
-    "id": 35
+    "id": 34
   },
   {
     "title": "🏠 Сдаётся 2-к квартира в Гагре",
@@ -669,9 +652,9 @@
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/26",
-    "is_approved": true,
+    "is_approved": false,
     "is_active": true,
-    "id": 36
+    "id": 35
   },
   {
     "title": "🏠 Сдаётся 2-к квартира в Сухуме",
@@ -686,9 +669,9 @@
     "photos": [],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/25",
-    "is_approved": true,
+    "is_approved": false,
     "is_active": true,
-    "id": 37
+    "id": 36
   },
   {
     "title": "🏠 Сдаётся экодомик в Пицунде (Лазая)",
@@ -705,9 +688,9 @@
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/24",
-    "is_approved": true,
+    "is_approved": false,
     "is_active": true,
-    "id": 38
+    "id": 37
   },
   {
     "title": "🏠 Сдаётся дом в Сухуме",
@@ -724,9 +707,9 @@
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/23",
-    "is_approved": true,
+    "is_approved": false,
     "is_active": true,
-    "id": 39
+    "id": 38
   },
   {
     "title": "🏠 Сдаётся жильё в Сухуме",
@@ -741,9 +724,9 @@
     "photos": [],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/22",
-    "is_approved": true,
+    "is_approved": false,
     "is_active": true,
-    "id": 40
+    "id": 39
   },
   {
     "title": "🏠 Сдаётся 2-к квартира (9 этаж)",
@@ -758,26 +741,9 @@
     "photos": [],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/21",
-    "is_approved": true,
+    "is_approved": false,
     "is_active": true,
-    "id": 41
-  },
-  {
-    "title": "🔍 Ищут жильё в Гагре или Пицунде",
-    "price": "Цена по запросу",
-    "city": "Пицунда",
-    "district": "Центр",
-    "category": "flat",
-    "period": "year",
-    "type": "flat",
-    "badge": "🔒 На год+",
-    "desc": "🔍 Ищут жильё в Гагре или Пицунде\n#Гагра #Пицунда\n\n👤 Кто: один человек (парень)\n📅 Срок: не указан\n💰 Бюджет: не указан\n🏠 Пожелания: однокомнатная квартира\n\n📞 Для связи напрямую:\n+7940905-30-00\n\nКанал не является посредником. Все детали — напрямую\n\n#ищу...",
-    "photos": [],
-    "status": "Свободно к заселению",
-    "tg_link": "https://t.me/arenda_abkhazia_svoi/18",
-    "is_approved": true,
-    "is_active": true,
-    "id": 42
+    "id": 40
   },
   {
     "title": "🏠 Сдаётся 1-к квартира в Гагре (Центр)",
@@ -792,26 +758,9 @@
     "photos": [],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/17",
-    "is_approved": true,
+    "is_approved": false,
     "is_active": true,
-    "id": 43
-  },
-  {
-    "title": "🔍 Ищут жильё на Бзыби или в Ипнари",
-    "price": "Цена по запросу",
-    "city": "Гагра",
-    "district": "Центр",
-    "category": "flat",
-    "period": "year",
-    "type": "flat",
-    "badge": "🔒 На год+",
-    "desc": "🔍 Ищут жильё на Бзыби или в Ипнари\n#Бзыбь\n\n🏠 Что ищут: квартиру или дом\n👤 Кто: соискатель со стабильным заработком, оплата гарантирована\n🛠 Дополнительно: может предложить ремонт в счёт проживания\n💰 Бюджет: ориентируется на разумное соотношение цены и...",
-    "photos": [],
-    "status": "Свободно к заселению",
-    "tg_link": "https://t.me/arenda_abkhazia_svoi/16",
-    "is_approved": true,
-    "is_active": true,
-    "id": 44
+    "id": 41
   },
   {
     "title": "🏠 Сдаётся комната в Гагре (совместное проживание)",
@@ -826,9 +775,9 @@
     "photos": [],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/15",
-    "is_approved": true,
+    "is_approved": false,
     "is_active": true,
-    "id": 45
+    "id": 42
   },
   {
     "title": "🏠 Сдаётся жильё в Гагре (район Кемпинг)",
@@ -845,9 +794,9 @@
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/14",
-    "is_approved": true,
+    "is_approved": false,
     "is_active": true,
-    "id": 46
+    "id": 43
   },
   {
     "title": "🏠 Сдаётся жильё в Гагре (район Кемпинг)",
@@ -864,9 +813,9 @@
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/13",
-    "is_approved": true,
+    "is_approved": false,
     "is_active": true,
-    "id": 47
+    "id": 44
   },
   {
     "title": "🏠 Сдаётся дом в Гудауте (центр)",
@@ -883,59 +832,8 @@
     ],
     "status": "Свободно к заселению",
     "tg_link": "https://t.me/arenda_abkhazia_svoi/12",
-    "is_approved": true,
+    "is_approved": false,
     "is_active": true,
-    "id": 48
-  },
-  {
-    "title": "🔍 Ищут жильё в Абхазии",
-    "price": "30 000 ₽",
-    "city": "Пицунда",
-    "district": "Центр",
-    "category": "flat",
-    "period": "year",
-    "type": "flat",
-    "badge": "🔒 На год+",
-    "desc": "🔍 Ищут жильё в Абхазии\n#Пицунда\n\n👤 Кто: два взрослых (без животных)\n📅 Срок: 2–4 месяца, далее возможно больше\n💰 Бюджет: до 30 000 ₽/мес\n\n📍 Районы: Пицунда (район рынка, ул. Агрба, радиус 200 м) или деревни возле Сухума\n\n🏠 Пожелания: минимум 2-комнатн...",
-    "photos": [],
-    "status": "Свободно к заселению",
-    "tg_link": "https://t.me/arenda_abkhazia_svoi/11",
-    "is_approved": true,
-    "is_active": true,
-    "id": 49
-  },
-  {
-    "title": "🔍 Ищут жильё в Абхазии",
-    "price": "20 000 ₽",
-    "city": "Гагра",
-    "district": "Центр",
-    "category": "flat",
-    "period": "year",
-    "type": "flat",
-    "badge": "🔒 На год+",
-    "desc": "🔍 Ищут жильё в Абхазии\n#Гагра\n\n👤 Кто: мать с сыном (14 лет) местные \n📅 Срок: надолго (может и больше года) \n💰 Бюджет: 15 000 – 20 000 ₽/мес\n🐾 Животные: нет\n🏠 Пожелания: квартира или дом, кухня (можно внутри, можно на территории)\n\n📞 Для связи напрямую...",
-    "photos": [],
-    "status": "Свободно к заселению",
-    "tg_link": "https://t.me/arenda_abkhazia_svoi/10",
-    "is_approved": true,
-    "is_active": true,
-    "id": 50
-  },
-  {
-    "title": "💡 Почему сдавать жильё на длительный срок выгоднее",
-    "price": "Цена по запросу",
-    "city": "Гагра",
-    "district": "Центр",
-    "category": "flat",
-    "period": "year",
-    "type": "flat",
-    "badge": "🔒 На год+",
-    "desc": "💡 Почему сдавать жильё на длительный срок выгоднее?\n\n1. Стабильный доход. Вы получаете деньги каждый месяц, а не ищете новых жильцов каждую неделю\n2. Вы получаете доход ежемесячно, а не только летом \n3. Меньше износ. Жильцы, которые живут долго, бере...",
-    "photos": [],
-    "status": "Свободно к заселению",
-    "tg_link": "https://t.me/arenda_abkhazia_svoi/7",
-    "is_approved": true,
-    "is_active": true,
-    "id": 51
+    "id": 45
   }
 ]
