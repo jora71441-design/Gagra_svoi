@@ -497,11 +497,18 @@ function renderRent() {
       itemDistrict = ` • ${item.district}`;
     }
 
-    let mediaHtml = '';
+        let mediaHtml = '';
     if (hasPhotos) {
-      const photosImg = photos.map(url => `
-        <img src="${url}" loading="lazy" class="snap-center w-full h-52 object-cover shrink-0 select-none pointer-events-none" alt="${item.title}">
-      `).join('');
+      const photosImg = photos.map(rawUrl => {
+        const imgUrl = rawUrl.includes('telesco.pe')
+          ? `https://wsrv.nl/?url=${encodeURIComponent(rawUrl)}&w=800&output=webp`
+          : rawUrl;
+        return `
+          <img src="${imgUrl}" referrerpolicy="no-referrer" loading="lazy"
+               onerror="if(!this.dataset.fb){this.dataset.fb='1';this.src='${rawUrl}';}else{this.style.display='none';}"
+               class="snap-center w-full h-52 object-cover shrink-0 select-none pointer-events-none" alt="${item.title}">
+        `;
+      }).join('');
 
       mediaHtml = `
         <div class="relative h-52 bg-slate-900 overflow-hidden">
