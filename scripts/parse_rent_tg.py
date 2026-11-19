@@ -4,18 +4,43 @@ import re
 import html
 import json
 import os
+import time
 
 URL = "https://t.me/s/arenda_abkhazia_svoi"
 SUPABASE_URL = "https://yzbochrahmuhvryinajr.supabase.co"
 SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl6Ym9jaHJhaG11aHZyeWluYWpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMyNzYyODcsImV4cCI6MjEwODg1MjI4N30.dTjerKbrcLuTEr5xPKXkR43Df4ECaGA-ztCrGD_SO-A"
 
-def fetch_html():
+def fetch_page(url):
     req = urllib.request.Request(
-        URL,
+        url,
         headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
     )
-    with urllib.request.urlopen(req) as resp:
+    with urllib.request.urlopen(req, timeout=20) as resp:
         return resp.read().decode('utf-8')
+
+def fetch_all_html(max_pages=10):
+    """Листает историю канала назад через ?before=..., собирая все посты в хронологическом порядке."""
+    pages = []
+    current_url = URL
+    visited_before = set()
+
+    for _ in range(max_pages):
+        page_html = fetch_page(current_url)
+        pages.insert(0, page_html)
+
+        before_match = re.search(r'href="/s/[^"?]+\?before=(\d+)"', page_html)
+        if not before_match:
+            break
+
+        before_id = before_match.group(1)
+        if before_id in visited_before or int(before_id) <= 1:
+            break
+
+        visited_before.add(before_id)
+        current_url = f"{URL}?before={before_id}"
+        time.sleep(0.5)
+
+    return "\n".join(pages)
 
 def download_photos(urls, post_link):
     os.makedirs("data/rent_img", exist_ok=True)
@@ -47,10 +72,15 @@ def download_photos(urls, post_link):
 def parse_posts(raw_html):
     message_blocks = re.findall(r'<div class="tgme_widget_message_wrap.*?(?=<div class="tgme_widget_message_wrap|\Z)', raw_html, re.S)
     items = []
+    seen_links = set()
 
     for block in message_blocks:
         link_match = re.search(r'class="tgme_widget_message_date"\s+href="([^"]+)"', block)
         post_link = link_match.group(1) if link_match else "https://t.me/arenda_abkhazia_svoi"
+
+        if post_link in seen_links:
+            continue
+        seen_links.add(post_link)
 
         text_match = re.search(r'<div class="tgme_widget_message_text[^>]*>(.*?)</div>', block, re.S)
         if not text_match:
@@ -201,7 +231,7 @@ def sync_to_supabase(items):
 
 def main():
     os.makedirs("data", exist_ok=True)
-    html_data = fetch_html()
+    html_data = fetch_all_html(max_pages=10)
     data = parse_posts(html_data)
 
     # 1. Запись в локальный json (как резервная копия)
