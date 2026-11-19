@@ -1,6 +1,8 @@
 import re
 import json
 import os
+import glob
+import quopri
 
 # Справочник макро- и подкатегорий (синхронизирован с js/app.js)
 TAXONOMY = {
@@ -118,6 +120,8 @@ SYNONYMS = {
     "фотограф": ["фотосессия", "видеосъемка", "видеограф", "свадьба", "праздник"]
 }
 
+STOP_PHONES = {"+79405555555", "+79400000000", "+79409999999"}
+
 def clean_phone(p: str) -> str:
     digits = re.sub(r'\D', '', p)
     if digits.startswith('89') and len(digits) == 11:
@@ -133,7 +137,7 @@ def clean_phone(p: str) -> str:
 def classify_service(text: str):
     t = text.lower()
 
-    # 1. Техника (проверяем без конфликтного корня "плит")
+    # 1. Техника
     if any(k in t for k in ["стирал"]):
         return "appliances", "washers"
     if any(k in t for k in ["холодильн", "морозил"]):
@@ -202,13 +206,13 @@ def classify_service(text: str):
         return "lifestyle", "psychology"
     if any(k in t for k in ["массаж", "остеопат", "мануальн", "реабилитолог"]):
         return "lifestyle", "massage"
-    if any(k in t for k in ["лор", "врач", "терапевт", "педиатр", "стоматолог", "медсестр", "укол", "капельниц", "анализ", "кормлени"]):
+    if any(k in t for k in ["лор", "врач", "терапевт", "педиатр", "стоматолог", "зубн", "медсестр", "укол", "капельниц", "анализ", "кормлени"]):
         return "lifestyle", "medical"
     if any(k in t for k in ["макияж", "перманент", "маникюр", "педикюр", "брови", "ресниц", "парикмахер", "стрижк", "косметолог", "эпиляц", "шугаринг", "волос"]):
         return "lifestyle", "beauty"
 
     # 8. Обучение и хобби
-    if any(k in t for k in ["репетитор", "английск", "математик", "логопед", "курс", "обучен", "подготовк", "школа", "урок"]):
+    if any(k in t for k in ["репетитор", "английск", "математик", "логопед", "курс", "обучен", "подготовк", "школа", "автошкола", "урок"]):
         return "education", "tutors"
     if any(k in t for k in ["йог", "фитнес", "тренер", "танц", "рисован", "художник", "арт", "музык", "вокал", "хобби", "мастер-класс"]):
         return "education", "hobby"
@@ -222,7 +226,7 @@ def classify_service(text: str):
         return "events", "org"
 
     # 10. Полезные места
-    if any(k in t for k in ["магазин", "кафе", "ресторан", "пекарн", "база", "склад", "аджик", "сыр", "мёд", "мед", "рынок", "сервис"]):
+    if any(k in t for k in ["магазин", "кафе", "ресторан", "пекарн", "база", "склад", "аджик", "сыр", "мёд", "мед", "рынок", "сервис", "фирма"]):
         return "places", "business"
 
     return "places", "other"
@@ -240,126 +244,73 @@ def generate_keywords(text: str, cat_title: str, sub_title: str) -> list:
             tokens.update(syn_list)
     return list(tokens)
 
-def parse_chat():
-    chat_file = "_chat.txt"
-    if not os.path.exists(chat_file):
-        print("Файл _chat.txt не найден")
-        return
+def decode_vcard_value(value: str, params: str) -> str:
+    if "QUOTED-PRINTABLE" in params.upper():
+        try:
+            return quopri.decodestring(value).decode("utf-8", errors="ignore").strip()
+        except Exception:
+            pass
+    return value.replace("\\,", ",").replace("\\;", ";").replace("\\n", " ").strip()
 
-    with open(chat_file, "r", encoding="utf-8", errors="ignore") as f:
-        content = f.read()
+def parse_vcf_files(masters: dict, master_counter: int) -> int:
+    vcf_files = glob.glob("data/vcf/*.vcf") + glob.glob("*.vcf")
+    if not vcf_files:
+        return master_counter
 
-    content = re.sub(r'[\u200e\u200f\u202a-\u202e\u202f\ufeff]', '', content)
-    raw_messages = re.split(r'\n(?=\d{1,2}\.\d{1,2}\.\d{2,4})', content)
-
-    masters = {}
-    master_counter = 1
-    phone_pattern = r'(?:\+?7|8)?[\s\-]?(?:\(?\d{3}\)?[\s\-]?)?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}|\b[79]\d{2}[\s\-]?\d{2}[\s\-]?\d{2}\b'
-
-    # Черный список тестовых / фейковых номеров и маркеров
-    STOP_PHONES = {"+79405555555", "+79400000000", "+79409999999"}
-
-    for msg in raw_messages:
-        # Полная фильтрация обучающих сообщений, опросов и правил
-        if any(stop_word in msg.lower() for stop_word in [
-            "как пользоваться чатом", "нужен фотограф на свадьбу", "пример:",
-            "покинул(-а)", "присоединился", "добавил(-а) контакт",
-            "сообщения и звонки защищены", "опрос:", "правила чата"
-        ]):
+    added = 0
+    for filepath in vcf_files:
+        try:
+            with open(filepath, "r", encoding="utf-8", errors="ignore") as f:
+                raw = f.read()
+        except Exception:
             continue
 
-        lines = [line.strip() for line in msg.split('\n') if line.strip()]
-        if not lines:
-            continue
+        # Разворачиваем переносы строк vCard (включая QUOTED-PRINTABLE)
+        raw = re.sub(r'=\r?\n', '', raw)
+        raw = re.sub(r'\r?\n[ \t]', '', raw)
 
-        # Ветка 1: Еженедельные дайджесты Ринаты
-        if "ПОЛЕЗНЫЕ КОНТАКТЫ ГАГРА" in msg:
-            for line in lines[1:]:
-                if any(line.startswith(prefix) for prefix in ["✅", "⭐", "📍", "•", "-"]):
-                    ph_match = re.search(phone_pattern, line)
-                    if not ph_match:
-                        continue
+        cards = re.findall(r'BEGIN:VCARD(.*?)END:VCARD', raw, re.S | re.I)
+        for card in cards:
+            fn = ""
+            org = ""
+            title = ""
+            note = ""
+            phones = []
 
-                    phone = clean_phone(ph_match.group(0))
-                    if phone in STOP_PHONES or len(re.sub(r'\D', '', phone)) < 7:
-                        continue
+            for line in card.splitlines():
+                line = line.strip()
+                if ":" not in line:
+                    continue
+                key_part, val = line.split(":", 1)
+                key_upper = key_part.split(";")[0].upper()
 
-                    is_starred = "⭐" in line
-                    info = line
-                    for ch in ["✅", "⭐", "📍", "•"]:
-                        info = info.replace(ch, "")
-                    info = info.replace(ph_match.group(0), "").strip(" ,-–")
+                if key_upper == "FN":
+                    fn = decode_vcard_value(val, key_part)
+                elif key_upper == "ORG":
+                    org = decode_vcard_value(val, key_part).replace(";", " ").strip()
+                elif key_upper == "TITLE":
+                    title = decode_vcard_value(val, key_part)
+                elif key_upper == "NOTE":
+                    note = decode_vcard_value(val, key_part)
+                elif key_upper == "TEL":
+                    ph = clean_phone(val)
+                    if ph not in STOP_PHONES and len(re.sub(r'\D', '', ph)) >= 7:
+                        phones.append(ph)
 
-                    if " - " in info:
-                        parts = info.split(" - ", 1)
-                        name = parts[0].strip(" ,")
-                        service = parts[1].strip()
-                    elif "," in info:
-                        parts = info.split(",", 1)
-                        name = parts[0].strip()
-                        service = parts[1].strip()
-                    else:
-                        name = info if info else "Специалист"
-                        service = "Услуги специалистов в Гагре"
-
-                    cat_key, sub_key = classify_service(name + " " + service)
-                    cat_title = TAXONOMY[cat_key]["title"]
-                    sub_title = TAXONOMY[cat_key]["subs"][sub_key]
-                    keywords = generate_keywords(name + " " + service, cat_title, sub_title)
-
-                    # Проверяем, является ли мастер лидером недели
-                    is_leader = "Владимир" in name or "самым полезным участником" in msg
-
-                    masters[phone] = {
-                        "id": master_counter,
-                        "name": name[:30],
-                        "category": cat_key,
-                        "category_title": cat_title,
-                        "subcategory": sub_key,
-                        "subcategory_title": sub_title,
-                        "service": service[:140],
-                        "phone": phone,
-                        "recommended_by": "Подборка чата (Гагра)",
-                        "verified": True,
-                        "starred": is_starred,
-                        "is_leader": is_leader,
-                        "keywords": keywords
-                    }
-                    master_counter += 1
-            continue
-
-        # Ветка 2: Индивидуальные посты участников
-        text_lower = msg.lower()
-        if any(tag in text_lower for tag in ["#услуга", "#рекомендую", "#еда", "сварочные, работы", "доставка посылок", "поклейкой обоев"]):
-            if "#ищу" in text_lower and "#услуга" not in text_lower:
+            if not phones:
                 continue
 
-            ph_match = re.search(phone_pattern, msg)
-            if not ph_match:
-                continue
+            name = fn or org or os.path.splitext(os.path.basename(filepath))[0]
+            extra_info = " ".join(x for x in [title, org, note] if x and x != name).strip()
+            full_text = f"{name} {extra_info}".strip()
 
-            phone = clean_phone(ph_match.group(0))
-            if phone in STOP_PHONES or len(re.sub(r'\D', '', phone)) < 7:
-                continue
-
-            name = "Специалист"
-            for line in lines[1:]:
-                for kw in ["меня зовут", "мастер", "аскар", "вячеслав", "владимир", "сергей", "михаил"]:
-                    if kw in line.lower() and len(line) < 35:
-                        name = line.replace("#", "").strip()
-                        break
-
-            clean_body = re.sub(r'https?://\S+', '', msg)
-            clean_body = re.sub(phone_pattern, '', clean_body)
-            clean_body = " ".join([l for l in clean_body.split('\n')[1:] if not l.startswith('#') and len(l) > 4])
-            if not clean_body:
-                clean_body = "Услуги специалистов в Гагре"
-
-            cat_key, sub_key = classify_service(name + " " + clean_body)
+            cat_key, sub_key = classify_service(full_text)
             cat_title = TAXONOMY[cat_key]["title"]
             sub_title = TAXONOMY[cat_key]["subs"][sub_key]
-            keywords = generate_keywords(name + " " + clean_body, cat_title, sub_title)
+            service_desc = extra_info if extra_info else sub_title
+            keywords = generate_keywords(full_text, cat_title, sub_title)
 
+            phone = phones[0]
             if phone not in masters:
                 masters[phone] = {
                     "id": master_counter,
@@ -368,14 +319,153 @@ def parse_chat():
                     "category_title": cat_title,
                     "subcategory": sub_key,
                     "subcategory_title": sub_title,
-                    "service": clean_body[:140].strip(),
+                    "service": service_desc[:140],
                     "phone": phone,
-                    "recommended_by": "Участник чата",
+                    "recommended_by": "Контакт из чата (VCF)",
                     "verified": True,
-                    "starred": "#рекомендую" in text_lower,
+                    "starred": False,
                     "keywords": keywords
                 }
                 master_counter += 1
+                added += 1
+
+    print(f"Из .vcf добавлено новых контактов: {added}")
+    return master_counter
+
+def parse_chat():
+    chat_file = "_chat.txt"
+    masters = {}
+    master_counter = 1
+    phone_pattern = r'(?:\+?7|8)?[\s\-]?(?:\(?\d{3}\)?[\s\-]?)?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}|\b[79]\d{2}[\s\-]?\d{2}[\s\-]?\d{2}\b'
+
+    if os.path.exists(chat_file):
+        with open(chat_file, "r", encoding="utf-8", errors="ignore") as f:
+            content = f.read()
+
+        content = re.sub(r'[\u200e\u200f\u202a-\u202e\u202f\ufeff]', '', content)
+        raw_messages = re.split(r'\n(?=\d{1,2}\.\d{1,2}\.\d{2,4})', content)
+
+        for msg in raw_messages:
+            # Полная фильтрация обучающих сообщений, опросов и правил
+            if any(stop_word in msg.lower() for stop_word in [
+                "как пользоваться чатом", "нужен фотограф на свадьбу", "пример:",
+                "покинул(-а)", "присоединился", "добавил(-а) контакт",
+                "сообщения и звонки защищены", "опрос:", "правила чата"
+            ]):
+                continue
+
+            lines = [line.strip() for line in msg.split('\n') if line.strip()]
+            if not lines:
+                continue
+
+            # Ветка 1: Еженедельные дайджесты Ринаты
+            if "ПОЛЕЗНЫЕ КОНТАКТЫ ГАГРА" in msg:
+                for line in lines[1:]:
+                    if any(line.startswith(prefix) for prefix in ["✅", "⭐", "📍", "•", "-"]):
+                        ph_match = re.search(phone_pattern, line)
+                        if not ph_match:
+                            continue
+
+                        phone = clean_phone(ph_match.group(0))
+                        if phone in STOP_PHONES or len(re.sub(r'\D', '', phone)) < 7:
+                            continue
+
+                        is_starred = "⭐" in line
+                        info = line
+                        for ch in ["✅", "⭐", "📍", "•"]:
+                            info = info.replace(ch, "")
+                        info = info.replace(ph_match.group(0), "").strip(" ,-–")
+
+                        if " - " in info:
+                            parts = info.split(" - ", 1)
+                            name = parts[0].strip(" ,")
+                            service = parts[1].strip()
+                        elif "," in info:
+                            parts = info.split(",", 1)
+                            name = parts[0].strip()
+                            service = parts[1].strip()
+                        else:
+                            name = info if info else "Специалист"
+                            service = "Услуги специалистов в Гагре"
+
+                        cat_key, sub_key = classify_service(name + " " + service)
+                        cat_title = TAXONOMY[cat_key]["title"]
+                        sub_title = TAXONOMY[cat_key]["subs"][sub_key]
+                        keywords = generate_keywords(name + " " + service, cat_title, sub_title)
+
+                        is_leader = "Владимир" in name or "самым полезным участником" in msg
+
+                        masters[phone] = {
+                            "id": master_counter,
+                            "name": name[:30],
+                            "category": cat_key,
+                            "category_title": cat_title,
+                            "subcategory": sub_key,
+                            "subcategory_title": sub_title,
+                            "service": service[:140],
+                            "phone": phone,
+                            "recommended_by": "Подборка чата (Гагра)",
+                            "verified": True,
+                            "starred": is_starred,
+                            "is_leader": is_leader,
+                            "keywords": keywords
+                        }
+                        master_counter += 1
+                continue
+
+            # Ветка 2: Индивидуальные посты участников
+            text_lower = msg.lower()
+            if any(tag in text_lower for tag in ["#услуга", "#рекомендую", "#еда", "сварочные, работы", "доставка посылок", "поклейкой обоев"]):
+                if "#ищу" in text_lower and "#услуга" not in text_lower:
+                    continue
+
+                ph_match = re.search(phone_pattern, msg)
+                if not ph_match:
+                    continue
+
+                phone = clean_phone(ph_match.group(0))
+                if phone in STOP_PHONES or len(re.sub(r'\D', '', phone)) < 7:
+                    continue
+
+                name = "Специалист"
+                for line in lines[1:]:
+                    for kw in ["меня зовут", "мастер", "аскар", "вячеслав", "владимир", "сергей", "михаил"]:
+                        if kw in line.lower() and len(line) < 35:
+                            name = line.replace("#", "").strip()
+                            break
+
+                clean_body = re.sub(r'https?://\S+', '', msg)
+                clean_body = re.sub(phone_pattern, '', clean_body)
+                clean_body = " ".join([l for l in clean_body.split('\n')[1:] if not l.startswith('#') and len(l) > 4])
+                if not clean_body:
+                    clean_body = "Услуги специалистов в Гагре"
+
+                cat_key, sub_key = classify_service(name + " " + clean_body)
+                cat_title = TAXONOMY[cat_key]["title"]
+                sub_title = TAXONOMY[cat_key]["subs"][sub_key]
+                keywords = generate_keywords(name + " " + clean_body, cat_title, sub_title)
+
+                if phone not in masters:
+                    masters[phone] = {
+                        "id": master_counter,
+                        "name": name[:30],
+                        "category": cat_key,
+                        "category_title": cat_title,
+                        "subcategory": sub_key,
+                        "subcategory_title": sub_title,
+                        "service": clean_body[:140].strip(),
+                        "phone": phone,
+                        "recommended_by": "Участник чата",
+                        "verified": True,
+                        "starred": "#рекомендую" in text_lower,
+                        "keywords": keywords
+                    }
+                    master_counter += 1
+    else:
+        print("Файл _chat.txt не найден, парсим только .vcf")
+
+    # Ветка 3: Добираем контакты из .vcf файлов (без перезаписи уже найденных в чате)
+    master_counter = parse_vcf_files(masters, master_counter)
 
     masters_list = list(masters.values())
     masters_list.sort(key=lambda x: not x.get("starred", False))
