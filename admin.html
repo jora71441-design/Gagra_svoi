@@ -67,8 +67,18 @@
       </button>
     </div>
 
-    <!-- Поисковая строка для вкладки закрепов -->
-    <div id="promosSearchBar" class="hidden mb-3">
+        <!-- Поисковая строка и подвкладки для вкладки закрепов -->
+    <div id="promosSearchBar" class="hidden mb-3 space-y-2">
+      <div class="grid grid-cols-2 gap-2 bg-slate-200/70 p-1 rounded-2xl">
+        <button onclick="switchPromosSubTab('active')" id="promosSubBtn-active" 
+                class="py-2 text-xs font-bold rounded-xl bg-amber-600 text-white transition shadow-xs">
+          ✅ На сайте
+        </button>
+        <button onclick="switchPromosSubTab('archive')" id="promosSubBtn-archive" 
+                class="py-2 text-xs font-semibold rounded-xl text-slate-600 hover:text-slate-900 transition">
+          📦 Архив
+        </button>
+      </div>
       <input type="text" id="promosSearchInput" oninput="filterPromosList()" placeholder="🔍 Поиск мастера по имени, телефону или услуге..." 
              class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-2xs">
     </div>
