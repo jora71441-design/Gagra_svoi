@@ -11,11 +11,38 @@ SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 
 def fetch_html():
     req = urllib.request.Request(
-        URL, 
+        URL,
         headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
     )
     with urllib.request.urlopen(req) as resp:
         return resp.read().decode('utf-8')
+
+def download_photos(urls, post_link):
+    os.makedirs("data/rent_img", exist_ok=True)
+    post_id = post_link.rstrip("/").split("/")[-1]
+    if not post_id.isdigit():
+        post_id = str(abs(hash(post_link)) % 1000000)
+
+    local_paths = []
+    for idx, url in enumerate(urls):
+        filepath = f"data/rent_img/{post_id}_{idx}.jpg"
+        if os.path.exists(filepath) and os.path.getsize(filepath) > 0:
+            local_paths.append(filepath)
+            continue
+        try:
+            req = urllib.request.Request(
+                url,
+                headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
+            )
+            with urllib.request.urlopen(req, timeout=15) as resp:
+                img_data = resp.read()
+                if img_data:
+                    with open(filepath, "wb") as f:
+                        f.write(img_data)
+                    local_paths.append(filepath)
+        except Exception as e:
+            print(f"Не удалось скачать {url}: {e}")
+    return local_paths
 
 def parse_posts(raw_html):
     message_blocks = re.findall(r'<div class="tgme_widget_message_wrap.*?(?=<div class="tgme_widget_message_wrap|\Z)', raw_html, re.S)
@@ -28,7 +55,7 @@ def parse_posts(raw_html):
         text_match = re.search(r'<div class="tgme_widget_message_text[^>]*>(.*?)</div>', block, re.S)
         if not text_match:
             continue
-        
+
         raw_text = text_match.group(1)
         clean_text = html.unescape(re.sub(r'<br\s*/?>', '\n', raw_text))
         clean_text = re.sub(r'<[^>]+>', '', clean_text).strip()
@@ -56,12 +83,13 @@ def parse_posts(raw_html):
         all_bgs = re.findall(r"background-image:url\('([^']+)'\)", block)
         # Отсекаем эмодзи Telegram и аватарки, оставляем только реальные фотографии
         photo_urls = [
-            u for u in all_bgs 
-            if 'emoji' not in u.lower() 
-            and 'userpic' not in u.lower() 
+            u for u in all_bgs
+            if 'emoji' not in u.lower()
+            and 'userpic' not in u.lower()
             and 'avatar' not in u.lower()
         ]
-        photos = list(dict.fromkeys(photo_urls))[:5]
+        unique_urls = list(dict.fromkeys(photo_urls))[:5]
+        photos = download_photos(unique_urls, post_link)
 
         price_match = re.search(r'(\d[\d\s]{2,}\d|\d{2,})\s*(?:₽|руб|тыс|\.000)', clean_text, re.I)
         price = price_match.group(0).strip() if price_match else "Цена по запросу"
@@ -145,7 +173,7 @@ def parse_posts(raw_html):
 def sync_to_supabase(items):
     if not items:
         return
-    
+
     url = f"{SUPABASE_URL}/rest/v1/rent?on_conflict=tg_link"
     data_bytes = json.dumps(items).encode('utf-8')
 
@@ -198,7 +226,7 @@ def main():
             "is_approved": True,
             "is_active": True
         })
-        
+
     sync_to_supabase(db_items)
     print(f"Готово! Обработано и передано объектов: {len(db_items)}")
 
