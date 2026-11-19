@@ -2,10 +2,10 @@ import re
 import json
 import os
 
-# Справочник макро- и подкатегорий
+# Справочник макро- и подкатегорий (синхронизирован с js/app.js)
 TAXONOMY = {
     "appliances": {
-        "title": "🧺 Техника и электроника",
+        "title": "🧺 Техника",
         "subs": {
             "washers": "Стиральные машины",
             "fridges": "Холодильники",
@@ -15,7 +15,7 @@ TAXONOMY = {
         }
     },
     "engineering": {
-        "title": "🔧 Сантехника и электрика",
+        "title": "🔧 Сантехника / Свет",
         "subs": {
             "plumbing": "Сантехника и вода",
             "heating": "Котлы и отопление",
@@ -24,18 +24,18 @@ TAXONOMY = {
         }
     },
     "finish": {
-        "title": "🎨 Отделка и ремонт",
+        "title": "🎨 Отделка / Ремонт",
         "subs": {
             "wallpaper": "Обои и покраска",
             "ceilings": "Натяжные потолки",
             "tiles": "Плитка и кафель",
-            "flooring": "Ламинат и паркет",
+            "flooring": "Ламинат и полы",
             "doors": "Окна и двери",
             "furniture": "Мебель и сборка"
         }
     },
     "construction": {
-        "title": "🏗 Строительство",
+        "title": "🏗 Стройка / Сварка",
         "subs": {
             "building": "Стройка под ключ",
             "welding": "Сварка и навесы",
@@ -44,22 +44,51 @@ TAXONOMY = {
         }
     },
     "auto": {
-        "title": "🚗 Авто и транспорт",
+        "title": "🚗 Авто / Доставка",
         "subs": {
-            "autodiag": "Автоэлектрик и диагностика",
+            "autodiag": "Диагностика и автоэлектрик",
             "gearbox": "Ремонт АКПП",
             "bike": "Велосипеды",
             "delivery": "Доставка и грузы"
         }
     },
-    "lifestyle": {
-        "title": "🌿 Быт и здоровье",
+    "home_care": {
+        "title": "🧹 Дом и быт",
         "subs": {
-            "medical": "Массаж и врачи",
-            "beauty": "Красота и уход",
-            "garden": "Покос травы и сад",
-            "sewing": "Шторы и шитье",
-            "stores": "Магазины и сервисы"
+            "cleaning": "Уборка и клининг",
+            "garden": "Покос и сад",
+            "sewing": "Шторы и шитьё"
+        }
+    },
+    "lifestyle": {
+        "title": "🌿 Здоровье и красота",
+        "subs": {
+            "medical": "Врачи (все категории)",
+            "massage": "Массаж и тело",
+            "psychology": "Психология и душа",
+            "beauty": "Красота и уход"
+        }
+    },
+    "education": {
+        "title": "🎓 Обучение и хобби",
+        "subs": {
+            "tutors": "Репетиторы и курсы",
+            "hobby": "Хобби и саморазвитие"
+        }
+    },
+    "events": {
+        "title": "🎉 Праздники",
+        "subs": {
+            "photo_video": "Фото и видео",
+            "decor": "Декор и оформление",
+            "org": "Организация и ведущие"
+        }
+    },
+    "places": {
+        "title": "📍 Полезные места",
+        "subs": {
+            "business": "Торговля / Бизнес",
+            "other": "Разное"
         }
     }
 }
@@ -81,8 +110,12 @@ SYNONYMS = {
     "паркет": ["ламинат", "кварцвинил", "полы", "плинтус"],
     "мебел": ["сборка мебели", "кухня", "шкаф", "купе"],
     "авто": ["акпп", "диагностика", "электрик", "коробка", "мотор"],
-    "массаж": ["спина", "шея", "лечебный", "выезд", "лимфодренаж"],
-    "лор": ["ухо", "горло", "нос", "слух", "врач", "доктор"]
+    "уборк": ["клининг", "генеральная уборка", "мытье окон", "химчистка"],
+    "массаж": ["спина", "шея", "лечебный", "выезд", "лимфодренаж", "остеопат"],
+    "лор": ["ухо", "горло", "нос", "слух", "врач", "доктор"],
+    "психолог": ["терапия", "консультация", "психотерапевт", "коуч"],
+    "репетитор": ["английский", "математика", "курсы", "уроки", "обучение", "логопед"],
+    "фотограф": ["фотосессия", "видеосъемка", "видеограф", "свадьба", "праздник"]
 }
 
 def clean_phone(p: str) -> str:
@@ -100,35 +133,35 @@ def clean_phone(p: str) -> str:
 def classify_service(text: str):
     t = text.lower()
 
-    # 1. Техника
+    # 1. Техника (проверяем без конфликтного корня "плит")
     if any(k in t for k in ["стирал"]):
         return "appliances", "washers"
     if any(k in t for k in ["холодильн", "морозил"]):
         return "appliances", "fridges"
     if any(k in t for k in ["кондиционер", "сплит"]):
         return "appliances", "aircon"
-    if any(k in t for k in ["телефон", "смартфон", "компьютер", "телевизор", "proxima", "fabmobile", "t-mobile"]):
+    if any(k in t for k in ["телефон", "смартфон", "компьютер", "ноутбук", "телевизор", "proxima", "fabmobile", "t-mobile"]):
         return "appliances", "gadgets"
-    if any(k in t for k in ["духовк", "бытов", "плит"]):
+    if any(k in t for k in ["духовк", "варочн", "электроплит", "газов", "микроволнов", "пылесос", "кофемашин", "бытов"]):
         return "appliances", "small_appliances"
 
-    # 2. Сантехника и электрика
-    if any(k in t for k in ["теплый пол", "теплые полы"]):
+    # 2. Сантехника и свет
+    if any(k in t for k in ["теплый пол", "теплые полы", "тёплый пол", "тёплые полы"]):
         return "engineering", "underfloor"
-    if any(k in t for k in ["котел", "котлы", "отоплен"]):
+    if any(k in t for k in ["котел", "котёл", "котлы", "отоплен", "бойлер"]):
         return "engineering", "heating"
     if any(k in t for k in ["электрик", "проводк", "свет", "люстр", "розетк"]):
         return "engineering", "electric"
-    if any(k in t for k in ["сантехн", "кран", "сифон", "водоснабжен", "вода", "канализаци"]):
+    if any(k in t for k in ["сантехн", "кран", "сифон", "водоснабжен", "канализаци"]):
         return "engineering", "plumbing"
 
     # 3. Отделка и ремонт
-    if any(k in t for k in ["обои", "маляр", "покраск", "шпаклев", "штукатур"]):
+    if any(k in t for k in ["плитк", "кафел", "керамогранит"]):
+        return "finish", "tiles"
+    if any(k in t for k in ["обои", "маляр", "покраск", "шпаклев", "шпатлев", "штукатур"]):
         return "finish", "wallpaper"
     if any(k in t for k in ["потолок", "потолки", "skyline"]):
         return "finish", "ceilings"
-    if any(k in t for k in ["плитк", "кафел"]):
-        return "finish", "tiles"
     if any(k in t for k in ["паркет", "ламинат", "кварцвинил", "пол "]):
         return "finish", "flooring"
     if any(k in t for k in ["двер", "окн", "москит", "стекл", "замок"]):
@@ -136,37 +169,63 @@ def classify_service(text: str):
     if any(k in t for k in ["мебел", "сборк", "столяр", "дерев"]):
         return "finish", "furniture"
 
-    # 4. Строительство
-    if any(k in t for k in ["альпинист"]):
+    # 4. Стройка и сварка
+    if any(k in t for k in ["альпинист", "высотн"]):
         return "construction", "climbing"
-    if any(k in t for k in ["свар", "навес", "кованы", "козырек"]):
+    if any(k in t for k in ["свар", "навес", "кованы", "козырек", "ворот"]):
         return "construction", "welding"
     if any(k in t for k in ["мусор"]):
         return "construction", "waste"
-    if any(k in t for k in ["стройк", "каркас", "фундамент"]):
+    if any(k in t for k in ["стройк", "каркас", "фундамент", "кровл", "крыш"]):
         return "construction", "building"
 
-    # 5. Авто и транспорт
-    if any(k in t for k in ["акпп"]):
+    # 5. Авто / Доставка
+    if any(k in t for k in ["акпп", "коробк"]):
         return "auto", "gearbox"
-    if any(k in t for k in ["автоэлектрик", "диагност"]):
+    if any(k in t for k in ["автоэлектрик", "диагност", "автосервис", "шиномонтаж"]):
         return "auto", "autodiag"
     if any(k in t for k in ["велосипед", "вело"]):
         return "auto", "bike"
-    if any(k in t for k in ["доставк", "посылок", "груз", "перевоз"]):
+    if any(k in t for k in ["доставк", "посылок", "груз", "перевоз", "эвакуатор", "такси", "трансфер"]):
         return "auto", "delivery"
 
-    # 6. Быт и здоровье
-    if any(k in t for k in ["массаж", "лор", "врач", "терапевт", "остеопат", "психолог", "кормлени"]):
-        return "lifestyle", "medical"
-    if any(k in t for k in ["макияж", "перманент", "художник", "арт"]):
-        return "lifestyle", "beauty"
-    if any(k in t for k in ["покос", "трав"]):
-        return "lifestyle", "garden"
-    if any(k in t for k in ["штор", "пошив", "одежд", "торт", "аджик"]):
-        return "lifestyle", "sewing"
+    # 6. Дом и быт
+    if any(k in t for k in ["уборк", "клининг", "химчистк", "мытье окон", "мытьё окон"]):
+        return "home_care", "cleaning"
+    if any(k in t for k in ["покос", "трав", "сад", "огород", "спил дерев", "обрезк"]):
+        return "home_care", "garden"
+    if any(k in t for k in ["штор", "пошив", "шить", "ателье", "одежд"]):
+        return "home_care", "sewing"
 
-    return "lifestyle", "stores"
+    # 7. Здоровье и красота
+    if any(k in t for k in ["психолог", "психотерап", "коуч", "астролог", "таро"]):
+        return "lifestyle", "psychology"
+    if any(k in t for k in ["массаж", "остеопат", "мануальн", "реабилитолог"]):
+        return "lifestyle", "massage"
+    if any(k in t for k in ["лор", "врач", "терапевт", "педиатр", "стоматолог", "медсестр", "укол", "капельниц", "анализ", "кормлени"]):
+        return "lifestyle", "medical"
+    if any(k in t for k in ["макияж", "перманент", "маникюр", "педикюр", "брови", "ресниц", "парикмахер", "стрижк", "косметолог", "эпиляц", "шугаринг", "волос"]):
+        return "lifestyle", "beauty"
+
+    # 8. Обучение и хобби
+    if any(k in t for k in ["репетитор", "английск", "математик", "логопед", "курс", "обучен", "подготовк", "школа", "урок"]):
+        return "education", "tutors"
+    if any(k in t for k in ["йог", "фитнес", "тренер", "танц", "рисован", "художник", "арт", "музык", "вокал", "хобби", "мастер-класс"]):
+        return "education", "hobby"
+
+    # 9. Праздники
+    if any(k in t for k in ["фотограф", "видеограф", "фотосесси", "видеосъемк", "видеосъёмк"]):
+        return "events", "photo_video"
+    if any(k in t for k in ["декор", "шары", "шарик", "флорист", "букет", "оформлен", "торт", "кондитер"]):
+        return "events", "decor"
+    if any(k in t for k in ["ведущ", "аниматор", "праздник", "диджей", "dj", "тамада"]):
+        return "events", "org"
+
+    # 10. Полезные места
+    if any(k in t for k in ["магазин", "кафе", "ресторан", "пекарн", "база", "склад", "аджик", "сыр", "мёд", "мед", "рынок", "сервис"]):
+        return "places", "business"
+
+    return "places", "other"
 
 def generate_keywords(text: str, cat_title: str, sub_title: str) -> list:
     tokens = set()
@@ -220,7 +279,7 @@ def parse_chat():
                     ph_match = re.search(phone_pattern, line)
                     if not ph_match:
                         continue
-                    
+
                     phone = clean_phone(ph_match.group(0))
                     if phone in STOP_PHONES or len(re.sub(r'\D', '', phone)) < 7:
                         continue
@@ -248,7 +307,7 @@ def parse_chat():
                     sub_title = TAXONOMY[cat_key]["subs"][sub_key]
                     keywords = generate_keywords(name + " " + service, cat_title, sub_title)
 
-                                        # Проверяем, является ли мастер лидером недели
+                    # Проверяем, является ли мастер лидером недели
                     is_leader = "Владимир" in name or "самым полезным участником" in msg
 
                     masters[phone] = {
@@ -272,7 +331,7 @@ def parse_chat():
         # Ветка 2: Индивидуальные посты участников
         text_lower = msg.lower()
         if any(tag in text_lower for tag in ["#услуга", "#рекомендую", "#еда", "сварочные, работы", "доставка посылок", "поклейкой обоев"]):
-            if "#ищу" in text_lower and not "#услуга" in text_lower:
+            if "#ищу" in text_lower and "#услуга" not in text_lower:
                 continue
 
             ph_match = re.search(phone_pattern, msg)
