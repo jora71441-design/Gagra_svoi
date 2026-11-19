@@ -849,12 +849,33 @@
 
     // ==================== ВКЛАДКА: УПРАВЛЕНИЕ ЗАКРЕПАМИ ====================
 
+    let promosSubTab = 'active'; // 'active' | 'archive'
+
+    function switchPromosSubTab(sub) {
+      promosSubTab = sub;
+      const btnActive = document.getElementById('promosSubBtn-active');
+      const btnArchive = document.getElementById('promosSubBtn-archive');
+
+      if (sub === 'active') {
+        btnActive.className = "py-2 text-xs font-bold rounded-xl bg-amber-600 text-white transition shadow-xs";
+        btnArchive.className = "py-2 text-xs font-semibold rounded-xl text-slate-600 hover:text-slate-900 transition";
+      } else {
+        btnArchive.className = "py-2 text-xs font-bold rounded-xl bg-slate-800 text-white transition shadow-xs";
+        btnActive.className = "py-2 text-xs font-semibold rounded-xl text-slate-600 hover:text-slate-900 transition";
+      }
+      loadApprovedMasters();
+    }
+
     async function loadApprovedMasters() {
       const list = document.getElementById('cardsList');
-      list.innerHTML = '<div class="text-center py-10 text-slate-400 text-sm">Загружаем базу специалистов...</div>';
+      list.innerHTML = `<div class="text-center py-10 text-slate-400 text-sm">${promosSubTab === 'archive' ? 'Загружаем архив...' : 'Загружаем базу специалистов...'}</div>`;
+
+      const query = promosSubTab === 'archive'
+        ? `${SUPABASE_URL}/rest/v1/masters?select=*&is_archived=eq.true&order=created_at.desc`
+        : `${SUPABASE_URL}/rest/v1/masters?select=*&is_approved=eq.true&or=(is_archived.is.null,is_archived.eq.false)&order=created_at.desc`;
 
       try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/masters?select=*&is_approved=eq.true&order=created_at.desc`, {
+        const res = await fetch(query, {
           headers: {
             'apikey': SUPABASE_ANON_KEY,
             'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
@@ -875,6 +896,40 @@
       }
     }
 
+    async function toggleMasterArchive(id, archiveState, name) {
+      const msg = archiveState
+        ? `Убрать мастера «${name}» в архив? Он исчезнет с сайта, но останется в базе.`
+        : `Вернуть мастера «${name}» из архива обратно на сайт?`;
+      if (!confirm(msg)) return;
+      if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/toggle_master_archive`, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            master_id: Number(id),
+            archive_state: archiveState,
+            secret_pin: adminPin
+          })
+        });
+
+        if (res.ok) {
+          if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+          loadApprovedMasters();
+        } else {
+          const err = await res.json().catch(() => ({}));
+          alert('Ошибка: ' + (err.message || 'Не удалось изменить статус архива'));
+        }
+      } catch (e) {
+        alert('Сетевой сбой при обновлении статуса');
+      }
+    }
+
     function filterPromosList() {
       const search = (document.getElementById('promosSearchInput')?.value || '').toLowerCase().trim();
       const list = document.getElementById('cardsList');
@@ -889,9 +944,9 @@
       if (filtered.length === 0) {
         list.innerHTML = `
           <div class="bg-white rounded-3xl p-8 text-center border border-slate-200/80 shadow-xs">
-            <span class="text-3xl">🔍</span>
-            <p class="text-sm font-bold text-slate-800 mt-2">Мастера не найдены</p>
-            <p class="text-xs text-slate-500 mt-1">Проверьте поисковый запрос или одобрите новых мастеров в первой вкладке.</p>
+            <span class="text-3xl">${promosSubTab === 'archive' ? '📦' : '🔍'}</span>
+            <p class="text-sm font-bold text-slate-800 mt-2">${promosSubTab === 'archive' ? 'В архиве пока пусто' : 'Мастера не найдены'}</p>
+            <p class="text-xs text-slate-500 mt-1">${promosSubTab === 'archive' ? 'Сюда попадают временно скрытые специалисты.' : 'Проверьте поисковый запрос или одобрите новых мастеров в первой вкладке.'}</p>
           </div>
         `;
         return;
@@ -899,6 +954,7 @@
 
       filtered.forEach(m => {
         const card = document.createElement('div');
+        const isArchiveView = promosSubTab === 'archive';
         const isLeader = !!m.is_leader;
         const isTopAll = !!m.is_top_all;
         const isPinned = !!m.is_pinned;
@@ -906,7 +962,8 @@
         const recCount = m.recommendations_count || (isStarred ? 1 : 0);
 
         let borderClass = 'border-slate-200';
-        if (isLeader) borderClass = 'border-amber-400 ring-2 ring-amber-300/50 bg-amber-50/20';
+        if (isArchiveView) borderClass = 'border-slate-300 bg-slate-50/60';
+        else if (isLeader) borderClass = 'border-amber-400 ring-2 ring-amber-300/50 bg-amber-50/20';
         else if (isTopAll) borderClass = 'border-orange-400 ring-1 ring-orange-300/60 bg-orange-50/15';
         else if (isPinned) borderClass = 'border-yellow-400 bg-yellow-50/10';
 
@@ -916,36 +973,24 @@
         const cleanPhone = phone.replace(/[^0-9]/g, '');
         const safeName = (m.name || '').replace(/'/g, "\\'");
 
-        card.innerHTML = `
-          <div class="flex items-start justify-between gap-2">
-            <div>
-              <div class="flex items-center gap-1.5 flex-wrap">
-                <span class="text-[10px] font-bold bg-slate-100 text-slate-700 px-2 py-0.5 rounded-md">${m.category_title || 'Услуга'}</span>
-                ${isStarred ? `
-                  <span class="text-[10px] font-bold text-amber-800 bg-amber-50 border border-amber-300 px-2 py-0.5 rounded-md">
-                    ⭐ Рекомендуют (${recCount})
-                  </span>
-                ` : `
-                  <span class="text-[10px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-300 px-2 py-0.5 rounded-md">
-                    ✓ Проверен
-                  </span>
-                `}
-                ${isLeader ? '<span class="text-[10px] font-black bg-gradient-to-r from-amber-500 to-yellow-500 text-white px-2 py-0.5 rounded-md shadow-2xs">👑 Лидер недели</span>' : ''}
-                ${isTopAll ? '<span class="text-[10px] font-black bg-orange-500 text-white px-2 py-0.5 rounded-md shadow-2xs">🔥 Топ каталога</span>' : ''}
-                ${isPinned ? '<span class="text-[10px] font-bold bg-yellow-100 text-yellow-900 border border-yellow-300 px-2 py-0.5 rounded-md">⭐ В топе раздела</span>' : ''}
-              </div>
-              <h3 class="text-base font-bold text-slate-900 mt-1">${m.name}</h3>
+        const controlsHtml = isArchiveView ? `
+          <div class="pt-2 border-t border-slate-100 flex items-center justify-between gap-2 flex-wrap">
+            <button onclick="toggleMasterArchive(${m.id}, false, '${safeName}')" 
+                    class="text-[11px] font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 flex items-center gap-1 py-1.5 px-3 rounded-xl transition active:scale-95">
+              ♻️ Вернуть на сайт
+            </button>
+            <div class="flex items-center gap-1.5">
+              <button onclick="openMasterEditModal(${m.id})" 
+                      class="text-[11px] font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 flex items-center gap-1 py-1.5 px-2.5 rounded-lg transition active:scale-95">
+                ✏️ Изменить
+              </button>
+              <button onclick="deleteApprovedMaster(${m.id}, '${safeName}')" 
+                      class="text-[11px] font-semibold text-slate-400 hover:text-rose-600 flex items-center gap-1 py-1.5 px-2 rounded-lg hover:bg-rose-50 transition active:scale-95">
+                🗑 Удалить
+              </button>
             </div>
-            <span class="text-[11px] font-mono text-slate-500">${m.city || 'Гагра'}</span>
           </div>
-          <p class="text-xs text-slate-600 leading-relaxed">${m.service}</p>
-          ${m.social ? `<p class="text-[11px] text-blue-700 font-medium">🔗 ${m.social}</p>` : ''}
-
-          <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
-            <span class="font-mono text-slate-600">${phone}</span>
-            ${cleanPhone ? `<a href="https://wa.me/${cleanPhone}" target="_blank" class="text-emerald-700 font-semibold hover:underline">WhatsApp →</a>` : ''}
-          </div>
-
+        ` : `
           <!-- Тарифные кнопки управления -->
           <div class="grid grid-cols-3 gap-1.5 pt-1">
             <button onclick="toggleMasterStatus(${m.id}, 'leader')" 
@@ -962,7 +1007,7 @@
             </button>
           </div>
 
-                    <!-- Панель статуса доверия, счетчика и удаления -->
+          <!-- Панель статуса доверия, архива и удаления -->
           <div class="pt-2 border-t border-slate-100 flex items-center justify-between gap-2 flex-wrap">
             <div class="flex items-center gap-1.5">
               <button onclick="toggleMasterStatus(${m.id}, 'star')" 
@@ -994,9 +1039,13 @@
             </div>
 
             <div class="flex items-center gap-1.5">
-              <button onclick="openMasterEditModal(${m.id}, 'approved')" 
+              <button onclick="openMasterEditModal(${m.id})" 
                       class="text-[11px] font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 flex items-center gap-1 py-1 px-2.5 rounded-lg transition active:scale-95">
                 ✏️ Изменить
+              </button>
+              <button onclick="toggleMasterArchive(${m.id}, true, '${safeName}')" 
+                      class="text-[11px] font-semibold text-slate-600 bg-slate-100 hover:bg-amber-50 hover:text-amber-900 flex items-center gap-1 py-1 px-2 rounded-lg transition active:scale-95">
+                📦 В архив
               </button>
               <button onclick="deleteApprovedMaster(${m.id}, '${safeName}')" 
                       class="text-[11px] font-semibold text-slate-400 hover:text-rose-600 flex items-center gap-1 py-1 px-2 rounded-lg hover:bg-rose-50 transition active:scale-95">
@@ -1004,6 +1053,43 @@
               </button>
             </div>
           </div>
+        `;
+
+        card.innerHTML = `
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="text-[10px] font-bold bg-slate-100 text-slate-700 px-2 py-0.5 rounded-md">${m.category_title || 'Услуга'}</span>
+                ${isArchiveView ? `
+                  <span class="text-[10px] font-bold text-slate-600 bg-slate-200/80 px-2 py-0.5 rounded-md">
+                    📦 В архиве
+                  </span>
+                ` : (isStarred ? `
+                  <span class="text-[10px] font-bold text-amber-800 bg-amber-50 border border-amber-300 px-2 py-0.5 rounded-md">
+                    ⭐ Рекомендуют (${recCount})
+                  </span>
+                ` : `
+                  <span class="text-[10px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-300 px-2 py-0.5 rounded-md">
+                    ✓ Проверен
+                  </span>
+                `)}
+                ${!isArchiveView && isLeader ? '<span class="text-[10px] font-black bg-gradient-to-r from-amber-500 to-yellow-500 text-white px-2 py-0.5 rounded-md shadow-2xs">👑 Лидер недели</span>' : ''}
+                ${!isArchiveView && isTopAll ? '<span class="text-[10px] font-black bg-orange-500 text-white px-2 py-0.5 rounded-md shadow-2xs">🔥 Топ каталога</span>' : ''}
+                ${!isArchiveView && isPinned ? '<span class="text-[10px] font-bold bg-yellow-100 text-yellow-900 border border-yellow-300 px-2 py-0.5 rounded-md">⭐ В топе раздела</span>' : ''}
+              </div>
+              <h3 class="text-base font-bold text-slate-900 mt-1">${m.name}</h3>
+            </div>
+            <span class="text-[11px] font-mono text-slate-500">${m.city || 'Гагра'}</span>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed">${m.service}</p>
+          ${m.social ? `<p class="text-[11px] text-blue-700 font-medium">🔗 ${m.social}</p>` : ''}
+
+          <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+            <span class="font-mono text-slate-600">${phone}</span>
+            ${cleanPhone ? `<a href="https://wa.me/${cleanPhone}" target="_blank" class="text-emerald-700 font-semibold hover:underline">WhatsApp →</a>` : ''}
+          </div>
+
+          ${controlsHtml}
         `;
         list.appendChild(card);
       });
