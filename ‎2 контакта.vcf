@@ -1,0 +1,13 @@
+BEGIN:VCARD
+VERSION:3.0
+N:;Аго;;;
+FN:Аго
+item1.TEL;waid=79409980623:+7 940 998-06-23
+item1.X-ABLabel:Мобильный
+END:VCARDBEGIN:VCARD
+VERSION:3.0
+N:;Само;;;
+FN:Само
+item1.TEL;waid=79409920237:+7 940 992-02-37
+item1.X-ABLabel:Мобильный
+END:VCARD
