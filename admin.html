@@ -706,33 +706,36 @@
       if (modal) modal.classList.add('hidden');
     }
 
-    async function saveMasterEdit(andApprove = false) {
+        async function saveMasterEdit(andApprove = false) {
       const id = document.getElementById('editMasterId').value;
-      const updatedData = {
-        name: document.getElementById('editMasterName').value.trim(),
-        phone: document.getElementById('editMasterPhone').value.trim(),
-        city: document.getElementById('editMasterCity').value.trim(),
-        category_title: document.getElementById('editMasterCategory').value.trim(),
-        service: document.getElementById('editMasterService').value.trim(),
-        social: document.getElementById('editMasterSocial').value.trim()
+      const payload = {
+        master_id: Number(id),
+        p_name: document.getElementById('editMasterName').value.trim(),
+        p_phone: document.getElementById('editMasterPhone').value.trim(),
+        p_city: document.getElementById('editMasterCity').value.trim(),
+        p_category: document.getElementById('editMasterCategory').value.trim(),
+        p_service: document.getElementById('editMasterService').value.trim(),
+        p_social: document.getElementById('editMasterSocial').value.trim(),
+        secret_pin: adminPin
       };
 
       try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/masters?id=eq.${id}`, {
-          method: 'PATCH',
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/update_master_record`, {
+          method: 'POST',
           headers: {
             'apikey': SUPABASE_ANON_KEY,
             'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-            'Content-Type': 'application/json',
-            'Prefer': 'return=minimal'
+            'Content-Type': 'application/json'
           },
-          body: JSON.stringify(updatedData)
+          body: JSON.stringify(payload)
         });
 
         if (!res.ok) {
-          throw new Error('Не удалось сохранить изменения');
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.message || 'Не удалось сохранить изменения');
         }
 
+        if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
         closeMasterEditModal();
 
         if (andApprove) {
