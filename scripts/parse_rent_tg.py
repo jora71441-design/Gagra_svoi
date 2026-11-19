@@ -94,11 +94,14 @@ def parse_posts(raw_html):
 
         text_lower = clean_text.lower()
 
-        # Фильтр юмора и админских объявлений
+        # Фильтр соискателей, статей, юмора и админских постов
         stop_words = [
             "пятничное настроение", "посмеяться", "юмор", "мем", "анекдот",
             "если вы ищете жильё", "если вы ищите жилье", "пишите мне в личку",
-            "помогу с оформлением", "правила канала", "подписывайтесь"
+            "помогу с оформлением", "правила канала", "подписывайтесь",
+            "ищут жильё", "ищут жилье", "ищу жильё", "ищу жилье",
+            "#ищужилье", "#ищужильё", "бюджет:", "сниму ", "снимем ",
+            "почему сдавать", "полезно знать", "советы арендодателям"
         ]
         if any(sw in text_lower for sw in stop_words):
             continue
@@ -193,7 +196,7 @@ def parse_posts(raw_html):
             "photos": photos,
             "status": "Свободно к заселению",
             "tg_link": post_link,
-            "is_approved": True,
+            "is_approved": False,
             "is_active": True
         })
 
@@ -253,7 +256,7 @@ def main():
             "desc": it["desc"],
             "photos": it["photos"],
             "tg_link": it["tg_link"],
-            "is_approved": True,
+            "is_approved": False,
             "is_active": True
         })
 
