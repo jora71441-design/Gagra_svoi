@@ -1324,6 +1324,7 @@
     checkPin();
     loadPending('masters');
   </script>
+  
     <!-- Модальное окно редактирования вакансии -->
   <div id="jobEditModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-3">
     <div class="bg-white w-full max-w-md rounded-3xl p-5 shadow-xl max-h-[90vh] overflow-y-auto">
@@ -1378,18 +1379,22 @@
   </div>
 
   <script>
-    async function openJobEditModal(id) {
+    
+        async function openJobEditModal(id) {
       try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/jobs?id=eq.${id}&select=*`, {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/jobs?id=eq.${encodeURIComponent(id)}&select=*`, {
           headers: {
             'apikey': SUPABASE_ANON_KEY,
             'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
           }
         });
-        if (!res.ok) return alert('Не удалось загрузить вакансию');
+        if (!res.ok) {
+          const errText = await res.text();
+          return alert(`Ошибка загрузки (${res.status}): ${errText}`);
+        }
         const rows = await res.json();
         const item = rows[0];
-        if (!item) return;
+        if (!item) return alert(`Вакансия с id=${id} не найдена в базе`);
 
         document.getElementById('editJobId').value = item.id;
         document.getElementById('editJobType').value = item.type || '#вакансия';
@@ -1402,7 +1407,7 @@
 
         document.getElementById('jobEditModal').classList.remove('hidden');
       } catch (e) {
-        alert('Ошибка сети при загрузке вакансии');
+        alert('Ошибка: ' + e.message);
       }
     }
 
