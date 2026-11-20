@@ -97,30 +97,32 @@ TAXONOMY = {
 
 # Семантическая база синонимов для умного поиска
 SYNONYMS = {
-    "стирал": ["стиралка", "стиральная машина", "автомат", "подшипник", "слив", "не сливает", "насос"],
-    "холодильн": ["холодос", "морозилка", "компрессор", "фреон", "не морозит"],
+    "стирал": ["стиралка", "стиральная машина", "автомат", "подшипник", "слив", "насос"],
+    "холодильн": ["холодос", "морозилка", "компрессор", "фреон"],
     "кондиционер": ["сплит", "климат", "кондей", "дозаправка", "чистка кондиционера"],
-    "обои": ["поклейка обоев", "шпаклевка", "шпатлевка", "маляр", "покраска стен"],
-    "двер": ["замки", "ручки", "мдф", "петли", "наличники", "установка дверей", "межкомнатные двери"],
-    "окн": ["стеклопакет", "москитка", "москитные сетки", "регулировка окон", "пластиковые окна"],
-    "сантехн": ["кран", "сифон", "смеситель", "трубы", "пайка", "засор", "канализация", "протечка", "унитаз", "бойлер", "котел", "отопление"],
-    "электрик": ["проводка", "люстра", "свет", "розетка", "выключатель", "автомат", "щиток", "теплый пол"],
-    "свар": ["сварщик", "каркас", "навес", "козырек", "перила", "решетки", "ворота", "калитка"],
+    "триколор": ["трикалор", "тарелка", "приставка", "телевизор", "тв"],
+    "обои": ["поклейка обоев", "шпаклевка", "шпатлевка", "маляр", "малярка", "венецианка", "покраска"],
+    "двер": ["замки", "слесарь", "ручки", "мдф", "петли", "наличники", "откосы"],
+    "окн": ["стеклопакет", "москитка", "жалюзи", "рольставни", "регулировка окон"],
+    "сантехн": ["кран", "сифон", "смеситель", "трубы", "засор", "унитаз", "бойлер", "котел", "отопление", "ванна"],
+    "электрик": ["проводка", "люстра", "свет", "розетка", "автомат", "щиток", "теплый пол", "видеонаблюдение"],
+    "свар": ["сварщик", "каркас", "навес", "козырек", "перила", "ворота", "калитка", "качели"],
     "альпинист": ["высотные работы", "фасад", "герметизация", "швы"],
-    "потол": ["натяжные потолки", "люстры", "слив воды"],
-    "плитк": ["кафель", "керамогранит", "санузел", "фартук"],
-    "паркет": ["ламинат", "кварцвинил", "полы", "плинтус"],
-    "мебел": ["сборка мебели", "кухня", "шкаф", "купе"],
-    "авто": ["акпп", "диагностика", "электрик", "коробка", "мотор"],
-    "уборк": ["клининг", "генеральная уборка", "мытье окон", "химчистка"],
-    "массаж": ["спина", "шея", "лечебный", "выезд", "лимфодренаж", "остеопат"],
-    "лор": ["ухо", "горло", "нос", "слух", "врач", "доктор"],
+    "потол": ["натяжные потолки", "потолочник", "паталог"],
+    "плитк": ["кафель", "керамогранит", "санузел", "фартук", "брусчатка"],
+    "паркет": ["ламинат", "кварцвинил", "полы", "стяжка", "плинтус"],
+    "мебел": ["сборка мебели", "кухня", "шкаф", "перешив", "реставрация", "столяр"],
+    "авто": ["акпп", "диагностика", "электрик", "коробка", "шиномонтаж"],
+    "уборк": ["клининг", "мойка ковров", "химчистка"],
+    "массаж": ["спина", "шея", "лечебный", "тайский", "спа", "остеопат"],
+    "врач": ["стоматолог", "зубной", "лор", "доктор", "анализы", "гемотест"],
     "психолог": ["терапия", "консультация", "психотерапевт", "коуч"],
-    "репетитор": ["английский", "математика", "курсы", "уроки", "обучение", "логопед"],
-    "фотограф": ["фотосессия", "видеосъемка", "видеограф", "свадьба", "праздник"]
+    "репетитор": ["автошкола", "курсы", "уроки", "обучение", "пианино", "фортепиано"],
+    "фотограф": ["фотосессия", "видеосъемка", "видеограф", "ведущая", "декоратор", "праздник"]
 }
 
 STOP_PHONES = {"+79405555555", "+79400000000", "+79409999999"}
+PHONE_PATTERN = r'(?:\+?7|8)?[\s\-]?(?:\(?\d{3}\)?[\s\-]?)?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}|\b[79]\d{2}[\s\-]?\d{2}[\s\-]?\d{2}\b'
 
 def clean_phone(p: str) -> str:
     digits = re.sub(r'\D', '', p)
@@ -138,49 +140,49 @@ def classify_service(text: str):
     t = text.lower()
 
     # 1. Техника
-    if any(k in t for k in ["стирал"]):
+    if any(k in t for k in ["стирал", "стирмаш"]):
         return "appliances", "washers"
     if any(k in t for k in ["холодильн", "морозил"]):
         return "appliances", "fridges"
-    if any(k in t for k in ["кондиционер", "сплит"]):
+    if any(k in t for k in ["кондиционер", "сплит", "кондей"]):
         return "appliances", "aircon"
-    if any(k in t for k in ["телефон", "смартфон", "компьютер", "ноутбук", "телевизор", "proxima", "fabmobile", "t-mobile"]):
+    if any(k in t for k in ["телефон", "смартфон", "компьютер", "ноутбук", "оргтехн", "принтер", "телевизор", "триколор", "трикалор", "приставк", "видеонаблюден", "камер", "proxima", "fabmobile", "t-mobile"]):
         return "appliances", "gadgets"
-    if any(k in t for k in ["духовк", "варочн", "электроплит", "газов", "микроволнов", "пылесос", "кофемашин", "бытов"]):
+    if any(k in t for k in ["духовк", "варочн", "электроплит", "газов", "микроволнов", "пылесос", "кофемашин", "швейн", "dayson", "бытов", "3d", "3д"]):
         return "appliances", "small_appliances"
 
     # 2. Сантехника и свет
-    if any(k in t for k in ["теплый пол", "теплые полы", "тёплый пол", "тёплые полы"]):
+    if any(k in t for k in ["теплый пол", "теплые полы", "тёплый пол", "тёплые полы", "теплым полам", "тёплым полам"]):
         return "engineering", "underfloor"
-    if any(k in t for k in ["котел", "котёл", "котлы", "отоплен", "бойлер"]):
+    if any(k in t for k in ["котел", "котёл", "котлы", "отоплен", "бойлер", "насос"]):
         return "engineering", "heating"
-    if any(k in t for k in ["электрик", "проводк", "свет", "люстр", "розетк"]):
+    if any(k in t for k in ["электрик", "электромонтаж", "проводк", "свет", "люстр", "розетк"]):
         return "engineering", "electric"
-    if any(k in t for k in ["сантехн", "кран", "сифон", "водоснабжен", "канализаци"]):
+    if any(k in t for k in ["сантехн", "кран", "сифон", "водоснабжен", "канализаци", "ванн"]):
         return "engineering", "plumbing"
 
     # 3. Отделка и ремонт
-    if any(k in t for k in ["плитк", "кафел", "керамогранит"]):
+    if any(k in t for k in ["плитк", "кафел", "керамогранит", "брусчатк"]):
         return "finish", "tiles"
-    if any(k in t for k in ["обои", "маляр", "покраск", "шпаклев", "шпатлев", "штукатур"]):
+    if any(k in t for k in ["обои", "маляр", "покраск", "шпаклев", "шпатлев", "штукатур", "венецианк", "барельеф", "откос", "дизайнер интер"]):
         return "finish", "wallpaper"
-    if any(k in t for k in ["потолок", "потолки", "skyline"]):
+    if any(k in t for k in ["потолок", "потолки", "потолочн", "паталог", "skyline"]):
         return "finish", "ceilings"
-    if any(k in t for k in ["паркет", "ламинат", "кварцвинил", "пол "]):
+    if any(k in t for k in ["паркет", "ламинат", "кварцвинил", "стяжк", "пол "]):
         return "finish", "flooring"
-    if any(k in t for k in ["двер", "окн", "москит", "стекл", "замок"]):
+    if any(k in t for k in ["двер", "окн", "москит", "стекл", "замок", "замк", "слесар", "жалюз", "рольставн"]):
         return "finish", "doors"
-    if any(k in t for k in ["мебел", "сборк", "столяр", "дерев"]):
+    if any(k in t for k in ["мебел", "сборк", "столяр", "дерев", "перешив"]):
         return "finish", "furniture"
 
     # 4. Стройка и сварка
     if any(k in t for k in ["альпинист", "высотн"]):
         return "construction", "climbing"
-    if any(k in t for k in ["свар", "навес", "кованы", "козырек", "ворот"]):
+    if any(k in t for k in ["свар", "навес", "кованы", "козырек", "ворот", "качел"]):
         return "construction", "welding"
     if any(k in t for k in ["мусор"]):
         return "construction", "waste"
-    if any(k in t for k in ["стройк", "каркас", "фундамент", "кровл", "крыш"]):
+    if any(k in t for k in ["стройк", "постройк", "каркас", "фундамент", "кровл", "крыш", "гидроизоляц", "камин", "барбекю", "дагестанск", "дикого камня"]):
         return "construction", "building"
 
     # 5. Авто / Доставка
@@ -188,45 +190,45 @@ def classify_service(text: str):
         return "auto", "gearbox"
     if any(k in t for k in ["автоэлектрик", "диагност", "автосервис", "шиномонтаж"]):
         return "auto", "autodiag"
-    if any(k in t for k in ["велосипед", "вело"]):
+    if any(k in t for k in ["велосипед", "вело", "самокат"]):
         return "auto", "bike"
-    if any(k in t for k in ["доставк", "посылок", "груз", "перевоз", "эвакуатор", "такси", "трансфер"]):
+    if any(k in t for k in ["доставк", "курьер", "посылок", "груз", "перевоз", "газел", "минивен", "спецтехник", "автокран", "экскаватор", "эвакуатор", "такси", "трансфер"]):
         return "auto", "delivery"
 
     # 6. Дом и быт
-    if any(k in t for k in ["уборк", "клининг", "химчистк", "мытье окон", "мытьё окон"]):
+    if any(k in t for k in ["уборк", "клининг", "химчистк", "мойка ковр", "мытье окон", "мытьё окон"]):
         return "home_care", "cleaning"
-    if any(k in t for k in ["покос", "трав", "сад", "огород", "спил дерев", "обрезк"]):
+    if any(k in t for k in ["покос", "трав", "сад", "участк", "огород", "спил дерев", "обрезк", "фазенд"]):
         return "home_care", "garden"
-    if any(k in t for k in ["штор", "пошив", "шить", "ателье", "одежд"]):
+    if any(k in t for k in ["штор", "пошив", "шить", "швея", "портн", "ателье", "одежд", "мехов"]):
         return "home_care", "sewing"
 
     # 7. Здоровье и красота
-    if any(k in t for k in ["психолог", "психотерап", "коуч", "астролог", "таро"]):
+    if any(k in t for k in ["психолог", "психотерап", "коуч", "целител", "ясновидящ", "ченнелер"]):
         return "lifestyle", "psychology"
-    if any(k in t for k in ["массаж", "остеопат", "мануальн", "реабилитолог"]):
+    if any(k in t for k in ["массаж", "остеопат", "мануальн", "реабилитолог", "спа"]):
         return "lifestyle", "massage"
-    if any(k in t for k in ["лор", "врач", "терапевт", "педиатр", "стоматолог", "зубн", "медсестр", "укол", "капельниц", "анализ", "кормлени"]):
+    if any(k in t for k in ["лор", "врач", "терапевт", "педиатр", "стоматолог", "зубн", "медсестр", "гемотест", "анализ", "кормлени"]):
         return "lifestyle", "medical"
-    if any(k in t for k in ["макияж", "перманент", "маникюр", "педикюр", "брови", "ресниц", "парикмахер", "стрижк", "косметолог", "эпиляц", "шугаринг", "волос"]):
+    if any(k in t for k in ["макияж", "перманент", "маникюр", "педикюр", "брови", "ресниц", "парикмахер", "барбершоп", "стрижк", "косметолог", "эпиляц", "шугаринг", "волос"]):
         return "lifestyle", "beauty"
 
     # 8. Обучение и хобби
-    if any(k in t for k in ["репетитор", "английск", "математик", "логопед", "курс", "обучен", "подготовк", "школа", "автошкола", "урок"]):
+    if any(k in t for k in ["репетитор", "английск", "математик", "логопед", "курс", "обучен", "школа", "автошкола", "урок", "кинолог"]):
         return "education", "tutors"
-    if any(k in t for k in ["йог", "фитнес", "тренер", "танц", "рисован", "художник", "арт", "музык", "вокал", "хобби", "мастер-класс"]):
+    if any(k in t for k in ["йог", "фитнес", "тренер", "танц", "рисован", "художник", "арт", "музык", "фортепиано", "пианино", "хобби", "студи", "рыбалк"]):
         return "education", "hobby"
 
     # 9. Праздники
     if any(k in t for k in ["фотограф", "видеограф", "фотосесси", "видеосъемк", "видеосъёмк"]):
         return "events", "photo_video"
-    if any(k in t for k in ["декор", "шары", "шарик", "флорист", "букет", "оформлен", "торт", "кондитер"]):
+    if any(k in t for k in ["декор", "шары", "флорист", "букет", "оформлен", "торт", "кондитер", "выпечк", "фуршет"]):
         return "events", "decor"
-    if any(k in t for k in ["ведущ", "аниматор", "праздник", "диджей", "dj", "тамада"]):
+    if any(k in t for k in ["ведущ", "церемониймейстер", "аниматор", "праздник", "диджей", "выездное кафе", "палаток"]):
         return "events", "org"
 
     # 10. Полезные места
-    if any(k in t for k in ["магазин", "кафе", "ресторан", "пекарн", "база", "склад", "аджик", "сыр", "мёд", "мед", "рынок", "сервис", "фирма"]):
+    if any(k in t for k in ["магазин", "зоотовар", "грумер", "кафе", "ресторан", "шаурм", "пекарн", "база", "металлобаз", "склад", "аджик", "полуфабрикат", "рынок", "сервис", "фирма", "юридич", "открытие ип", "прокат", "ювелир", "колеровк", "ксерокоп", "market"]):
         return "places", "business"
 
     return "places", "other"
@@ -234,7 +236,7 @@ def classify_service(text: str):
 def generate_keywords(text: str, cat_title: str, sub_title: str) -> list:
     tokens = set()
     t = text.lower()
-    words = re.findall(r'\b[а-яa-z]{3,}\b', t)
+    words = re.findall(r'\b[а-яa-z0-9]{3,}\b', t)
     tokens.update(words)
     tokens.add(cat_title.lower())
     tokens.add(sub_title.lower())
@@ -243,6 +245,46 @@ def generate_keywords(text: str, cat_title: str, sub_title: str) -> list:
         if root in t:
             tokens.update(syn_list)
     return list(tokens)
+
+def add_master(masters: dict, counter: int, phone: str, name: str, service: str, recommended_by: str, starred: bool = False, is_leader: bool = False, overwrite: bool = False) -> int:
+    phone = clean_phone(phone)
+    if phone in STOP_PHONES or len(re.sub(r'\D', '', phone)) < 7:
+        return counter
+
+    if phone in masters and not overwrite:
+        # Если уже есть в базе, просто обновим статус рекомендации при необходимости
+        if starred:
+            masters[phone]["starred"] = True
+        return counter
+
+    name = re.sub(r'[*_~`]', '', name).strip(" ,-–—:")
+    service = re.sub(r'[*_~`]', '', service).strip(" ,-–—:")
+    if not name or name.lower() in ["без имени", "(без имени)"]:
+        name = "Специалист"
+    if not service:
+        service = "Услуги специалистов в Гагре"
+
+    cat_key, sub_key = classify_service(f"{name} {service}")
+    cat_title = TAXONOMY[cat_key]["title"]
+    sub_title = TAXONOMY[cat_key]["subs"][sub_key]
+    keywords = generate_keywords(f"{name} {service}", cat_title, sub_title)
+
+    masters[phone] = {
+        "id": masters[phone]["id"] if phone in masters else counter,
+        "name": name[:35],
+        "category": cat_key,
+        "category_title": cat_title,
+        "subcategory": sub_key,
+        "subcategory_title": sub_title,
+        "service": service[:160],
+        "phone": phone,
+        "recommended_by": recommended_by,
+        "verified": True,
+        "starred": starred or (masters[phone]["starred"] if phone in masters else False),
+        "is_leader": is_leader,
+        "keywords": keywords
+    }
+    return counter if phone in masters else counter + 1
 
 def decode_vcard_value(value: str, params: str) -> str:
     if "QUOTED-PRINTABLE" in params.upper():
@@ -257,7 +299,7 @@ def parse_vcf_files(masters: dict, master_counter: int) -> int:
     if not vcf_files:
         return master_counter
 
-    added = 0
+    before_count = len(masters)
     for filepath in vcf_files:
         try:
             with open(filepath, "r", encoding="utf-8", errors="ignore") as f:
@@ -265,16 +307,12 @@ def parse_vcf_files(masters: dict, master_counter: int) -> int:
         except Exception:
             continue
 
-        # Разворачиваем переносы строк vCard (включая QUOTED-PRINTABLE)
         raw = re.sub(r'=\r?\n', '', raw)
         raw = re.sub(r'\r?\n[ \t]', '', raw)
 
         cards = re.findall(r'BEGIN:VCARD(.*?)END:VCARD', raw, re.S | re.I)
         for card in cards:
-            fn = ""
-            org = ""
-            title = ""
-            note = ""
+            fn = org = title = note = ""
             phones = []
 
             for line in card.splitlines():
@@ -302,41 +340,72 @@ def parse_vcf_files(masters: dict, master_counter: int) -> int:
 
             name = fn or org or os.path.splitext(os.path.basename(filepath))[0]
             extra_info = " ".join(x for x in [title, org, note] if x and x != name).strip()
-            full_text = f"{name} {extra_info}".strip()
+            master_counter = add_master(
+                masters, master_counter, phones[0], name,
+                extra_info if extra_info else name,
+                "Контакт из чата (VCF)", overwrite=False
+            )
 
-            cat_key, sub_key = classify_service(full_text)
-            cat_title = TAXONOMY[cat_key]["title"]
-            sub_title = TAXONOMY[cat_key]["subs"][sub_key]
-            service_desc = extra_info if extra_info else sub_title
-            keywords = generate_keywords(full_text, cat_title, sub_title)
+    print(f"Из .vcf добавлено новых контактов: {len(masters) - before_count}")
+    return master_counter
 
-            phone = phones[0]
-            if phone not in masters:
-                masters[phone] = {
-                    "id": master_counter,
-                    "name": name[:30],
-                    "category": cat_key,
-                    "category_title": cat_title,
-                    "subcategory": sub_key,
-                    "subcategory_title": sub_title,
-                    "service": service_desc[:140],
-                    "phone": phone,
-                    "recommended_by": "Контакт из чата (VCF)",
-                    "verified": True,
-                    "starred": False,
-                    "keywords": keywords
-                }
-                master_counter += 1
-                added += 1
+def parse_digest_lines(lines: list, masters: dict, master_counter: int, is_leader_msg: bool) -> int:
+    """Разбирает как однострочные (✅ +7..., Имя - услуга), так и многострочные (✅ Имя - услуга \\n 📞 +7...) дайджесты."""
+    i = 0
+    while i < len(lines):
+        line = lines[i]
+        if any(line.startswith(p) for p in ["✅", "⭐", "📍", "•"]):
+            is_starred = "⭐" in line
+            ph_match = re.search(PHONE_PATTERN, line)
+            info = line
 
-    print(f"Из .vcf добавлено новых контактов: {added}")
+            # Если в строке нет телефона — смотрим следующие 1–2 строки (формат 📞 +7... и 📍 адрес)
+            extra_addr = ""
+            if not ph_match:
+                j = i + 1
+                while j < len(lines) and j <= i + 3:
+                    nxt = lines[j]
+                    if nxt.startswith("✅") or nxt.startswith("⭐"):
+                        break
+                    if nxt.startswith("📍") and not re.search(PHONE_PATTERN, nxt):
+                        extra_addr = nxt.replace("📍", "").strip()
+                    else:
+                        m = re.search(PHONE_PATTERN, nxt)
+                        if m and not ph_match:
+                            ph_match = m
+                    j += 1
+
+            if ph_match:
+                phone = ph_match.group(0)
+                for ch in ["✅", "⭐", "📍", "•", "📞"]:
+                    info = info.replace(ch, "")
+                info = info.replace(phone, "").strip(" ,-–—")
+
+                # Разделяем имя и описание услуги
+                sep_match = re.split(r'\s+[-–—]\s+', info, maxsplit=1)
+                if len(sep_match) == 2:
+                    name, service = sep_match[0], sep_match[1]
+                elif "," in info:
+                    parts = info.split(",", 1)
+                    name, service = parts[0], parts[1]
+                else:
+                    name, service = info, info
+
+                if extra_addr:
+                    service = f"{service} ({extra_addr})"
+
+                is_leader = "Владимир" in name or is_leader_msg
+                master_counter = add_master(
+                    masters, master_counter, phone, name, service,
+                    "Подборка чата (Гагра)", starred=is_starred, is_leader=is_leader, overwrite=True
+                )
+        i += 1
     return master_counter
 
 def parse_chat():
     chat_file = "_chat.txt"
     masters = {}
     master_counter = 1
-    phone_pattern = r'(?:\+?7|8)?[\s\-]?(?:\(?\d{3}\)?[\s\-]?)?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}|\b[79]\d{2}[\s\-]?\d{2}[\s\-]?\d{2}\b'
 
     if os.path.exists(chat_file):
         with open(chat_file, "r", encoding="utf-8", errors="ignore") as f:
@@ -345,122 +414,78 @@ def parse_chat():
         content = re.sub(r'[\u200e\u200f\u202a-\u202e\u202f\ufeff]', '', content)
         raw_messages = re.split(r'\n(?=\d{1,2}\.\d{1,2}\.\d{2,4})', content)
 
-        for msg in raw_messages:
-            # Полная фильтрация обучающих сообщений, опросов и правил
-            if any(stop_word in msg.lower() for stop_word in [
-                "как пользоваться чатом", "нужен фотограф на свадьбу", "пример:",
-                "покинул(-а)", "присоединился", "добавил(-а) контакт",
-                "сообщения и звонки защищены", "опрос:", "правила чата"
-            ]):
-                continue
+        digest_markers = [
+            "полезные контакты", "новые мастера за неделю",
+            "новых полезных контактов", "новые контакты за неделю"
+        ]
+        request_stop_words = [
+            "#ищу", "# ищу", "нужен ", "нужна ", "нужны ", "ищу ", "подскажите",
+            "кто знает", "есть мастер", "есть кто", "требуется помощница",
+            "как пользоваться чатом", "пример:", "опрос:", "правила чата",
+            "покинул(-а)", "присоединился", "добавил(-а) контакт",
+            "сообщения и звонки защищены", "не распространять его номер"
+        ]
 
+        for msg in raw_messages:
+            msg_lower = msg.lower()
             lines = [line.strip() for line in msg.split('\n') if line.strip()]
             if not lines:
                 continue
 
-            # Ветка 1: Еженедельные дайджесты Ринаты
-            if "ПОЛЕЗНЫЕ КОНТАКТЫ ГАГРА" in msg:
-                for line in lines[1:]:
-                    if any(line.startswith(prefix) for prefix in ["✅", "⭐", "📍", "•", "-"]):
-                        ph_match = re.search(phone_pattern, line)
-                        if not ph_match:
-                            continue
+            # Убираем дату и отправителя из первой строки для чистого анализа текста
+            body_first = re.sub(r'^\d{1,2}\.\d{1,2}\.\d{2,4},?\s+\d{1,2}:\d{2}\s*-\s*[^:]+:\s*', '', lines[0])
+            body_lines = [body_first] + lines[1:]
+            body_text = "\n".join(body_lines).strip()
+            body_lower = body_text.lower()
 
-                        phone = clean_phone(ph_match.group(0))
-                        if phone in STOP_PHONES or len(re.sub(r'\D', '', phone)) < 7:
-                            continue
-
-                        is_starred = "⭐" in line
-                        info = line
-                        for ch in ["✅", "⭐", "📍", "•"]:
-                            info = info.replace(ch, "")
-                        info = info.replace(ph_match.group(0), "").strip(" ,-–")
-
-                        if " - " in info:
-                            parts = info.split(" - ", 1)
-                            name = parts[0].strip(" ,")
-                            service = parts[1].strip()
-                        elif "," in info:
-                            parts = info.split(",", 1)
-                            name = parts[0].strip()
-                            service = parts[1].strip()
-                        else:
-                            name = info if info else "Специалист"
-                            service = "Услуги специалистов в Гагре"
-
-                        cat_key, sub_key = classify_service(name + " " + service)
-                        cat_title = TAXONOMY[cat_key]["title"]
-                        sub_title = TAXONOMY[cat_key]["subs"][sub_key]
-                        keywords = generate_keywords(name + " " + service, cat_title, sub_title)
-
-                        is_leader = "Владимир" in name or "самым полезным участником" in msg
-
-                        masters[phone] = {
-                            "id": master_counter,
-                            "name": name[:30],
-                            "category": cat_key,
-                            "category_title": cat_title,
-                            "subcategory": sub_key,
-                            "subcategory_title": sub_title,
-                            "service": service[:140],
-                            "phone": phone,
-                            "recommended_by": "Подборка чата (Гагра)",
-                            "verified": True,
-                            "starred": is_starred,
-                            "is_leader": is_leader,
-                            "keywords": keywords
-                        }
-                        master_counter += 1
+            # Ветка 1: Все еженедельные дайджесты и подборки Ринаты
+            if any(dm in body_lower for dm in digest_markers):
+                master_counter = parse_digest_lines(
+                    body_lines, masters, master_counter,
+                    is_leader_msg=("самым полезным участником" in body_lower)
+                )
                 continue
 
-            # Ветка 2: Индивидуальные посты участников
-            text_lower = msg.lower()
-            if any(tag in text_lower for tag in ["#услуга", "#рекомендую", "#еда", "сварочные, работы", "доставка посылок", "поклейкой обоев"]):
-                if "#ищу" in text_lower and "#услуга" not in text_lower:
-                    continue
+            # Пропускаем запросы клиентов, опросы и системные сообщения
+            if any(sw in body_lower for sw in request_stop_words):
+                continue
 
-                ph_match = re.search(phone_pattern, msg)
-                if not ph_match:
-                    continue
+            # Ветка 2: Индивидуальные объявления (с тегами, 📍 Место или живым сленгом)
+            ph_match = re.search(PHONE_PATTERN, body_text)
+            if not ph_match:
+                continue
 
-                phone = clean_phone(ph_match.group(0))
-                if phone in STOP_PHONES or len(re.sub(r'\D', '', phone)) < 7:
-                    continue
+            has_offer_tag = bool(re.search(r'#\s*(?:услуг|рекомендую|еда|место|полезноеместо|барбершоп|фотограф|дизайнер)', body_lower))
+            has_offer_phrase = any(p in body_lower for p in [
+                "📍 место", "📍полезное место", "полезный контакт дня", "рекомендую",
+                "занимаюсь", "выполняю", "предоставляю услуги", "принимаю заказы",
+                "мастер по", "установка и", "ремонт ", "доставка посылок", "домашние полуфабрикаты"
+            ])
 
-                name = "Специалист"
-                for line in lines[1:]:
-                    for kw in ["меня зовут", "мастер", "аскар", "вячеслав", "владимир", "сергей", "михаил"]:
-                        if kw in line.lower() and len(line) < 35:
-                            name = line.replace("#", "").strip()
-                            break
+            if not (has_offer_tag or has_offer_phrase):
+                continue
 
-                clean_body = re.sub(r'https?://\S+', '', msg)
-                clean_body = re.sub(phone_pattern, '', clean_body)
-                clean_body = " ".join([l for l in clean_body.split('\n')[1:] if not l.startswith('#') and len(l) > 4])
-                if not clean_body:
-                    clean_body = "Услуги специалистов в Гагре"
+            phone = ph_match.group(0)
+            clean_body = re.sub(r'https?://\S+', '', body_text)
+            clean_body = re.sub(PHONE_PATTERN, '', clean_body)
+            clean_body = re.sub(r'#\S+', '', clean_body)
+            clean_body = re.sub(r'<Сообщение изменено>', '', clean_body)
+            clean_body = " ".join(clean_body.split()).strip()
 
-                cat_key, sub_key = classify_service(name + " " + clean_body)
-                cat_title = TAXONOMY[cat_key]["title"]
-                sub_title = TAXONOMY[cat_key]["subs"][sub_key]
-                keywords = generate_keywords(name + " " + clean_body, cat_title, sub_title)
+            if len(clean_body) < 8:
+                continue
 
-                if phone not in masters:
-                    masters[phone] = {
-                        "id": master_counter,
-                        "name": name[:30],
-                        "category": cat_key,
-                        "category_title": cat_title,
-                        "subcategory": sub_key,
-                        "subcategory_title": sub_title,
-                        "service": clean_body[:140].strip(),
-                        "phone": phone,
-                        "recommended_by": "Участник чата",
-                        "verified": True,
-                        "starred": "#рекомендую" in text_lower,
-                        "keywords": keywords
-                    }
-                    master_counter += 1
+            # Пробуем вытащить имя из текста
+            name = "Специалист"
+            name_match = re.search(r'(?:меня зовут|мастер|имя:?)\s+([А-ЯЁ][а-яё]{2,15})', body_text, re.I)
+            if name_match:
+                name = name_match.group(1)
+
+            master_counter = add_master(
+                masters, master_counter, phone, name, clean_body,
+                "Участник чата", starred=("⭐" in body_text or "рекомендую" in body_lower),
+                overwrite=False
+            )
     else:
         print("Файл _chat.txt не найден, парсим только .vcf")
 
