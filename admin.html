@@ -467,6 +467,8 @@
       }
     }
 
+      let currentJobsCache = [];
+
     async function loadPending(table) {
       const list = document.getElementById('cardsList');
       list.innerHTML = '<div class="text-center py-10 text-slate-400 text-sm">Проверяем базу...</div>';
@@ -491,6 +493,7 @@
         const items = await res.json();
         if (table === 'rent') currentRentCache = items || [];
         if (table === 'masters') currentMastersCache = items || [];
+        if (table === 'jobs') currentJobsCache = items || [];
         renderCards(items, table);
       } catch (e) {
         list.innerHTML = '<div class="text-center py-10 text-red-500 text-xs">Ошибка соединения с базой</div>';
