@@ -3,6 +3,7 @@ import json
 import os
 import glob
 import quopri
+import zipfile
 
 # Справочник макро- и подкатегорий (синхронизирован с js/app.js)
 TAXONOMY = {
@@ -252,7 +253,6 @@ def add_master(masters: dict, counter: int, phone: str, name: str, service: str,
         return counter
 
     if phone in masters and not overwrite:
-        # Если уже есть в базе, просто обновим статус рекомендации при необходимости
         if starred:
             masters[phone]["starred"] = True
         return counter
@@ -269,8 +269,9 @@ def add_master(masters: dict, counter: int, phone: str, name: str, service: str,
     sub_title = TAXONOMY[cat_key]["subs"][sub_key]
     keywords = generate_keywords(f"{name} {service}", cat_title, sub_title)
 
+    is_new = phone not in masters
     masters[phone] = {
-        "id": masters[phone]["id"] if phone in masters else counter,
+        "id": counter if is_new else masters[phone]["id"],
         "name": name[:35],
         "category": cat_key,
         "category_title": cat_title,
@@ -280,11 +281,11 @@ def add_master(masters: dict, counter: int, phone: str, name: str, service: str,
         "phone": phone,
         "recommended_by": recommended_by,
         "verified": True,
-        "starred": starred or (masters[phone]["starred"] if phone in masters else False),
+        "starred": starred or (False if is_new else masters[phone]["starred"]),
         "is_leader": is_leader,
         "keywords": keywords
     }
-    return counter if phone in masters else counter + 1
+    return counter + 1 if is_new else counter
 
 def decode_vcard_value(value: str, params: str) -> str:
     if "QUOTED-PRINTABLE" in params.upper():
@@ -294,63 +295,49 @@ def decode_vcard_value(value: str, params: str) -> str:
             pass
     return value.replace("\\,", ",").replace("\\;", ";").replace("\\n", " ").strip()
 
-def parse_vcf_files(masters: dict, master_counter: int) -> int:
-    vcf_files = glob.glob("data/vcf/*.vcf") + glob.glob("*.vcf")
-    if not vcf_files:
-        return master_counter
+def parse_vcf_content(raw: str, filename: str, masters: dict, master_counter: int) -> int:
+    raw = re.sub(r'=\r?\n', '', raw)
+    raw = re.sub(r'\r?\n[ \t]', '', raw)
 
-    before_count = len(masters)
-    for filepath in vcf_files:
-        try:
-            with open(filepath, "r", encoding="utf-8", errors="ignore") as f:
-                raw = f.read()
-        except Exception:
+    cards = re.findall(r'BEGIN:VCARD(.*?)END:VCARD', raw, re.S | re.I)
+    for card in cards:
+        fn = org = title = note = ""
+        phones = []
+
+        for line in card.splitlines():
+            line = line.strip()
+            if ":" not in line:
+                continue
+            key_part, val = line.split(":", 1)
+            key_upper = key_part.split(";")[0].upper()
+
+            if key_upper == "FN":
+                fn = decode_vcard_value(val, key_part)
+            elif key_upper == "ORG":
+                org = decode_vcard_value(val, key_part).replace(";", " ").strip()
+            elif key_upper == "TITLE":
+                title = decode_vcard_value(val, key_part)
+            elif key_upper == "NOTE":
+                note = decode_vcard_value(val, key_part)
+            elif key_upper == "TEL":
+                ph = clean_phone(val)
+                if ph not in STOP_PHONES and len(re.sub(r'\D', '', ph)) >= 7:
+                    phones.append(ph)
+
+        if not phones:
             continue
 
-        raw = re.sub(r'=\r?\n', '', raw)
-        raw = re.sub(r'\r?\n[ \t]', '', raw)
-
-        cards = re.findall(r'BEGIN:VCARD(.*?)END:VCARD', raw, re.S | re.I)
-        for card in cards:
-            fn = org = title = note = ""
-            phones = []
-
-            for line in card.splitlines():
-                line = line.strip()
-                if ":" not in line:
-                    continue
-                key_part, val = line.split(":", 1)
-                key_upper = key_part.split(";")[0].upper()
-
-                if key_upper == "FN":
-                    fn = decode_vcard_value(val, key_part)
-                elif key_upper == "ORG":
-                    org = decode_vcard_value(val, key_part).replace(";", " ").strip()
-                elif key_upper == "TITLE":
-                    title = decode_vcard_value(val, key_part)
-                elif key_upper == "NOTE":
-                    note = decode_vcard_value(val, key_part)
-                elif key_upper == "TEL":
-                    ph = clean_phone(val)
-                    if ph not in STOP_PHONES and len(re.sub(r'\D', '', ph)) >= 7:
-                        phones.append(ph)
-
-            if not phones:
-                continue
-
-            name = fn or org or os.path.splitext(os.path.basename(filepath))[0]
-            extra_info = " ".join(x for x in [title, org, note] if x and x != name).strip()
-            master_counter = add_master(
-                masters, master_counter, phones[0], name,
-                extra_info if extra_info else name,
-                "Контакт из чата (VCF)", overwrite=False
-            )
-
-    print(f"Из .vcf добавлено новых контактов: {len(masters) - before_count}")
+        fallback_name = os.path.splitext(os.path.basename(filename))[0]
+        name = fn or org or fallback_name
+        extra_info = " ".join(x for x in [title, org, note] if x and x != name).strip()
+        master_counter = add_master(
+            masters, master_counter, phones[0], name,
+            extra_info if extra_info else name,
+            "Контакт из чата (VCF)", overwrite=False
+        )
     return master_counter
 
 def parse_digest_lines(lines: list, masters: dict, master_counter: int, is_leader_msg: bool) -> int:
-    """Разбирает как однострочные (✅ +7..., Имя - услуга), так и многострочные (✅ Имя - услуга \\n 📞 +7...) дайджесты."""
     i = 0
     while i < len(lines):
         line = lines[i]
@@ -359,7 +346,6 @@ def parse_digest_lines(lines: list, masters: dict, master_counter: int, is_leade
             ph_match = re.search(PHONE_PATTERN, line)
             info = line
 
-            # Если в строке нет телефона — смотрим следующие 1–2 строки (формат 📞 +7... и 📍 адрес)
             extra_addr = ""
             if not ph_match:
                 j = i + 1
@@ -381,7 +367,6 @@ def parse_digest_lines(lines: list, masters: dict, master_counter: int, is_leade
                     info = info.replace(ch, "")
                 info = info.replace(phone, "").strip(" ,-–—")
 
-                # Разделяем имя и описание услуги
                 sep_match = re.split(r'\s+[-–—]\s+', info, maxsplit=1)
                 if len(sep_match) == 2:
                     name, service = sep_match[0], sep_match[1]
@@ -402,95 +387,120 @@ def parse_digest_lines(lines: list, masters: dict, master_counter: int, is_leade
         i += 1
     return master_counter
 
-def parse_chat():
-    chat_file = "_chat.txt"
+def parse_chat_content(content: str, masters: dict, master_counter: int) -> int:
+    content = re.sub(r'[\u200e\u200f\u202a-\u202e\u202f\ufeff]', '', content)
+    raw_messages = re.split(r'\n(?=\d{1,2}\.\d{1,2}\.\d{2,4})', content)
+
+    digest_markers = [
+        "полезные контакты", "новые мастера за неделю",
+        "новых полезных контактов", "новые контакты за неделю"
+    ]
+    request_stop_words = [
+        "#ищу", "# ищу", "нужен ", "нужна ", "нужны ", "ищу ", "подскажите",
+        "кто знает", "есть мастер", "есть кто", "требуется помощница",
+        "как пользоваться чатом", "пример:", "опрос:", "правила чата",
+        "покинул(-а)", "присоединился", "добавил(-а) контакт",
+        "сообщения и звонки защищены", "не распространять его номер"
+    ]
+
+    for msg in raw_messages:
+        lines = [line.strip() for line in msg.split('\n') if line.strip()]
+        if not lines:
+            continue
+
+        body_first = re.sub(r'^\d{1,2}\.\d{1,2}\.\d{2,4},?\s+\d{1,2}:\d{2}\s*-\s*[^:]+:\s*', '', lines[0])
+        body_lines = [body_first] + lines[1:]
+        body_text = "\n".join(body_lines).strip()
+        body_lower = body_text.lower()
+
+        if any(dm in body_lower for dm in digest_markers):
+            master_counter = parse_digest_lines(
+                body_lines, masters, master_counter,
+                is_leader_msg=("самым полезным участником" in body_lower)
+            )
+            continue
+
+        if any(sw in body_lower for sw in request_stop_words):
+            continue
+
+        ph_match = re.search(PHONE_PATTERN, body_text)
+        if not ph_match:
+            continue
+
+        has_offer_tag = bool(re.search(r'#\s*(?:услуг|рекомендую|еда|место|полезноеместо|барбершоп|фотограф|дизайнер)', body_lower))
+        has_offer_phrase = any(p in body_lower for p in [
+            "📍 место", "📍полезное место", "полезный контакт дня", "рекомендую",
+            "занимаюсь", "выполняю", "предоставляю услуги", "принимаю заказы",
+            "мастер по", "установка и", "ремонт ", "доставка посылок", "домашние полуфабрикаты"
+        ])
+
+        if not (has_offer_tag or has_offer_phrase):
+            continue
+
+        phone = ph_match.group(0)
+        clean_body = re.sub(r'https?://\S+', '', body_text)
+        clean_body = re.sub(PHONE_PATTERN, '', clean_body)
+        clean_body = re.sub(r'#\S+', '', clean_body)
+        clean_body = re.sub(r'<Сообщение изменено>', '', clean_body)
+        clean_body = " ".join(clean_body.split()).strip()
+
+        if len(clean_body) < 8:
+            continue
+
+        name = "Специалист"
+        name_match = re.search(r'(?:меня зовут|мастер|имя:?)\s+([А-ЯЁ][а-яё]{2,15})', body_text, re.I)
+        if name_match:
+            name = name_match.group(1)
+
+        master_counter = add_master(
+            masters, master_counter, phone, name, clean_body,
+            "Участник чата", starred=("⭐" in body_text or "рекомендую" in body_lower),
+            overwrite=False
+        )
+    return master_counter
+
+def parse_all():
     masters = {}
     master_counter = 1
 
-    if os.path.exists(chat_file):
-        with open(chat_file, "r", encoding="utf-8", errors="ignore") as f:
-            content = f.read()
+    zip_files = sorted(glob.glob("*.zip") + glob.glob("data/*.zip"), key=os.path.getmtime)
+    vcf_payloads = []
 
-        content = re.sub(r'[\u200e\u200f\u202a-\u202e\u202f\ufeff]', '', content)
-        raw_messages = re.split(r'\n(?=\d{1,2}\.\d{1,2}\.\d{2,4})', content)
+    # 1. Сначала читаем все тексты чата (из .zip и из _chat.txt)
+    if os.path.exists("_chat.txt"):
+        with open("_chat.txt", "r", encoding="utf-8", errors="ignore") as f:
+            master_counter = parse_chat_content(f.read(), masters, master_counter)
 
-        digest_markers = [
-            "полезные контакты", "новые мастера за неделю",
-            "новых полезных контактов", "новые контакты за неделю"
-        ]
-        request_stop_words = [
-            "#ищу", "# ищу", "нужен ", "нужна ", "нужны ", "ищу ", "подскажите",
-            "кто знает", "есть мастер", "есть кто", "требуется помощница",
-            "как пользоваться чатом", "пример:", "опрос:", "правила чата",
-            "покинул(-а)", "присоединился", "добавил(-а) контакт",
-            "сообщения и звонки защищены", "не распространять его номер"
-        ]
+    for zpath in zip_files:
+        print(f"Обрабатываю архив: {zpath}")
+        try:
+            with zipfile.ZipFile(zpath, "r") as zf:
+                for info in zf.infolist():
+                    if info.is_dir():
+                        continue
+                    fname_lower = info.filename.lower()
+                    if fname_lower.endswith(".txt"):
+                        raw_txt = zf.read(info).decode("utf-8", errors="ignore")
+                        master_counter = parse_chat_content(raw_txt, masters, master_counter)
+                    elif fname_lower.endswith(".vcf"):
+                        raw_vcf = zf.read(info).decode("utf-8", errors="ignore")
+                        vcf_payloads.append((info.filename, raw_vcf))
+        except Exception as e:
+            print(f"Ошибка чтения архива {zpath}: {e}")
 
-        for msg in raw_messages:
-            msg_lower = msg.lower()
-            lines = [line.strip() for line in msg.split('\n') if line.strip()]
-            if not lines:
-                continue
+    # 2. Добираем недостающие контакты из .vcf (сначала из архивов, потом из папок)
+    before_vcf = len(masters)
+    for fname, raw_vcf in vcf_payloads:
+        master_counter = parse_vcf_content(raw_vcf, fname, masters, master_counter)
 
-            # Убираем дату и отправителя из первой строки для чистого анализа текста
-            body_first = re.sub(r'^\d{1,2}\.\d{1,2}\.\d{2,4},?\s+\d{1,2}:\d{2}\s*-\s*[^:]+:\s*', '', lines[0])
-            body_lines = [body_first] + lines[1:]
-            body_text = "\n".join(body_lines).strip()
-            body_lower = body_text.lower()
+    for vpath in glob.glob("data/vcf/*.vcf") + glob.glob("*.vcf"):
+        try:
+            with open(vpath, "r", encoding="utf-8", errors="ignore") as f:
+                master_counter = parse_vcf_content(f.read(), vpath, masters, master_counter)
+        except Exception:
+            continue
 
-            # Ветка 1: Все еженедельные дайджесты и подборки Ринаты
-            if any(dm in body_lower for dm in digest_markers):
-                master_counter = parse_digest_lines(
-                    body_lines, masters, master_counter,
-                    is_leader_msg=("самым полезным участником" in body_lower)
-                )
-                continue
-
-            # Пропускаем запросы клиентов, опросы и системные сообщения
-            if any(sw in body_lower for sw in request_stop_words):
-                continue
-
-            # Ветка 2: Индивидуальные объявления (с тегами, 📍 Место или живым сленгом)
-            ph_match = re.search(PHONE_PATTERN, body_text)
-            if not ph_match:
-                continue
-
-            has_offer_tag = bool(re.search(r'#\s*(?:услуг|рекомендую|еда|место|полезноеместо|барбершоп|фотограф|дизайнер)', body_lower))
-            has_offer_phrase = any(p in body_lower for p in [
-                "📍 место", "📍полезное место", "полезный контакт дня", "рекомендую",
-                "занимаюсь", "выполняю", "предоставляю услуги", "принимаю заказы",
-                "мастер по", "установка и", "ремонт ", "доставка посылок", "домашние полуфабрикаты"
-            ])
-
-            if not (has_offer_tag or has_offer_phrase):
-                continue
-
-            phone = ph_match.group(0)
-            clean_body = re.sub(r'https?://\S+', '', body_text)
-            clean_body = re.sub(PHONE_PATTERN, '', clean_body)
-            clean_body = re.sub(r'#\S+', '', clean_body)
-            clean_body = re.sub(r'<Сообщение изменено>', '', clean_body)
-            clean_body = " ".join(clean_body.split()).strip()
-
-            if len(clean_body) < 8:
-                continue
-
-            # Пробуем вытащить имя из текста
-            name = "Специалист"
-            name_match = re.search(r'(?:меня зовут|мастер|имя:?)\s+([А-ЯЁ][а-яё]{2,15})', body_text, re.I)
-            if name_match:
-                name = name_match.group(1)
-
-            master_counter = add_master(
-                masters, master_counter, phone, name, clean_body,
-                "Участник чата", starred=("⭐" in body_text or "рекомендую" in body_lower),
-                overwrite=False
-            )
-    else:
-        print("Файл _chat.txt не найден, парсим только .vcf")
-
-    # Ветка 3: Добираем контакты из .vcf файлов (без перезаписи уже найденных в чате)
-    master_counter = parse_vcf_files(masters, master_counter)
+    print(f"Из .vcf добавлено новых контактов: {len(masters) - before_vcf}")
 
     masters_list = list(masters.values())
     masters_list.sort(key=lambda x: not x.get("starred", False))
@@ -502,4 +512,4 @@ def parse_chat():
     print(f"Готово! Очищено от спама и структурировано {len(masters_list)} специалистов.")
 
 if __name__ == "__main__":
-    parse_chat()
+    parse_all()
