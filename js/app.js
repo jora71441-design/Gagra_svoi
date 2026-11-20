@@ -984,28 +984,39 @@ async function loadJobs() {
   let jsonJobs = [];
   let sbJobs = [];
 
-  // 1. Загружаем одобренные вакансии из Supabase (если настроено)
+  // 1. Загружаем одобренные вакансии из Supabase
   try {
-    if (typeof SUPABASE_URL !== 'undefined' && typeof SUPABASE_KEY !== 'undefined') {
-      const sbRes = await fetch(`${SUPABASE_URL}/rest/v1/jobs?is_approved=eq.true&order=created_at.desc`, {
+    const sbKey = typeof SUPABASE_KEY !== 'undefined'
+      ? SUPABASE_KEY
+      : (typeof SUPABASE_ANON_KEY !== 'undefined' ? SUPABASE_ANON_KEY : '');
+
+    if (typeof SUPABASE_URL !== 'undefined' && sbKey) {
+      const sbRes = await fetch(`${SUPABASE_URL}/rest/v1/jobs?select=*&is_approved=eq.true&order=id.desc`, {
         headers: {
-          'apikey': SUPABASE_KEY,
-          'Authorization': `Bearer ${SUPABASE_KEY}`
+          'apikey': sbKey,
+          'Authorization': `Bearer ${sbKey}`
         }
       });
       if (sbRes.ok) {
         const rows = await sbRes.json();
         sbJobs = rows.map(r => {
-          const t = r.type || 'vacancy';
-          const defaultBadge = t === 'resume' ? '#ищуработу' : (t === 'part_time' ? '#подработка' : '#вакансия');
+          const rawType = (r.type || '').toLowerCase();
+          let normType = 'vacancy';
+          if (rawType.includes('ищуработу') || rawType === 'resume') normType = 'resume';
+          else if (rawType.includes('подработка') || rawType === 'part_time') normType = 'part_time';
+
+          const defaultBadge = normType === 'resume'
+            ? '#ищуработу'
+            : (normType === 'part_time' ? '#подработка' : '#вакансия');
+
           return {
-            type: t,
+            type: normType,
             badge: r.badge || defaultBadge,
             title: r.title || 'Предложение работы',
             salary: r.salary || 'По договорённости',
             district: r.district || r.city || 'Гагра',
             desc: r.description || r.desc || '',
-            contact: r.contact_name || r.contact || r.district || 'Гагра',
+            contact: r.contact_name || r.contact || r.district || r.city || 'Гагра',
             phone: r.phone || '',
             date: r.created_at ? new Date(r.created_at).toLocaleDateString('ru-RU') : ''
           };
