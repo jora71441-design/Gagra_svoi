@@ -628,10 +628,24 @@
               </button>
             </div>
           `;
-        } else if (table === 'masters') {
+                } else if (table === 'masters') {
           actionButtons = `
             <div class="grid grid-cols-3 gap-1.5 pt-1">
               <button onclick="openMasterEditModal(${item.id})" class="bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-bold py-2.5 px-2 rounded-2xl text-xs transition flex items-center justify-center gap-1 active:scale-98">
+                ✏️ Правка
+              </button>
+              <button onclick="approveItem('${table}', ${item.id})" class="bg-emerald-600 hover:bg-emerald-700 active:scale-98 text-white font-bold py-2.5 px-2 rounded-2xl text-xs transition shadow-xs flex items-center justify-center gap-1">
+                ✓ Одобрить
+              </button>
+              <button onclick="deleteItem('${table}', ${item.id})" class="bg-slate-100 hover:bg-rose-50 hover:text-rose-700 active:scale-98 text-slate-700 font-semibold py-2.5 px-2 rounded-2xl text-xs transition flex items-center justify-center gap-1">
+                ✕ Отклонить
+              </button>
+            </div>
+          `;
+        } else if (table === 'jobs') {
+          actionButtons = `
+            <div class="grid grid-cols-3 gap-1.5 pt-1">
+              <button onclick="openJobEditModal(${item.id})" class="bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-bold py-2.5 px-2 rounded-2xl text-xs transition flex items-center justify-center gap-1 active:scale-98">
                 ✏️ Правка
               </button>
               <button onclick="approveItem('${table}', ${item.id})" class="bg-emerald-600 hover:bg-emerald-700 active:scale-98 text-white font-bold py-2.5 px-2 rounded-2xl text-xs transition shadow-xs flex items-center justify-center gap-1">
@@ -1309,6 +1323,127 @@
 
     checkPin();
     loadPending('masters');
+  </script>
+    <!-- Модальное окно редактирования вакансии -->
+  <div id="jobEditModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-3">
+    <div class="bg-white w-full max-w-md rounded-3xl p-5 shadow-xl max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-base font-bold text-slate-900">✏️ Редактировать вакансию</h3>
+        <button onclick="closeJobEditModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 font-bold">✕</button>
+      </div>
+      <form onsubmit="saveJobEdit(event)" class="space-y-3 text-xs">
+        <input type="hidden" id="editJobId">
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Тип объявления</label>
+          <select id="editJobType" class="w-full rounded-xl border border-slate-200 px-3 py-2 bg-slate-50">
+            <option value="#вакансия">#вакансия</option>
+            <option value="#ищуработу">#ищуработу</option>
+            <option value="#подработка">#подработка</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Должность / Заголовок</label>
+          <input id="editJobTitle" type="text" required class="w-full rounded-xl border border-slate-200 px-3 py-2">
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Оплата</label>
+            <input id="editJobSalary" type="text" class="w-full rounded-xl border border-slate-200 px-3 py-2">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Город / Район</label>
+            <input id="editJobCity" type="text" class="w-full rounded-xl border border-slate-200 px-3 py-2">
+          </div>
+        </div>
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Описание / Условия</label>
+          <textarea id="editJobDesc" rows="4" class="w-full rounded-xl border border-slate-200 px-3 py-2"></textarea>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Контактное лицо</label>
+            <input id="editJobContact" type="text" class="w-full rounded-xl border border-slate-200 px-3 py-2">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Телефон</label>
+            <input id="editJobPhone" type="text" class="w-full rounded-xl border border-slate-200 px-3 py-2">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-2 pt-2">
+          <button type="button" onclick="closeJobEditModal()" class="py-2.5 rounded-xl bg-slate-100 text-slate-700 font-semibold">Отмена</button>
+          <button type="submit" class="py-2.5 rounded-xl bg-emerald-600 text-white font-bold">💾 Сохранить</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    async function openJobEditModal(id) {
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/jobs?id=eq.${id}&select=*`, {
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+          }
+        });
+        if (!res.ok) return alert('Не удалось загрузить вакансию');
+        const rows = await res.json();
+        const item = rows[0];
+        if (!item) return;
+
+        document.getElementById('editJobId').value = item.id;
+        document.getElementById('editJobType').value = item.type || '#вакансия';
+        document.getElementById('editJobTitle').value = item.title || '';
+        document.getElementById('editJobSalary').value = item.salary || '';
+        document.getElementById('editJobCity').value = item.city || 'Гагра';
+        document.getElementById('editJobDesc').value = item.desc || '';
+        document.getElementById('editJobContact').value = item.contact || '';
+        document.getElementById('editJobPhone').value = item.phone || '';
+
+        document.getElementById('jobEditModal').classList.remove('hidden');
+      } catch (e) {
+        alert('Ошибка сети при загрузке вакансии');
+      }
+    }
+
+    function closeJobEditModal() {
+      document.getElementById('jobEditModal').classList.add('hidden');
+    }
+
+    async function saveJobEdit(e) {
+      e.preventDefault();
+      const id = document.getElementById('editJobId').value;
+      const payload = {
+        type: document.getElementById('editJobType').value,
+        title: document.getElementById('editJobTitle').value.trim(),
+        salary: document.getElementById('editJobSalary').value.trim(),
+        city: document.getElementById('editJobCity').value.trim(),
+        desc: document.getElementById('editJobDesc').value.trim(),
+        contact: document.getElementById('editJobContact').value.trim(),
+        phone: document.getElementById('editJobPhone').value.trim()
+      };
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/jobs?id=eq.${id}`, {
+          method: 'PATCH',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+          closeJobEditModal();
+          if (jobsSubTab === 'pending') loadPending('jobs');
+          else loadApprovedJobs();
+        } else {
+          alert('Ошибка при сохранении изменений');
+        }
+      } catch (e) {
+        alert('Сетевой сбой при сохранении');
+      }
+    }
   </script>
 </body>
 </html>
