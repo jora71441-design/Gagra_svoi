@@ -363,12 +363,47 @@
       </div>
     </div>
 
-    <!-- Фильтры вакансий -->
+        <!-- Главный переключатель: Вакансии / Соискатели -->
+    <div class="grid grid-cols-2 gap-1.5 p-1 bg-slate-200/70 rounded-2xl mb-3">
+      <button id="jobsTabVacancy" onclick="switchJobsMainTab('vacancy')"
+              class="py-2.5 px-3 rounded-xl text-xs font-bold bg-slate-900 text-white shadow-xs transition flex items-center justify-center gap-1.5">
+        <span>💼 Вакансии</span>
+        <span id="jobsCountVacancy" class="text-[10px] bg-white/20 px-1.5 py-0.5 rounded-md">0</span>
+      </button>
+      <button id="jobsTabResume" onclick="switchJobsMainTab('resume')"
+              class="py-2.5 px-3 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 transition flex items-center justify-center gap-1.5">
+        <span>🙋‍♂️ Соискатели</span>
+        <span id="jobsCountResume" class="text-[10px] bg-slate-300/70 text-slate-700 px-1.5 py-0.5 rounded-md">0</span>
+      </button>
+    </div>
+
+    <!-- Поиск по вакансиям и резюме -->
+    <div class="relative mb-2.5">
+      <input id="jobSearchInput" type="text" oninput="renderJobs()"
+             placeholder="Поиск: официант, водитель, няня..."
+             class="w-full bg-white border border-slate-200 rounded-2xl pl-9 pr-4 py-2.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-blue-500 shadow-xs">
+      <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">🔍</span>
+    </div>
+
+    <!-- Подфильтр формата (только для вкладки Вакансии) -->
+    <div id="jobsSubFilterRow" class="flex space-x-1.5 overflow-x-auto no-scrollbar pb-1.5 mb-1.5">
+      <button onclick="setJobSubFilter('all')" data-sub="all" class="job-sub-chip active bg-blue-600 text-white text-xs font-semibold px-3 py-1.5 rounded-full whitespace-nowrap shadow-xs">Все вакансии</button>
+      <button onclick="setJobSubFilter('vacancy')" data-sub="vacancy" class="job-sub-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3 py-1.5 rounded-full whitespace-nowrap">🏢 Постоянная</button>
+      <button onclick="setJobSubFilter('part_time')" data-sub="part_time" class="job-sub-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3 py-1.5 rounded-full whitespace-nowrap">⚡ Подработка</button>
+    </div>
+
+    <!-- Фильтр по городам -->
     <div class="flex space-x-1.5 overflow-x-auto no-scrollbar pb-2 mb-3">
-      <button onclick="filterJobs('all')" class="job-chip active bg-slate-900 text-white text-xs font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap shadow-xs">Все предложения</button>
-      <button onclick="filterJobs('vacancy')" class="job-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap">💼 Вакансии</button>
-      <button onclick="filterJobs('resume')" class="job-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap">🙋‍♂️ Ищут работу</button>
-      <button onclick="filterJobs('part_time')" class="job-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap">⚡ Подработка</button>
+      <button onclick="setJobCityFilter('all')" data-city="all" class="job-city-chip active bg-slate-900 text-white text-xs font-medium px-3 py-1.5 rounded-full whitespace-nowrap shadow-xs">Все города</button>
+      <button onclick="setJobCityFilter('Гагра')" data-city="Гагра" class="job-city-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3 py-1.5 rounded-full whitespace-nowrap">Гагра</button>
+      <button onclick="setJobCityFilter('Цандрипш')" data-city="Цандрипш" class="job-city-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3 py-1.5 rounded-full whitespace-nowrap">Цандрипш</button>
+      <button onclick="setJobCityFilter('Пицунда')" data-city="Пицунда" class="job-city-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3 py-1.5 rounded-full whitespace-nowrap">Пицунда</button>
+      <button onclick="setJobCityFilter('Гудаута')" data-city="Гудаута" class="job-city-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3 py-1.5 rounded-full whitespace-nowrap">Гудаута</button>
+      <button onclick="setJobCityFilter('Новый Афон')" data-city="Новый Афон" class="job-city-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3 py-1.5 rounded-full whitespace-nowrap">Новый Афон</button>
+      <button onclick="setJobCityFilter('Сухум')" data-city="Сухум" class="job-city-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3 py-1.5 rounded-full whitespace-nowrap">Сухум</button>
+      <button onclick="setJobCityFilter('Очамчыра')" data-city="Очамчыра" class="job-city-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3 py-1.5 rounded-full whitespace-nowrap">Очамчыра</button>
+      <button onclick="setJobCityFilter('Ткуарчал')" data-city="Ткуарчал" class="job-city-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3 py-1.5 rounded-full whitespace-nowrap">Ткуарчал</button>
+      <button onclick="setJobCityFilter('Гал')" data-city="Гал" class="job-city-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3 py-1.5 rounded-full whitespace-nowrap">Гал</button>
     </div>
 
     <!-- Список вакансий -->
