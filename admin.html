@@ -359,7 +359,7 @@
       else loadApprovedJobs();
     }
 
-    async function loadApprovedJobs() {
+        async function loadApprovedJobs() {
       const list = document.getElementById('cardsList');
       list.innerHTML = '<div class="text-center py-10 text-slate-400 text-sm">Загружаем активные вакансии...</div>';
 
@@ -377,7 +377,8 @@
         }
 
         const items = await res.json();
-        renderActiveJobsCards(items || []);
+        currentJobsCache = items || [];
+        renderActiveJobsCards(currentJobsCache);
       } catch (e) {
         list.innerHTML = '<div class="text-center py-10 text-red-500 text-xs">Сетевой сбой при загрузке</div>';
       }
