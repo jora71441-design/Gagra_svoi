@@ -966,7 +966,145 @@ function renderMasters() {
   });
 }
 
+let allJobsData = [];
+let currentJobFilter = 'all';
+
+function escapeJobHtml(str) {
+  return String(str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+async function loadJobs() {
+  const container = document.getElementById('jobsContainer');
+  if (!container) return;
+
+  let jsonJobs = [];
+  let sbJobs = [];
+
+  // 1. Загружаем одобренные вакансии из Supabase (если настроено)
+  try {
+    if (typeof SUPABASE_URL !== 'undefined' && typeof SUPABASE_KEY !== 'undefined') {
+      const sbRes = await fetch(`${SUPABASE_URL}/rest/v1/jobs?is_approved=eq.true&order=created_at.desc`, {
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`
+        }
+      });
+      if (sbRes.ok) {
+        const rows = await sbRes.json();
+        sbJobs = rows.map(r => {
+          const t = r.type || 'vacancy';
+          const defaultBadge = t === 'resume' ? '#ищуработу' : (t === 'part_time' ? '#подработка' : '#вакансия');
+          return {
+            type: t,
+            badge: r.badge || defaultBadge,
+            title: r.title || 'Предложение работы',
+            salary: r.salary || 'По договорённости',
+            district: r.district || r.city || 'Гагра',
+            desc: r.description || r.desc || '',
+            contact: r.contact_name || r.contact || r.district || 'Гагра',
+            phone: r.phone || '',
+            date: r.created_at ? new Date(r.created_at).toLocaleDateString('ru-RU') : ''
+          };
+        });
+      }
+    }
+  } catch (e) {
+    console.warn('Supabase jobs fallback:', e);
+  }
+
+  // 2. Загружаем базу из data/jobs.json
+  try {
+    const res = await fetch(`data/jobs.json?v=${Date.now()}`);
+    if (res.ok) {
+      jsonJobs = await res.json();
+    }
+  } catch (e) {
+    console.error('Ошибка загрузки data/jobs.json:', e);
+  }
+
+  // Объединяем без дублей (приоритет у Supabase)
+  const merged = [];
+  const seen = new Set();
+  [...sbJobs, ...jsonJobs].forEach(job => {
+    const cleanPh = (job.phone || '').replace(/[^0-9]/g, '');
+    const key = `${cleanPh}_${(job.title || '').slice(0, 25).toLowerCase()}`;
+    if (!seen.has(key)) {
+      seen.add(key);
+      merged.push(job);
+    }
+  });
+
+  if (merged.length > 0) {
+    allJobsData = merged;
+    renderJobs();
+  }
+}
+
+function renderJobs() {
+  const container = document.getElementById('jobsContainer');
+  if (!container) return;
+
+  const filtered = currentJobFilter === 'all'
+    ? allJobsData
+    : allJobsData.filter(j => j.type === currentJobFilter);
+
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div class="text-center py-8 bg-white rounded-3xl border border-slate-200 p-5">
+        <p class="text-2xl mb-1.5">💼</p>
+        <h3 class="text-sm font-bold text-slate-800">В этой категории пока пусто</h3>
+        <p class="text-xs text-slate-500 mt-1">Попробуйте выбрать «Все предложения» или загляните в WhatsApp-чат вакансий.</p>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = filtered.map(job => {
+    const badgeStyle = job.type === 'resume'
+      ? 'bg-emerald-50 text-emerald-700 border-emerald-100'
+      : job.type === 'part_time'
+        ? 'bg-amber-50 text-amber-700 border-amber-100'
+        : 'bg-blue-50 text-blue-700 border-blue-100';
+
+    const cleanPhone = (job.phone || '').replace(/[^0-9]/g, '');
+    const waText = encodeURIComponent(`Здравствуйте! По поводу объявления «${job.title}» с портала Город Своих`);
+    const btnLabel = job.type === 'resume' ? 'Написать в WhatsApp' : 'Откликнуться в WhatsApp';
+
+    const actionHtml = cleanPhone.length >= 7
+      ? `<a href="https://wa.me/${cleanPhone}?text=${waText}" target="_blank"
+            class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-3 py-1.5 rounded-xl transition whitespace-nowrap">
+           ${btnLabel}
+         </a>`
+      : `<span class="text-[11px] font-semibold text-slate-500 bg-slate-100 px-2.5 py-1.5 rounded-xl">
+           Личное обращение
+         </span>`;
+
+    return `
+      <div class="job-card bg-white rounded-3xl p-4 border border-slate-200 shadow-xs" data-type="${escapeJobHtml(job.type)}">
+        <div class="flex items-start justify-between gap-2 mb-1.5">
+          <div class="flex items-center gap-1.5 flex-wrap">
+            <span class="text-[10px] font-bold border px-2 py-0.5 rounded-md ${badgeStyle}">${escapeJobHtml(job.badge || '#вакансия')}</span>
+            ${job.date ? `<span class="text-[10px] text-slate-400 font-medium">${escapeJobHtml(job.date)}</span>` : ''}
+          </div>
+          <span class="text-xs font-extrabold text-slate-900 text-right">${escapeJobHtml(job.salary || 'По договорённости')}</span>
+        </div>
+        <h3 class="text-sm font-bold text-slate-900 leading-snug">${escapeJobHtml(job.title)}</h3>
+        ${job.desc ? `<p class="text-xs text-slate-600 my-2 leading-relaxed">${escapeJobHtml(job.desc)}</p>` : ''}
+        <div class="flex items-center justify-between gap-2 pt-2.5 border-t border-slate-100 text-xs">
+          <span class="text-slate-500 font-medium truncate">${escapeJobHtml(job.contact || job.district || 'Гагра')}</span>
+          ${actionHtml}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
 function filterJobs(type) {
+  currentJobFilter = type;
   document.querySelectorAll('.job-chip').forEach(btn => {
     btn.className = "job-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap";
   });
@@ -974,13 +1112,19 @@ function filterJobs(type) {
     window.event.target.className = "job-chip active bg-slate-900 text-white text-xs font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap shadow-xs";
   }
 
-  document.querySelectorAll('.job-card').forEach(card => {
-    if (type === 'all' || card.dataset.type === type) {
-      card.classList.remove('hidden');
-    } else {
-      card.classList.add('hidden');
-    }
-  });
+  if (allJobsData.length > 0) {
+    renderJobs();
+  } else {
+    document.querySelectorAll('.job-card').forEach(card => {
+      card.classList.toggle('hidden', !(type === 'all' || card.dataset.type === type));
+    });
+  }
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', loadJobs);
+} else {
+  loadJobs();
 }
 
 // ==================== МОДАЛЬНЫЕ ОКНА И ФОРМЫ С ЗАПИСЬЮ В SUPABASE ====================
