@@ -981,10 +981,9 @@ async function loadJobs() {
   const container = document.getElementById('jobsContainer');
   if (!container) return;
 
-  let jsonJobs = [];
   let sbJobs = [];
 
-  // 1. Загружаем одобренные вакансии из Supabase
+  // Загружаем одобренные вакансии только из Supabase
   try {
     const sbKey = typeof SUPABASE_KEY !== 'undefined'
       ? SUPABASE_KEY
@@ -1024,35 +1023,11 @@ async function loadJobs() {
       }
     }
   } catch (e) {
-    console.warn('Supabase jobs fallback:', e);
+    console.warn('Ошибка загрузки вакансий из Supabase:', e);
   }
 
-  // 2. Загружаем базу из data/jobs.json
-  try {
-    const res = await fetch(`data/jobs.json?v=${Date.now()}`);
-    if (res.ok) {
-      jsonJobs = await res.json();
-    }
-  } catch (e) {
-    console.error('Ошибка загрузки data/jobs.json:', e);
-  }
-
-  // Объединяем без дублей (приоритет у Supabase)
-  const merged = [];
-  const seen = new Set();
-  [...sbJobs, ...jsonJobs].forEach(job => {
-    const cleanPh = (job.phone || '').replace(/[^0-9]/g, '');
-    const key = `${cleanPh}_${(job.title || '').slice(0, 25).toLowerCase()}`;
-    if (!seen.has(key)) {
-      seen.add(key);
-      merged.push(job);
-    }
-  });
-
-  if (merged.length > 0) {
-    allJobsData = merged;
-    renderJobs();
-  }
+  allJobsData = sbJobs;
+  renderJobs();
 }
 
 let jobsMainTab = 'vacancy';
