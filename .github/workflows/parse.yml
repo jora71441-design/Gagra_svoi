@@ -4,7 +4,11 @@ on:
   push:
     paths:
       - '_chat.txt'
+      - '*.zip'
+      - 'data/*.zip'
+      - 'data/jobs_chat.txt'
       - 'scripts/parser.py'
+      - 'scripts/parse_jobs.py'
   workflow_dispatch:
 
 jobs:
@@ -21,15 +25,16 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Run parser
+      - name: Run parsers
         run: |
           mkdir -p data
           python scripts/parser.py
+          python scripts/parse_jobs.py
 
       - name: Commit and push changes
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/masters.json
-          git commit -m "auto: update masters database" || echo "No changes to commit"
+          git add data/masters.json data/jobs.json
+          git commit -m "auto: update masters and jobs databases" || echo "No changes to commit"
           git push
