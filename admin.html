@@ -296,6 +296,8 @@
       }
     }
 
+      let jobsSubTab = 'pending';
+
     function switchTab(tab) {
       currentTab = tab;
       document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -316,6 +318,9 @@
       const rSubNav = document.getElementById('rentSubNavBar');
       if (rSubNav) rSubNav.classList.toggle('hidden', tab !== 'rent');
 
+      const jSubNav = document.getElementById('jobsSubNavBar');
+      if (jSubNav) jSubNav.classList.toggle('hidden', tab !== 'jobs');
+
       const titles = {
         masters: 'Заявки мастеров',
         jobs: 'Вакансии и резюме',
@@ -330,8 +335,119 @@
       } else if (tab === 'rent') {
         if (rentSubTab === 'pending') loadPending('rent');
         else loadApprovedRent();
+      } else if (tab === 'jobs') {
+        if (jobsSubTab === 'pending') loadPending('jobs');
+        else loadApprovedJobs();
       } else {
         loadPending(tab);
+      }
+    }
+
+    function switchJobsSubTab(sub) {
+      jobsSubTab = sub;
+      const btnPending = document.getElementById('jobsSubBtn-pending');
+      const btnActive = document.getElementById('jobsSubBtn-active');
+      if (btnPending && btnActive) {
+        btnPending.className = sub === 'pending'
+          ? "py-2 text-xs font-bold rounded-xl bg-slate-900 text-white transition shadow-xs"
+          : "py-2 text-xs font-semibold rounded-xl text-slate-600 hover:text-slate-900 transition";
+        btnActive.className = sub === 'active'
+          ? "py-2 text-xs font-bold rounded-xl bg-slate-900 text-white transition shadow-xs"
+          : "py-2 text-xs font-semibold rounded-xl text-slate-600 hover:text-slate-900 transition";
+      }
+      if (sub === 'pending') loadPending('jobs');
+      else loadApprovedJobs();
+    }
+
+    async function loadApprovedJobs() {
+      const list = document.getElementById('cardsList');
+      list.innerHTML = '<div class="text-center py-10 text-slate-400 text-sm">Загружаем активные вакансии...</div>';
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/jobs?select=*&is_approved=eq.true&order=id.desc`, {
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+          }
+        });
+
+        if (!res.ok) {
+          list.innerHTML = '<div class="bg-red-50 border border-red-200 text-red-700 p-4 rounded-2xl text-xs">Не удалось загрузить вакансии</div>';
+          return;
+        }
+
+        const items = await res.json();
+        renderActiveJobsCards(items || []);
+      } catch (e) {
+        list.innerHTML = '<div class="text-center py-10 text-red-500 text-xs">Сетевой сбой при загрузке</div>';
+      }
+    }
+
+    function renderActiveJobsCards(items) {
+      const list = document.getElementById('cardsList');
+      if (!items.length) {
+        list.innerHTML = `
+          <div class="bg-white rounded-3xl p-8 text-center border border-slate-200 shadow-xs">
+            <div class="text-3xl mb-2">💼</div>
+            <h3 class="text-sm font-bold text-slate-800">Опубликованных вакансий нет</h3>
+            <p class="text-xs text-slate-500 mt-1">Одобрите заявки во вкладке «На модерации».</p>
+          </div>
+        `;
+        return;
+      }
+
+      list.innerHTML = '';
+      items.forEach(item => {
+        const phone = item.phone || '';
+        const cleanPhone = phone.replace(/[^0-9]/g, '');
+        const card = document.createElement('div');
+        card.className = 'bg-white rounded-3xl p-4 border border-slate-200 shadow-xs space-y-2.5';
+        card.innerHTML = `
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <span class="text-[10px] font-bold bg-blue-50 text-blue-800 border border-blue-200 px-2 py-0.5 rounded-md">${item.type || '#вакансия'}</span>
+              <h3 class="text-base font-bold text-slate-900 mt-1">${item.title || ''}</h3>
+            </div>
+            <span class="text-xs font-bold text-emerald-700 text-right">${item.salary || 'Договорная'}</span>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed">${item.desc || ''}</p>
+          <p class="text-[11px] text-slate-500">${item.city || 'Гагра'} • ${item.contact || ''}</p>
+          <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+            <span class="font-mono text-slate-600">${phone}</span>
+            ${cleanPhone ? `<a href="https://wa.me/${cleanPhone}" target="_blank" class="text-emerald-700 font-semibold hover:underline">Написать в WhatsApp →</a>` : ''}
+          </div>
+          <div class="grid grid-cols-3 gap-1.5 pt-1">
+            <button onclick="openJobEditModal(${item.id})" class="bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-bold py-2.5 px-2 rounded-2xl text-xs transition flex items-center justify-center gap-1 active:scale-98">
+              ✏️ Правка
+            </button>
+            <button onclick="unpublishJob(${item.id})" class="bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold py-2.5 px-2 rounded-2xl text-xs transition flex items-center justify-center gap-1 active:scale-98">
+              📦 Снять
+            </button>
+            <button onclick="deleteItem('jobs', ${item.id})" class="bg-slate-100 hover:bg-rose-50 hover:text-rose-700 text-slate-700 font-semibold py-2.5 px-2 rounded-2xl text-xs transition flex items-center justify-center gap-1 active:scale-98">
+              🗑 Удалить
+            </button>
+          </div>
+        `;
+        list.appendChild(card);
+      });
+    }
+
+    async function unpublishJob(id) {
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/jobs?id=eq.${id}`, {
+          method: 'PATCH',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ is_approved: false })
+        });
+        if (res.ok) {
+          loadApprovedJobs();
+        }
+      } catch (e) {
+        alert('Ошибка при снятии вакансии с публикации');
       }
     }
 
