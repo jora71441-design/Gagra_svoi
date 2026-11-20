@@ -1055,20 +1055,104 @@ async function loadJobs() {
   }
 }
 
+let jobsMainTab = 'vacancy';
+let jobsSubFilter = 'all';
+let jobsCityFilter = 'all';
+
+function switchJobsMainTab(tab) {
+  jobsMainTab = tab;
+
+  const btnVac = document.getElementById('jobsTabVacancy');
+  const btnRes = document.getElementById('jobsTabResume');
+  const cntVac = document.getElementById('jobsCountVacancy');
+  const cntRes = document.getElementById('jobsCountResume');
+  const subRow = document.getElementById('jobsSubFilterRow');
+
+  if (tab === 'vacancy') {
+    if (btnVac) btnVac.className = 'py-2.5 px-3 rounded-xl text-xs font-bold bg-slate-900 text-white shadow-xs transition flex items-center justify-center gap-1.5';
+    if (btnRes) btnRes.className = 'py-2.5 px-3 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 transition flex items-center justify-center gap-1.5';
+    if (cntVac) cntVac.className = 'text-[10px] bg-white/20 px-1.5 py-0.5 rounded-md';
+    if (cntRes) cntRes.className = 'text-[10px] bg-slate-300/70 text-slate-700 px-1.5 py-0.5 rounded-md';
+    if (subRow) subRow.classList.remove('hidden');
+  } else {
+    if (btnRes) btnRes.className = 'py-2.5 px-3 rounded-xl text-xs font-bold bg-slate-900 text-white shadow-xs transition flex items-center justify-center gap-1.5';
+    if (btnVac) btnVac.className = 'py-2.5 px-3 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 transition flex items-center justify-center gap-1.5';
+    if (cntRes) cntRes.className = 'text-[10px] bg-white/20 px-1.5 py-0.5 rounded-md';
+    if (cntVac) cntVac.className = 'text-[10px] bg-slate-300/70 text-slate-700 px-1.5 py-0.5 rounded-md';
+    if (subRow) subRow.classList.add('hidden');
+  }
+
+  renderJobs();
+}
+
+function setJobSubFilter(sub) {
+  jobsSubFilter = sub;
+  document.querySelectorAll('.job-sub-chip').forEach(btn => {
+    const isActive = btn.dataset.sub === sub;
+    btn.className = isActive
+      ? 'job-sub-chip active bg-blue-600 text-white text-xs font-semibold px-3 py-1.5 rounded-full whitespace-nowrap shadow-xs'
+      : 'job-sub-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3 py-1.5 rounded-full whitespace-nowrap';
+  });
+  renderJobs();
+}
+
+function setJobCityFilter(city) {
+  jobsCityFilter = city;
+  document.querySelectorAll('.job-city-chip').forEach(btn => {
+    const isActive = btn.dataset.city === city;
+    btn.className = isActive
+      ? 'job-city-chip active bg-slate-900 text-white text-xs font-medium px-3 py-1.5 rounded-full whitespace-nowrap shadow-xs'
+      : 'job-city-chip bg-white text-slate-700 border border-slate-200 text-xs font-medium px-3 py-1.5 rounded-full whitespace-nowrap';
+  });
+  renderJobs();
+}
+
 function renderJobs() {
   const container = document.getElementById('jobsContainer');
   if (!container) return;
 
-  const filtered = currentJobFilter === 'all'
-    ? allJobsData
-    : allJobsData.filter(j => j.type === currentJobFilter);
+  // Обновляем счётчики на главных вкладках
+  const vacancyCount = allJobsData.filter(j => j.type !== 'resume').length;
+  const resumeCount = allJobsData.filter(j => j.type === 'resume').length;
+  const cntVacEl = document.getElementById('jobsCountVacancy');
+  const cntResEl = document.getElementById('jobsCountResume');
+  if (cntVacEl) cntVacEl.textContent = vacancyCount;
+  if (cntResEl) cntResEl.textContent = resumeCount;
+
+  const searchInput = document.getElementById('jobSearchInput');
+  const query = searchInput ? searchInput.value.trim().toLowerCase() : '';
+
+  const filtered = allJobsData.filter(job => {
+    // 1. Главная вкладка и подфильтр
+    if (jobsMainTab === 'resume') {
+      if (job.type !== 'resume') return false;
+    } else {
+      if (job.type === 'resume') return false;
+      if (jobsSubFilter !== 'all' && job.type !== jobsSubFilter) return false;
+    }
+
+    // 2. Город
+    if (jobsCityFilter !== 'all') {
+      const loc = `${job.district || ''} ${job.city || ''} ${job.title || ''}`.toLowerCase();
+      if (!loc.includes(jobsCityFilter.toLowerCase())) return false;
+    }
+
+    // 3. Поиск
+    if (query) {
+      const hay = `${job.title || ''} ${job.desc || ''} ${job.contact || ''} ${job.salary || ''} ${job.district || ''}`.toLowerCase();
+      if (!hay.includes(query)) return false;
+    }
+
+    return true;
+  });
 
   if (filtered.length === 0) {
+    const emptyTitle = jobsMainTab === 'resume' ? 'Соискателей пока не найдено' : 'Вакансий по фильтру пока нет';
     container.innerHTML = `
       <div class="text-center py-8 bg-white rounded-3xl border border-slate-200 p-5">
-        <p class="text-2xl mb-1.5">💼</p>
-        <h3 class="text-sm font-bold text-slate-800">В этой категории пока пусто</h3>
-        <p class="text-xs text-slate-500 mt-1">Попробуйте выбрать «Все предложения» или загляните в WhatsApp-чат вакансий.</p>
+        <p class="text-2xl mb-1.5">${jobsMainTab === 'resume' ? '🙋‍♂️' : '💼'}</p>
+        <h3 class="text-sm font-bold text-slate-800">${emptyTitle}</h3>
+        <p class="text-xs text-slate-500 mt-1">Попробуйте сбросить город или очистить поиск.</p>
       </div>
     `;
     return;
