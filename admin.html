@@ -55,7 +55,7 @@
       </button>
     </div>
 
-    <!-- Подвкладки для Аренды (На модерации vs Активные) -->
+        <!-- Подвкладки для Аренды (На модерации vs Активные) -->
     <div id="rentSubNavBar" class="hidden mb-3 grid grid-cols-2 gap-2 bg-slate-200/70 p-1 rounded-2xl">
       <button onclick="switchRentSubTab('pending')" id="rentSubBtn-pending" 
               class="py-2 text-xs font-bold rounded-xl bg-slate-900 text-white transition shadow-xs">
@@ -64,6 +64,18 @@
       <button onclick="switchRentSubTab('active')" id="rentSubBtn-active" 
               class="py-2 text-xs font-semibold rounded-xl text-slate-600 hover:text-slate-900 transition">
         ✅ На сайте (снять/сдано)
+      </button>
+    </div>
+
+    <!-- Подвкладки для Вакансий (На модерации vs Активные) -->
+    <div id="jobsSubNavBar" class="hidden mb-3 grid grid-cols-2 gap-2 bg-slate-200/70 p-1 rounded-2xl">
+      <button onclick="switchJobsSubTab('pending')" id="jobsSubBtn-pending" 
+              class="py-2 text-xs font-bold rounded-xl bg-slate-900 text-white transition shadow-xs">
+        ⏳ На модерации
+      </button>
+      <button onclick="switchJobsSubTab('active')" id="jobsSubBtn-active" 
+              class="py-2 text-xs font-semibold rounded-xl text-slate-600 hover:text-slate-900 transition">
+        ✅ На сайте
       </button>
     </div>
 
