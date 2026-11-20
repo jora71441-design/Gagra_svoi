@@ -102,9 +102,9 @@ SYNONYMS = {
     "холодильн": ["холодос", "морозилка", "компрессор", "фреон"],
     "кондиционер": ["сплит", "климат", "кондей", "дозаправка", "чистка кондиционера"],
     "триколор": ["трикалор", "тарелка", "приставка", "телевизор", "тв"],
-    "обои": ["поклейка обоев", "шпаклевка", "шпатлевка", "маляр", "малярка", "венецианка", "покраска"],
+    "обои": ["поклейка обоев", "обоев", "шпаклевка", "шпатлевка", "маляр", "малярка", "венецианка", "покраска"],
     "двер": ["замки", "слесарь", "ручки", "мдф", "петли", "наличники", "откосы"],
-    "окн": ["стеклопакет", "москитка", "жалюзи", "рольставни", "регулировка окон"],
+    "окн": ["окон", "стеклопакет", "москитка", "жалюзи", "рольставни", "регулировка окон", "пластиковые окна"],
     "сантехн": ["кран", "сифон", "смеситель", "трубы", "засор", "унитаз", "бойлер", "котел", "отопление", "ванна"],
     "электрик": ["проводка", "люстра", "свет", "розетка", "автомат", "щиток", "теплый пол", "видеонаблюдение"],
     "свар": ["сварщик", "каркас", "навес", "козырек", "перила", "ворота", "калитка", "качели"],
@@ -125,6 +125,7 @@ SYNONYMS = {
 STOP_PHONES = {"+79405555555", "+79400000000", "+79409999999"}
 PHONE_PATTERN = r'(?:\+?7|8)?[\s\-]?(?:\(?\d{3}\)?[\s\-]?)?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}|\b[79]\d{2}[\s\-]?\d{2}[\s\-]?\d{2}\b'
 
+
 def clean_phone(p: str) -> str:
     digits = re.sub(r'\D', '', p)
     if digits.startswith('89') and len(digits) == 11:
@@ -136,6 +137,7 @@ def clean_phone(p: str) -> str:
     if len(digits) == 11:
         return "+" + digits
     return p
+
 
 def classify_service(text: str):
     t = text.lower()
@@ -165,13 +167,13 @@ def classify_service(text: str):
     # 3. Отделка и ремонт
     if any(k in t for k in ["плитк", "кафел", "керамогранит", "брусчатк"]):
         return "finish", "tiles"
-    if any(k in t for k in ["обои", "маляр", "покраск", "шпаклев", "шпатлев", "штукатур", "венецианк", "барельеф", "откос", "дизайнер интер"]):
+    if any(k in t for k in ["обои", "обоев", "обоями", "поклейк", "маляр", "покраск", "шпаклев", "шпатлев", "штукатур", "венецианк", "барельеф", "откос", "дизайнер интер"]):
         return "finish", "wallpaper"
     if any(k in t for k in ["потолок", "потолки", "потолочн", "паталог", "skyline"]):
         return "finish", "ceilings"
     if any(k in t for k in ["паркет", "ламинат", "кварцвинил", "стяжк", "пол "]):
         return "finish", "flooring"
-    if any(k in t for k in ["двер", "окн", "москит", "стекл", "замок", "замк", "слесар", "жалюз", "рольставн"]):
+    if any(k in t for k in ["двер", "окн", "окон", "оконн", "москит", "стекл", "замок", "замк", "слесар", "жалюз", "рольставн"]):
         return "finish", "doors"
     if any(k in t for k in ["мебел", "сборк", "столяр", "дерев", "перешив"]):
         return "finish", "furniture"
@@ -234,6 +236,7 @@ def classify_service(text: str):
 
     return "places", "other"
 
+
 def generate_keywords(text: str, cat_title: str, sub_title: str) -> list:
     tokens = set()
     t = text.lower()
@@ -246,6 +249,7 @@ def generate_keywords(text: str, cat_title: str, sub_title: str) -> list:
         if root in t:
             tokens.update(syn_list)
     return list(tokens)
+
 
 def add_master(masters: dict, counter: int, phone: str, name: str, service: str, recommended_by: str, starred: bool = False, is_leader: bool = False, overwrite: bool = False) -> int:
     phone = clean_phone(phone)
@@ -287,6 +291,7 @@ def add_master(masters: dict, counter: int, phone: str, name: str, service: str,
     }
     return counter + 1 if is_new else counter
 
+
 def decode_vcard_value(value: str, params: str) -> str:
     if "QUOTED-PRINTABLE" in params.upper():
         try:
@@ -294,6 +299,7 @@ def decode_vcard_value(value: str, params: str) -> str:
         except Exception:
             pass
     return value.replace("\\,", ",").replace("\\;", ";").replace("\\n", " ").strip()
+
 
 def parse_vcf_content(raw: str, filename: str, masters: dict, master_counter: int) -> int:
     raw = re.sub(r'=\r?\n', '', raw)
@@ -337,11 +343,12 @@ def parse_vcf_content(raw: str, filename: str, masters: dict, master_counter: in
         )
     return master_counter
 
+
 def parse_digest_lines(lines: list, masters: dict, master_counter: int, is_leader_msg: bool) -> int:
     i = 0
     while i < len(lines):
         line = lines[i]
-        if any(line.startswith(p) for p in ["✅", "⭐", "📍", "•"]):
+        if any(line.startswith(p) for p in ["✅", "⭐", "•"]):
             is_starred = "⭐" in line
             ph_match = re.search(PHONE_PATTERN, line)
             info = line
@@ -351,7 +358,7 @@ def parse_digest_lines(lines: list, masters: dict, master_counter: int, is_leade
                 j = i + 1
                 while j < len(lines) and j <= i + 3:
                     nxt = lines[j]
-                    if nxt.startswith("✅") or nxt.startswith("⭐"):
+                    if nxt.startswith("✅") or nxt.startswith("⭐") or nxt.startswith("•"):
                         break
                     if nxt.startswith("📍") and not re.search(PHONE_PATTERN, nxt):
                         extra_addr = nxt.replace("📍", "").strip()
@@ -386,6 +393,7 @@ def parse_digest_lines(lines: list, masters: dict, master_counter: int, is_leade
                 )
         i += 1
     return master_counter
+
 
 def parse_chat_content(content: str, masters: dict, master_counter: int) -> int:
     content = re.sub(r'[\u200e\u200f\u202a-\u202e\u202f\ufeff]', '', content)
@@ -459,6 +467,7 @@ def parse_chat_content(content: str, masters: dict, master_counter: int) -> int:
         )
     return master_counter
 
+
 def parse_all():
     masters = {}
     master_counter = 1
@@ -510,6 +519,7 @@ def parse_all():
         json.dump(masters_list, out, ensure_ascii=False, indent=2)
 
     print(f"Готово! Очищено от спама и структурировано {len(masters_list)} специалистов.")
+
 
 if __name__ == "__main__":
     parse_all()
