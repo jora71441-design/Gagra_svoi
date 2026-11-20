@@ -26,6 +26,9 @@ jobs:
           python-version: '3.11'
 
       - name: Run parsers
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
         run: |
           mkdir -p data
           python scripts/parser.py
