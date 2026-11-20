@@ -1383,35 +1383,20 @@
 
   <script>
     
-        async function openJobEditModal(id) {
-      try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/jobs?id=eq.${encodeURIComponent(id)}&select=*`, {
-          headers: {
-            'apikey': SUPABASE_ANON_KEY,
-            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-          }
-        });
-        if (!res.ok) {
-          const errText = await res.text();
-          return alert(`Ошибка загрузки (${res.status}): ${errText}`);
-        }
-        const rows = await res.json();
-        const item = rows[0];
-        if (!item) return alert(`Вакансия с id=${id} не найдена в базе`);
+            function openJobEditModal(id) {
+      const item = currentJobsCache.find(x => String(x.id) === String(id));
+      if (!item) return alert('Вакансия не найдена в кэше. Нажмите «Обновить».');
 
-        document.getElementById('editJobId').value = item.id;
-        document.getElementById('editJobType').value = item.type || '#вакансия';
-        document.getElementById('editJobTitle').value = item.title || '';
-        document.getElementById('editJobSalary').value = item.salary || '';
-        document.getElementById('editJobCity').value = item.city || 'Гагра';
-        document.getElementById('editJobDesc').value = item.desc || '';
-        document.getElementById('editJobContact').value = item.contact || '';
-        document.getElementById('editJobPhone').value = item.phone || '';
+      document.getElementById('editJobId').value = item.id;
+      document.getElementById('editJobType').value = item.type || '#вакансия';
+      document.getElementById('editJobTitle').value = item.title || '';
+      document.getElementById('editJobSalary').value = item.salary || '';
+      document.getElementById('editJobCity').value = item.city || 'Гагра';
+      document.getElementById('editJobDesc').value = item.desc || '';
+      document.getElementById('editJobContact').value = item.contact || '';
+      document.getElementById('editJobPhone').value = item.phone || '';
 
-        document.getElementById('jobEditModal').classList.remove('hidden');
-      } catch (e) {
-        alert('Ошибка: ' + e.message);
-      }
+      document.getElementById('jobEditModal').classList.remove('hidden');
     }
 
     function closeJobEditModal() {
