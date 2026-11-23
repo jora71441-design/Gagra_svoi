@@ -191,24 +191,27 @@
                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500">
       </div>
 
-      <div class="grid grid-cols-2 gap-2">
+       <div class="grid grid-cols-2 gap-2">
         <div>
-          <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Телефон</label>
-          <input type="tel" id="editMasterPhone" placeholder="+7 940 ..." 
-                 class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-mono text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+          <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Категория</label>
+          <select id="editMasterCategory" onchange="updateEditSubcategories()"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2 py-2 text-xs text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500">
+            <option value="appliances">🧺 Техника</option>
+            <option value="engineering">🔧 Сантехника / Свет</option>
+            <option value="finish">🎨 Отделка / Ремонт</option>
+            <option value="construction">🏗 Стройка / Сварка</option>
+            <option value="auto">🚗 Авто / Доставка</option>
+            <option value="home_care">🧹 Дом и быт</option>
+            <option value="lifestyle">🌿 Здоровье и красота</option>
+            <option value="education">🎓 Обучение и хобби</option>
+            <option value="events">🎉 Праздники</option>
+            <option value="places">📍 Полезные места</option>
+          </select>
         </div>
         <div>
-          <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Город</label>
-          <select id="editMasterCity" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2 py-2 text-xs text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500">
-            <option value="Гагра">Гагра</option>
-            <option value="Цандрипш">Цандрипш</option>
-            <option value="Пицунда">Пицунда</option>
-            <option value="Гудаута">Гудаута</option>
-            <option value="Новый Афон">Новый Афон</option>
-            <option value="Сухум">Сухум</option>
-            <option value="Ткуарчал">Ткуарчал</option>
-            <option value="Очамчыра">Очамчыра</option>
-            <option value="Гал">Гал</option>
+          <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Подкатегория</label>
+          <select id="editMasterSubcategory"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2 py-2 text-xs text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500">
           </select>
         </div>
       </div>
