@@ -1012,7 +1012,7 @@
       loadApprovedMasters();
     }
 
-    async function loadApprovedMasters() {
+        async function loadApprovedMasters() {
       const list = document.getElementById('cardsList');
       list.innerHTML = `<div class="text-center py-10 text-slate-400 text-sm">${promosSubTab === 'archive' ? 'Загружаем архив...' : 'Загружаем базу специалистов...'}</div>`;
 
@@ -1033,9 +1033,41 @@
           return;
         }
 
-        const data = await res.json();
-        currentMastersCache = data || [];
-        approvedMastersCache = currentMastersCache;
+        const sbData = (await res.json()) || [];
+        let merged = [...sbData];
+
+        // Во вкладке "На сайте" подмешиваем мастеров из data/masters.json (без дублей по телефону)
+        if (promosSubTab !== 'archive') {
+          try {
+            const jsonRes = await fetch(`data/masters.json?v=${Date.now()}`);
+            if (jsonRes.ok) {
+              const jsonData = await jsonRes.json();
+              const seenPhones = new Set(
+                sbData.map(m => (m.phone || '').replace(/\D/g, '')).filter(Boolean)
+              );
+
+              (jsonData || []).forEach(m => {
+                const cleanPh = (m.phone || '').replace(/\D/g, '');
+                if (cleanPh && !seenPhones.has(cleanPh)) {
+                  seenPhones.add(cleanPh);
+                  merged.push({
+                    ...m,
+                    id: `json_${m.id}`,
+                    is_approved: true,
+                    is_top: false,
+                    is_archived: false,
+                    is_json_only: true
+                  });
+                }
+              });
+            }
+          } catch (jsonErr) {
+            console.warn('Не удалось подгрузить data/masters.json:', jsonErr);
+          }
+        }
+
+        currentMastersCache = merged;
+        approvedMastersCache = merged;
         filterPromosList();
       } catch (e) {
         list.innerHTML = '<div class="text-center py-10 text-red-500 text-xs">Сетевой сбой при загрузке мастеров</div>';
