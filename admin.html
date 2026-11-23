@@ -827,6 +827,111 @@
 
     // ==================== МОДАЛКА РЕДАКТИРОВАНИЯ МАСТЕРА ====================
 
+     const MASTER_TAXONOMY = {
+      appliances: {
+        title: '🧺 Техника',
+        subs: {
+          washers: 'Стиральные машины',
+          fridges: 'Холодильники',
+          aircon: 'Кондиционеры',
+          gadgets: 'Телефоны и ТВ',
+          small_appliances: 'Мелкая техника'
+        }
+      },
+      engineering: {
+        title: '🔧 Сантехника / Свет',
+        subs: {
+          plumbing: 'Сантехника и вода',
+          heating: 'Котлы и отопление',
+          electric: 'Электрика и свет',
+          underfloor: 'Тёплые полы'
+        }
+      },
+      finish: {
+        title: '🎨 Отделка / Ремонт',
+        subs: {
+          wallpaper: 'Обои и покраска',
+          ceilings: 'Натяжные потолки',
+          tiles: 'Плитка и кафель',
+          flooring: 'Ламинат и полы',
+          doors: 'Окна и двери',
+          furniture: 'Мебель и сборка'
+        }
+      },
+      construction: {
+        title: '🏗 Стройка / Сварка',
+        subs: {
+          building: 'Стройка под ключ',
+          welding: 'Сварка и навесы',
+          climbing: 'Пром. альпинизм',
+          waste: 'Вывоз мусора'
+        }
+      },
+      auto: {
+        title: '🚗 Авто / Доставка',
+        subs: {
+          autodiag: 'Диагностика и автоэлектрик',
+          gearbox: 'Ремонт АКПП',
+          bike: 'Велосипеды',
+          delivery: 'Доставка и грузы'
+        }
+      },
+      home_care: {
+        title: '🧹 Дом и быт',
+        subs: {
+          cleaning: 'Уборка и клининг',
+          garden: 'Покос и сад',
+          sewing: 'Шторы и шитьё'
+        }
+      },
+      lifestyle: {
+        title: '🌿 Здоровье и красота',
+        subs: {
+          medical: 'Врачи (все категории)',
+          massage: 'Массаж и тело',
+          psychology: 'Психология и душа',
+          beauty: 'Красота и уход'
+        }
+      },
+      education: {
+        title: '🎓 Обучение и хобби',
+        subs: {
+          tutors: 'Репетиторы и курсы',
+          hobby: 'Хобби и саморазвитие'
+        }
+      },
+      events: {
+        title: '🎉 Праздники',
+        subs: {
+          photo_video: 'Фото и видео',
+          decor: 'Декор и оформление',
+          org: 'Организация и ведущие'
+        }
+      },
+      places: {
+        title: '📍 Полезные места',
+        subs: {
+          business: 'Торговля / Бизнес',
+          other: 'Разное'
+        }
+      }
+    };
+
+    function updateEditSubcategories(selectedSub = '') {
+      const catKey = document.getElementById('editMasterCategory')?.value || 'places';
+      const subSelect = document.getElementById('editMasterSubcategory');
+      if (!subSelect) return;
+
+      const subs = MASTER_TAXONOMY[catKey]?.subs || {};
+      subSelect.innerHTML = Object.entries(subs)
+        .map(([key, label]) => `<option value="${key}">${label}</option>`)
+        .join('');
+
+      if (selectedSub && subs[selectedSub]) {
+        subSelect.value = selectedSub;
+      }
+    }
+
     function openMasterEditModal(id) {
       const item = currentMastersCache.find(x => x.id == id);
       if (!item) {
@@ -844,9 +949,22 @@
       document.getElementById('editMasterName').value = item.name || '';
       document.getElementById('editMasterPhone').value = item.phone || '';
       document.getElementById('editMasterCity').value = item.city || 'Гагра';
-      document.getElementById('editMasterCategory').value = item.category_title || '';
       document.getElementById('editMasterService').value = item.service || '';
       document.getElementById('editMasterSocial').value = item.social || '';
+
+      // Определяем категорию из справочника
+      let catKey = item.category && MASTER_TAXONOMY[item.category] ? item.category : '';
+      if (!catKey && item.category_title) {
+        const lowerTitle = item.category_title.toLowerCase();
+        const found = Object.entries(MASTER_TAXONOMY).find(([k, v]) =>
+          v.title.toLowerCase().includes(lowerTitle) || lowerTitle.includes(v.title.replace(/^[^\s]+\s/, '').toLowerCase())
+        );
+        if (found) catKey = found[0];
+      }
+      if (!catKey) catKey = 'places';
+
+      document.getElementById('editMasterCategory').value = catKey;
+      updateEditSubcategories(item.subcategory || '');
 
       const btnSaveApprove = document.getElementById('btnSaveAndApproveMaster');
       if (btnSaveApprove) {
@@ -860,19 +978,24 @@
       modal.classList.remove('hidden');
     }
 
-    function closeMasterEditModal() {
-      const modal = document.getElementById('masterEditModal');
-      if (modal) modal.classList.add('hidden');
-    }
-
-        async function saveMasterEdit(andApprove = false) {
+    async function saveMasterEdit(andApprove = false) {
       const id = document.getElementById('editMasterId').value;
+      if (String(id).startsWith('json_')) {
+        alert('Эта карточка загружена из архива чата (JSON). Редактирование доступно для карточек из базы Supabase.');
+        return;
+      }
+
+      const catKey = document.getElementById('editMasterCategory').value;
+      const subKey = document.getElementById('editMasterSubcategory').value;
+      const catTitle = MASTER_TAXONOMY[catKey]?.title || catKey;
+      const subTitle = MASTER_TAXONOMY[catKey]?.subs[subKey] || '';
+
       const payload = {
         master_id: Number(id),
         p_name: document.getElementById('editMasterName').value.trim(),
         p_phone: document.getElementById('editMasterPhone').value.trim(),
         p_city: document.getElementById('editMasterCity').value.trim(),
-        p_category: document.getElementById('editMasterCategory').value.trim(),
+        p_category: catTitle,
         p_service: document.getElementById('editMasterService').value.trim(),
         p_social: document.getElementById('editMasterSocial').value.trim(),
         secret_pin: adminPin
@@ -894,6 +1017,26 @@
           throw new Error(err.message || 'Не удалось сохранить изменения');
         }
 
+        // Дополнительно сохраняем точные ключи категории и подкатегории
+        try {
+          await fetch(`${SUPABASE_URL}/rest/v1/masters?id=eq.${Number(id)}`, {
+            method: 'PATCH',
+            headers: {
+              'apikey': SUPABASE_ANON_KEY,
+              'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              category: catKey,
+              category_title: catTitle,
+              subcategory: subKey,
+              subcategory_title: subTitle
+            })
+          });
+        } catch (patchErr) {
+          console.warn('Не удалось обновить ключи подкатегории:', patchErr);
+        }
+
         if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
         closeMasterEditModal();
 
@@ -905,32 +1048,6 @@
         }
       } catch (err) {
         alert('Ошибка сохранения: ' + err.message);
-      }
-    }
-
-    async function unpublishRentItem(id) {
-      if (!confirm('Пометить объект как сданный и скрыть с сайта?')) return;
-      if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
-
-      try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/rent?id=eq.${id}`, {
-          method: 'PATCH',
-          headers: {
-            'apikey': SUPABASE_ANON_KEY,
-            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ is_active: false })
-        });
-
-        if (res.ok) {
-          if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-          loadApprovedRent();
-        } else {
-          alert('Не удалось скрыть объект');
-        }
-      } catch (e) {
-        alert('Ошибка связи с базой данных');
       }
     }
 
