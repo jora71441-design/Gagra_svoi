@@ -1001,6 +1001,11 @@
       }
     }
 
+    function closeMasterEditModal() {
+      const modal = document.getElementById('masterEditModal');
+      if (modal) modal.classList.add('hidden');
+    }
+    
     async function saveMasterEdit(andApprove = false) {
       const id = document.getElementById('editMasterId').value;
       if (String(id).startsWith('json_')) {
