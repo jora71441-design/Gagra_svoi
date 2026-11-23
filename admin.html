@@ -1107,7 +1107,7 @@
         alert('Сетевой сбой при обновлении статуса');
       }
     }
-
+    
     function filterPromosList() {
       const search = (document.getElementById('promosSearchInput')?.value || '').toLowerCase().trim();
       const list = document.getElementById('cardsList');
@@ -1115,20 +1115,20 @@
 
       const filtered = approvedMastersCache.filter(m => {
         if (!search) return true;
-        const txt = `${m.name || ''} ${m.phone || ''} ${m.service || ''} ${m.category_title || ''}`.toLowerCase();
-        return txt.includes(search);
+
+        const terms = search.split(/\s+/).filter(Boolean);
+        const rawText = `${m.name || ''} ${m.service || ''} ${m.category_title || ''} ${m.subcategory_title || ''} ${m.city || ''}`.toLowerCase();
+        const words = rawText.split(/[^а-яёa-z0-9]+/i).filter(Boolean);
+        const cleanPhone = (m.phone || '').replace(/\D/g, '');
+
+        return terms.every(term => {
+          const termDigits = term.replace(/\D/g, '');
+          if (termDigits.length >= 3 && cleanPhone.includes(termDigits)) return true;
+          return words.some(w => w.startsWith(term));
+        });
       });
 
       if (filtered.length === 0) {
-        list.innerHTML = `
-          <div class="bg-white rounded-3xl p-8 text-center border border-slate-200/80 shadow-xs">
-            <span class="text-3xl">${promosSubTab === 'archive' ? '📦' : '🔍'}</span>
-            <p class="text-sm font-bold text-slate-800 mt-2">${promosSubTab === 'archive' ? 'В архиве пока пусто' : 'Мастера не найдены'}</p>
-            <p class="text-xs text-slate-500 mt-1">${promosSubTab === 'archive' ? 'Сюда попадают временно скрытые специалисты.' : 'Проверьте поисковый запрос или одобрите новых мастеров в первой вкладке.'}</p>
-          </div>
-        `;
-        return;
-      }
 
       filtered.forEach(m => {
         const card = document.createElement('div');
