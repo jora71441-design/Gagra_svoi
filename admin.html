@@ -932,50 +932,57 @@
       }
     }
 
-    function openMasterEditModal(id) {
-      const item = currentMastersCache.find(x => x.id == id);
-      if (!item) {
-        alert('Карточка мастера не найдена в памяти. Обновите вкладку.');
-        return;
-      }
-
-      const modal = document.getElementById('masterEditModal');
-      if (!modal) {
-        alert('Ошибка: в HTML admin.html отсутствует контейнер <div id="masterEditModal">!');
-        return;
-      }
-
-      document.getElementById('editMasterId').value = item.id;
-      document.getElementById('editMasterName').value = item.name || '';
-      document.getElementById('editMasterPhone').value = item.phone || '';
-      document.getElementById('editMasterCity').value = item.city || 'Гагра';
-      document.getElementById('editMasterService').value = item.service || '';
-      document.getElementById('editMasterSocial').value = item.social || '';
-
-      // Определяем категорию из справочника
-      let catKey = item.category && MASTER_TAXONOMY[item.category] ? item.category : '';
-      if (!catKey && item.category_title) {
-        const lowerTitle = item.category_title.toLowerCase();
-        const found = Object.entries(MASTER_TAXONOMY).find(([k, v]) =>
-          v.title.toLowerCase().includes(lowerTitle) || lowerTitle.includes(v.title.replace(/^[^\s]+\s/, '').toLowerCase())
-        );
-        if (found) catKey = found[0];
-      }
-      if (!catKey) catKey = 'places';
-
-      document.getElementById('editMasterCategory').value = catKey;
-      updateEditSubcategories(item.subcategory || '');
-
-      const btnSaveApprove = document.getElementById('btnSaveAndApproveMaster');
-      if (btnSaveApprove) {
-        if (currentTab === 'promos') {
-          btnSaveApprove.classList.add('hidden');
-        } else {
-          btnSaveApprove.classList.remove('hidden');
+        function openMasterEditModal(id) {
+      try {
+        const item = (currentMastersCache || []).find(x => String(x.id) === String(id));
+        if (!item) {
+          alert('Карточка мастера не найдена в памяти. Нажмите «Обновить».');
+          return;
         }
-      }
 
-      modal.classList.remove('hidden');
+        const modal = document.getElementById('masterEditModal');
+        if (!modal) {
+          alert('Ошибка: не найден <div id="masterEditModal"> в HTML.');
+          return;
+        }
+
+        const setVal = (elId, val) => {
+          const el = document.getElementById(elId);
+          if (el) el.value = val;
+        };
+
+        setVal('editMasterId', item.id);
+        setVal('editMasterName', item.name || '');
+        setVal('editMasterPhone', item.phone || '');
+        setVal('editMasterCity', item.city || 'Гагра');
+        setVal('editMasterService', item.service || '');
+        setVal('editMasterSocial', item.social || '');
+
+        let catKey = item.category && MASTER_TAXONOMY[item.category] ? item.category : '';
+        if (!catKey && item.category_title) {
+          const lowerTitle = String(item.category_title).toLowerCase();
+          const found = Object.entries(MASTER_TAXONOMY).find(([k, v]) =>
+            v.title.toLowerCase().includes(lowerTitle) ||
+            lowerTitle.includes(v.title.replace(/^[^\s]+\s/, '').toLowerCase())
+          );
+          if (found) catKey = found[0];
+        }
+        if (!catKey) catKey = 'places';
+
+        setVal('editMasterCategory', catKey);
+        if (typeof updateEditSubcategories === 'function') {
+          updateEditSubcategories(item.subcategory || '');
+        }
+
+        const btnSaveApprove = document.getElementById('btnSaveAndApproveMaster');
+        if (btnSaveApprove) {
+          btnSaveApprove.classList.toggle('hidden', currentTab === 'promos');
+        }
+
+        modal.classList.remove('hidden');
+      } catch (err) {
+        alert('Ошибка при открытии правки: ' + err.message);
+      }
     }
 
     async function saveMasterEdit(andApprove = false) {
