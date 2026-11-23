@@ -1310,16 +1310,16 @@
 
         const controlsHtml = isArchiveView ? `
           <div class="pt-2 border-t border-slate-100 flex items-center justify-between gap-2 flex-wrap">
-            <button onclick="toggleMasterArchive(${m.id}, false, '${safeName}')" 
+            <button onclick="toggleMasterArchive('${m.id}', false, '${safeName}')" 
                     class="text-[11px] font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 flex items-center gap-1 py-1.5 px-3 rounded-xl transition active:scale-95">
               ♻️ Вернуть на сайт
             </button>
             <div class="flex items-center gap-1.5">
-              <button onclick="openMasterEditModal(${m.id})" 
+              <button onclick="openMasterEditModal('${m.id}')" 
                       class="text-[11px] font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 flex items-center gap-1 py-1.5 px-2.5 rounded-lg transition active:scale-95">
                 ✏️ Изменить
               </button>
-              <button onclick="deleteApprovedMaster(${m.id}, '${safeName}')" 
+              <button onclick="deleteApprovedMaster('${m.id}', '${safeName}')" 
                       class="text-[11px] font-semibold text-slate-400 hover:text-rose-600 flex items-center gap-1 py-1.5 px-2 rounded-lg hover:bg-rose-50 transition active:scale-95">
                 🗑 Удалить
               </button>
@@ -1328,15 +1328,15 @@
         ` : `
           <!-- Тарифные кнопки управления -->
           <div class="grid grid-cols-3 gap-1.5 pt-1">
-            <button onclick="toggleMasterStatus(${m.id}, 'leader')" 
+            <button onclick="toggleMasterStatus('${m.id}', 'leader')" 
                     class="${isLeader ? 'bg-amber-600 hover:bg-amber-700 text-white font-black' : 'bg-slate-100 hover:bg-amber-50 text-slate-800 border border-slate-200 font-semibold'} py-2 px-1 rounded-xl text-[11px] transition flex items-center justify-center text-center active:scale-98">
               ${isLeader ? '👑 Снять' : '👑 Главная'}
             </button>
-            <button onclick="toggleMasterStatus(${m.id}, 'top_all')" 
+            <button onclick="toggleMasterStatus('${m.id}', 'top_all')" 
                     class="${isTopAll ? 'bg-orange-500 hover:bg-orange-600 text-white font-black' : 'bg-slate-100 hover:bg-orange-50 text-slate-800 border border-slate-200 font-semibold'} py-2 px-1 rounded-xl text-[11px] transition flex items-center justify-center text-center active:scale-98">
               ${isTopAll ? '🔥 Снять' : '🔥 Топ «Все»'}
             </button>
-            <button onclick="toggleMasterStatus(${m.id}, 'pin')" 
+            <button onclick="toggleMasterStatus('${m.id}', 'pin')" 
                     class="${isPinned ? 'bg-yellow-500 hover:bg-yellow-600 text-slate-950 font-black' : 'bg-slate-100 hover:bg-yellow-50 text-slate-800 border border-slate-200 font-semibold'} py-2 px-1 rounded-xl text-[11px] transition flex items-center justify-center text-center active:scale-98">
               ${isPinned ? '⭐ Снять' : '⭐ В раздел'}
             </button>
@@ -1373,16 +1373,16 @@
               ` : ''}
             </div>
 
-            <div class="flex items-center gap-1.5">
-              <button onclick="openMasterEditModal(${m.id})" 
+                <div class="flex items-center gap-1.5">
+              <button onclick="openMasterEditModal('${m.id}')" 
                       class="text-[11px] font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 flex items-center gap-1 py-1 px-2.5 rounded-lg transition active:scale-95">
                 ✏️ Изменить
               </button>
-              <button onclick="toggleMasterArchive(${m.id}, true, '${safeName}')" 
+              <button onclick="toggleMasterArchive('${m.id}', true, '${safeName}')" 
                       class="text-[11px] font-semibold text-slate-600 bg-slate-100 hover:bg-amber-50 hover:text-amber-900 flex items-center gap-1 py-1 px-2 rounded-lg transition active:scale-95">
                 📦 В архив
               </button>
-              <button onclick="deleteApprovedMaster(${m.id}, '${safeName}')" 
+              <button onclick="deleteApprovedMaster('${m.id}', '${safeName}')" 
                       class="text-[11px] font-semibold text-slate-400 hover:text-rose-600 flex items-center gap-1 py-1 px-2 rounded-lg hover:bg-rose-50 transition active:scale-95">
                 🗑 Удалить
               </button>
