@@ -1006,69 +1006,103 @@
       if (modal) modal.classList.add('hidden');
     }
     
-    async function saveMasterEdit(andApprove = false) {
+        async function saveMasterEdit(andApprove = false) {
       const id = document.getElementById('editMasterId').value;
-      if (String(id).startsWith('json_')) {
-        alert('Эта карточка загружена из архива чата (JSON). Редактирование доступно для карточек из базы Supabase.');
-        return;
-      }
+      const isJsonCard = String(id).startsWith('json_');
 
       const catKey = document.getElementById('editMasterCategory').value;
       const subKey = document.getElementById('editMasterSubcategory').value;
       const catTitle = MASTER_TAXONOMY[catKey]?.title || catKey;
       const subTitle = MASTER_TAXONOMY[catKey]?.subs[subKey] || '';
 
-      const payload = {
-        master_id: Number(id),
-        p_name: document.getElementById('editMasterName').value.trim(),
-        p_phone: document.getElementById('editMasterPhone').value.trim(),
-        p_city: document.getElementById('editMasterCity').value.trim(),
-        p_category: catTitle,
-        p_service: document.getElementById('editMasterService').value.trim(),
-        p_social: document.getElementById('editMasterSocial').value.trim(),
-        secret_pin: adminPin
-      };
+      const nameVal = document.getElementById('editMasterName').value.trim();
+      const phoneVal = document.getElementById('editMasterPhone').value.trim();
+      const cityVal = document.getElementById('editMasterCity').value.trim();
+      const serviceVal = document.getElementById('editMasterService').value.trim();
+      const socialVal = document.getElementById('editMasterSocial').value.trim();
 
       try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/update_master_record`, {
-          method: 'POST',
-          headers: {
-            'apikey': SUPABASE_ANON_KEY,
-            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(payload)
-        });
+        if (isJsonCard) {
+          // Переносим карточку из JSON в Supabase с уже применёнными правками
+          const insertRes = await fetch(`${SUPABASE_URL}/rest/v1/masters`, {
+            method: 'POST',
+            headers: {
+              'apikey': SUPABASE_ANON_KEY,
+              'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+              'Content-Type': 'application/json',
+              'Prefer': 'return=representation'
+            },
+            body: JSON.stringify({
+              name: nameVal,
+              phone: phoneVal,
+              city: cityVal || 'Гагра',
+              category: catKey,
+              category_title: catTitle,
+              subcategory: subKey,
+              subcategory_title: subTitle,
+              service: serviceVal,
+              social: socialVal || null,
+              is_approved: true,
+              is_archived: false
+            })
+          });
 
-        if (!res.ok) {
-          const err = await res.json().catch(() => ({}));
-          throw new Error(err.message || 'Не удалось сохранить изменения');
-        }
+          if (!insertRes.ok) {
+            const err = await insertRes.json().catch(() => ({}));
+            throw new Error(err.message || 'Не удалось перенести карточку из JSON в базу');
+          }
+        } else {
+          const payload = {
+            master_id: Number(id),
+            p_name: nameVal,
+            p_phone: phoneVal,
+            p_city: cityVal,
+            p_category: catTitle,
+            p_service: serviceVal,
+            p_social: socialVal,
+            secret_pin: adminPin
+          };
 
-        // Дополнительно сохраняем точные ключи категории и подкатегории
-        try {
-          await fetch(`${SUPABASE_URL}/rest/v1/masters?id=eq.${Number(id)}`, {
-            method: 'PATCH',
+          const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/update_master_record`, {
+            method: 'POST',
             headers: {
               'apikey': SUPABASE_ANON_KEY,
               'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
               'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-              category: catKey,
-              category_title: catTitle,
-              subcategory: subKey,
-              subcategory_title: subTitle
-            })
+            body: JSON.stringify(payload)
           });
-        } catch (patchErr) {
-          console.warn('Не удалось обновить ключи подкатегории:', patchErr);
+
+          if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err.message || 'Не удалось сохранить изменения');
+          }
+
+          // Дополнительно сохраняем точные ключи категории и подкатегории
+          try {
+            await fetch(`${SUPABASE_URL}/rest/v1/masters?id=eq.${Number(id)}`, {
+              method: 'PATCH',
+              headers: {
+                'apikey': SUPABASE_ANON_KEY,
+                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                category: catKey,
+                category_title: catTitle,
+                subcategory: subKey,
+                subcategory_title: subTitle
+              })
+            });
+          } catch (patchErr) {
+            console.warn('Не удалось обновить ключи подкатегории:', patchErr);
+          }
         }
 
         if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
         closeMasterEditModal();
 
-        if (andApprove) {
+        if (!isJsonCard && andApprove) {
           await approveItem('masters', id);
         } else {
           if (currentTab === 'promos') loadApprovedMasters();
