@@ -1241,10 +1241,17 @@
       }
     }
 
-    async function deleteItem(table, id) {
+        async function deleteItem(table, id) {
       if (table !== 'rent' && !confirm('Точно отклонить и удалить эту заявку?')) return;
       if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('rigid');
+
+      if (table === 'jobs') {
+        const rejectedItem = (currentJobsCache || []).find(x => String(x.id) === String(id));
+        if (rejectedItem) await rememberRejectedJob(rejectedItem);
+      }
+
       try {
+
         const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/delete_record`, {
           method: 'POST',
           headers: {
