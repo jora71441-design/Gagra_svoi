@@ -180,7 +180,7 @@
     <div class="bg-white w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl p-5 max-h-[90vh] overflow-y-auto space-y-3 shadow-2xl">
       <div class="flex items-center justify-between pb-2 border-b border-slate-100">
         <h3 class="text-sm font-bold text-slate-900">✏️ Редактирование мастера</h3>
-        <button onclick="closeMasterEditModal()" class="text-slate-400 hover:text-slate-700 text-xl font-bold leading-none p-1">✕</button>
+        <button onclick="document.getElementById('masterEditModal').classList.add('hidden')" class="text-slate-400 hover:text-slate-700 text-xl font-bold leading-none p-1">✕</button>
       </div>
 
       <input type="hidden" id="editMasterId">
@@ -191,7 +191,29 @@
                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500">
       </div>
 
-       <div class="grid grid-cols-2 gap-2">
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Телефон</label>
+          <input type="tel" id="editMasterPhone" placeholder="+7 940 ..." 
+                 class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-mono text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Город</label>
+          <select id="editMasterCity" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2 py-2 text-xs text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500">
+            <option value="Гагра">Гагра</option>
+            <option value="Цандрипш">Цандрипш</option>
+            <option value="Пицунда">Пицунда</option>
+            <option value="Гудаута">Гудаута</option>
+            <option value="Новый Афон">Новый Афон</option>
+            <option value="Сухум">Сухум</option>
+            <option value="Ткуарчал">Ткуарчал</option>
+            <option value="Очамчыра">Очамчыра</option>
+            <option value="Гал">Гал</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2">
         <div>
           <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Категория</label>
           <select id="editMasterCategory" onchange="updateEditSubcategories()"
@@ -214,12 +236,6 @@
                   class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2 py-2 text-xs text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500">
           </select>
         </div>
-      </div>
-
-      <div>
-        <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Категория / Направление</label>
-        <input type="text" id="editMasterCategory" placeholder="Сантехника, Электрика, Автосервис..." 
-               class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500">
       </div>
 
       <div>
