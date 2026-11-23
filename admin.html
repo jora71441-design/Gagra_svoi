@@ -489,6 +489,89 @@
 
       let currentJobsCache = [];
 
+      function getJobFingerprint(item) {
+      const phone = String(item?.phone || '').replace(/\D/g, '').slice(-10);
+      const title = String(item?.title || item?.position || item?.service || '')
+        .toLowerCase()
+        .replace(/[^a-zа-яё0-9]/gi, '')
+        .slice(0, 35);
+      return `${phone}|${title}`;
+    }
+
+    async function fetchRejectedJobFingerprints() {
+      const localList = JSON.parse(localStorage.getItem('gagra_rejected_jobs') || '[]');
+      const set = new Set(localList);
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/jobs?title=eq.__REJECTED_JOBS_REGISTRY__&select=id,desc`, {
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+          }
+        });
+        if (res.ok) {
+          const rows = await res.json();
+          if (rows && rows.length > 0 && rows[0].desc) {
+            const remoteList = JSON.parse(rows[0].desc);
+            if (Array.isArray(remoteList)) {
+              remoteList.forEach(fp => set.add(fp));
+              localStorage.setItem('gagra_rejected_jobs', JSON.stringify([...set]));
+            }
+          }
+        }
+      } catch (e) {
+        console.warn('Не удалось загрузить общий реестр отклонённых вакансий:', e);
+      }
+      return set;
+    }
+
+    async function rememberRejectedJob(item) {
+      if (!item) return;
+      const fp = getJobFingerprint(item);
+      if (!fp || fp === '|') return;
+
+      const set = await fetchRejectedJobFingerprints();
+      set.add(fp);
+      const arr = [...set].slice(-500);
+      localStorage.setItem('gagra_rejected_jobs', JSON.stringify(arr));
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/jobs?title=eq.__REJECTED_JOBS_REGISTRY__&select=id`, {
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+          }
+        });
+        const rows = res.ok ? await res.json() : [];
+        if (rows && rows.length > 0) {
+          await fetch(`${SUPABASE_URL}/rest/v1/jobs?id=eq.${rows[0].id}`, {
+            method: 'PATCH',
+            headers: {
+              'apikey': SUPABASE_ANON_KEY,
+              'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ desc: JSON.stringify(arr), is_approved: false })
+          });
+        } else {
+          await fetch(`${SUPABASE_URL}/rest/v1/jobs`, {
+            method: 'POST',
+            headers: {
+              'apikey': SUPABASE_ANON_KEY,
+              'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              title: '__REJECTED_JOBS_REGISTRY__',
+              desc: JSON.stringify(arr),
+              is_approved: false
+            })
+          });
+        }
+      } catch (e) {
+        console.warn('Не удалось обновить общий реестр отклонённых вакансий:', e);
+      }
+    }
+
     async function loadPending(table) {
       const list = document.getElementById('cardsList');
       list.innerHTML = '<div class="text-center py-10 text-slate-400 text-sm">Проверяем базу...</div>';
@@ -510,10 +593,17 @@
           return;
         }
 
-        const items = await res.json();
+        let items = await res.json();
         if (table === 'rent') currentRentCache = items || [];
         if (table === 'masters') currentMastersCache = items || [];
-        if (table === 'jobs') currentJobsCache = items || [];
+        if (table === 'jobs') {
+          const rejectedSet = await fetchRejectedJobFingerprints();
+          items = (items || []).filter(item =>
+            item.title !== '__REJECTED_JOBS_REGISTRY__' &&
+            !rejectedSet.has(getJobFingerprint(item))
+          );
+          currentJobsCache = items;
+        }
         renderCards(items, table);
       } catch (e) {
         list.innerHTML = '<div class="text-center py-10 text-red-500 text-xs">Ошибка соединения с базой</div>';
