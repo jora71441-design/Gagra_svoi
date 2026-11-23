@@ -1126,8 +1126,18 @@
           if (termDigits.length >= 3 && cleanPhone.includes(termDigits)) return true;
           return words.some(w => w.startsWith(term));
         });
-
+      });
+      
       if (filtered.length === 0) {
+        list.innerHTML = `
+          <div class="bg-white rounded-3xl p-8 text-center border border-slate-200/80 shadow-xs">
+            <span class="text-3xl">${promosSubTab === 'archive' ? '📦' : '🔍'}</span>
+            <p class="text-sm font-bold text-slate-800 mt-2">${promosSubTab === 'archive' ? 'В архиве пока пусто' : 'Мастера не найдены'}</p>
+            <p class="text-xs text-slate-500 mt-1">${promosSubTab === 'archive' ? 'Сюда попадают временно скрытые специалисты.' : 'Проверьте поисковый запрос или одобрите новых мастеров в первой вкладке.'}</p>
+          </div>
+        `;
+        return;
+      }
 
       filtered.forEach(m => {
         const card = document.createElement('div');
