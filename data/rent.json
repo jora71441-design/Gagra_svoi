@@ -1,6 +1,44 @@
 [
   {
     "title": "🏠 Сдаётся 3-комнатная квартира",
+    "price": "25 000 ₽",
+    "city": "Гагра",
+    "district": "Центр",
+    "category": "flat",
+    "period": "year",
+    "type": "flat",
+    "badge": "🔒 На год+",
+    "desc": "🏠 Сдаётся 3-комнатная квартира\n#Гагра\n\n📍 Локация: г. Гагра, ул. Абазгаа 53/4 (1 этаж)\n📅 Срок: с декабря по конец мая\n💰 Цена: 25 000 ₽/мес + свет\n🏡 Что сдаётся: 3-комнатная квартира\n🛋 Условия: всё необходимое для проживания (есть шкаф, двуспальная кро...",
+    "photos": [
+      "data/rent_img/76_0.jpg"
+    ],
+    "status": "Свободно к заселению",
+    "tg_link": "https://t.me/arenda_abkhazia_svoi/76",
+    "is_approved": false,
+    "is_active": true,
+    "id": 1
+  },
+  {
+    "title": "🏠 Сдаётся домик",
+    "price": "Цена по запросу",
+    "city": "Сухум",
+    "district": "Центр",
+    "category": "house",
+    "period": "year",
+    "type": "house",
+    "badge": "🔒 На год+",
+    "desc": "🏠 Сдаётся домик\n#Сухум\n\n📍 Локация: Сухум, район ж/д вокзала (общий двор)\n📅 Срок: длительный (без выселения)\n💰 Цена: договорная\n🏡 Что сдаётся: домик (рассчитан на 1 человека)\n🛋 Условия: со всеми удобствами\n🐾 Животные: не указано\n📸 Фото: прикреплены к ...",
+    "photos": [
+      "data/rent_img/74_0.jpg"
+    ],
+    "status": "Свободно к заселению",
+    "tg_link": "https://t.me/arenda_abkhazia_svoi/74",
+    "is_approved": false,
+    "is_active": true,
+    "id": 2
+  },
+  {
+    "title": "🏠 Сдаётся 3-комнатная квартира",
     "price": "40 000 ₽",
     "city": "Гагра",
     "district": "Центр",
@@ -16,7 +54,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/73",
     "is_approved": false,
     "is_active": true,
-    "id": 1
+    "id": 3
   },
   {
     "title": "🏠 Сдаётся изолированная квартира в частном доме",
@@ -35,7 +73,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/72",
     "is_approved": false,
     "is_active": true,
-    "id": 2
+    "id": 4
   },
   {
     "title": "🏠 Сдаётся жильё в Гагре (район Кемпинг)",
@@ -54,7 +92,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/71",
     "is_approved": false,
     "is_active": true,
-    "id": 3
+    "id": 5
   },
   {
     "title": "🏠 Сдаётся 2-к квартира в Гагре",
@@ -73,7 +111,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/70",
     "is_approved": false,
     "is_active": true,
-    "id": 4
+    "id": 6
   },
   {
     "title": "🏠 Сдаются номера",
@@ -92,7 +130,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/68",
     "is_approved": false,
     "is_active": true,
-    "id": 5
+    "id": 7
   },
   {
     "title": "🏠 Сдаётся жильё в Гагре (район Кемпинг)",
@@ -111,7 +149,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/67",
     "is_approved": false,
     "is_active": true,
-    "id": 6
+    "id": 8
   },
   {
     "title": "🏠 Сдаётся 2-к квартира в Гагре",
@@ -130,7 +168,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/66",
     "is_approved": false,
     "is_active": true,
-    "id": 7
+    "id": 9
   },
   {
     "title": "🏠 Сдаётся 2-к квартира в Ипнари",
@@ -149,7 +187,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/65",
     "is_approved": false,
     "is_active": true,
-    "id": 8
+    "id": 10
   },
   {
     "title": "🏠 Сдаётся 3-к квартира в Сухуме",
@@ -168,7 +206,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/64",
     "is_approved": false,
     "is_active": true,
-    "id": 9
+    "id": 11
   },
   {
     "title": "🏠 Сдаётся 1-к квартира в Гудауте",
@@ -187,7 +225,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/62",
     "is_approved": false,
     "is_active": true,
-    "id": 10
+    "id": 12
   },
   {
     "title": "🏠 Сдаётся комната в Гагре",
@@ -206,7 +244,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/61",
     "is_approved": false,
     "is_active": true,
-    "id": 11
+    "id": 13
   },
   {
     "title": "🏠 Сдаётся домик у моря",
@@ -223,7 +261,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/57",
     "is_approved": false,
     "is_active": true,
-    "id": 12
+    "id": 14
   },
   {
     "title": "🏠 Сдаётся 1-к квартира",
@@ -240,7 +278,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/56",
     "is_approved": false,
     "is_active": true,
-    "id": 13
+    "id": 15
   },
   {
     "title": "🏠 Сдаётся 2-к квартира",
@@ -257,7 +295,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/55",
     "is_approved": false,
     "is_active": true,
-    "id": 14
+    "id": 16
   },
   {
     "title": "🏠 Сдаётся комната в Нижней Эшере",
@@ -276,7 +314,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/54",
     "is_approved": false,
     "is_active": true,
-    "id": 15
+    "id": 17
   },
   {
     "title": "🏠 Сдаётся 2-к квартира в Гагре",
@@ -295,7 +333,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/53",
     "is_approved": false,
     "is_active": true,
-    "id": 16
+    "id": 18
   },
   {
     "title": "🏠 Сдаётся квартира в Сухуме (Новый район)",
@@ -314,7 +352,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/52",
     "is_approved": false,
     "is_active": true,
-    "id": 17
+    "id": 19
   },
   {
     "title": "🏠 Сдаётся квартира в Гагре",
@@ -331,7 +369,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/50",
     "is_approved": false,
     "is_active": true,
-    "id": 18
+    "id": 20
   },
   {
     "title": "🏠 Сдаётся 1-к квартира в Сухуме (Синон)",
@@ -350,7 +388,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/49",
     "is_approved": false,
     "is_active": true,
-    "id": 19
+    "id": 21
   },
   {
     "title": "🏠 Сдаётся двухэтажный домик в Гагре",
@@ -369,7 +407,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/48",
     "is_approved": false,
     "is_active": true,
-    "id": 20
+    "id": 22
   },
   {
     "title": "🏠 Сдаётся евродвушка в Сухуме (Центр)",
@@ -388,7 +426,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/47",
     "is_approved": false,
     "is_active": true,
-    "id": 21
+    "id": 23
   },
   {
     "title": "🏠 Сдаётся 2-к квартира в Гагре",
@@ -407,7 +445,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/46",
     "is_approved": false,
     "is_active": true,
-    "id": 22
+    "id": 24
   },
   {
     "title": "🏠 Сдаётся 3-к квартира в Сухуме",
@@ -426,7 +464,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/45",
     "is_approved": false,
     "is_active": true,
-    "id": 23
+    "id": 25
   },
   {
     "title": "🏠 Сдаётся 1-к квартира в Гагре (Центр)",
@@ -445,7 +483,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/44",
     "is_approved": false,
     "is_active": true,
-    "id": 24
+    "id": 26
   },
   {
     "title": "🏠 Сдаётся 2-к квартира в Сухуме",
@@ -464,7 +502,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/43",
     "is_approved": false,
     "is_active": true,
-    "id": 25
+    "id": 27
   },
   {
     "title": "🏠 Сдаётся 2-к квартира в Гагре",
@@ -483,7 +521,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/42",
     "is_approved": false,
     "is_active": true,
-    "id": 26
+    "id": 28
   },
   {
     "title": "🏠 Сдаётся 1-к квартира в Агудзере",
@@ -502,7 +540,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/38",
     "is_approved": false,
     "is_active": true,
-    "id": 27
+    "id": 29
   },
   {
     "title": "🏠 Сдаётся 3-комнатная квартира в Сухуме",
@@ -521,7 +559,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/37",
     "is_approved": false,
     "is_active": true,
-    "id": 28
+    "id": 30
   },
   {
     "title": "🏠 Сдаётся 2-к квартира в Гагре",
@@ -540,7 +578,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/36",
     "is_approved": false,
     "is_active": true,
-    "id": 29
+    "id": 31
   },
   {
     "title": "🏠 Сдаётся квартира в Сухуме (Центр)",
@@ -559,7 +597,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/35",
     "is_approved": false,
     "is_active": true,
-    "id": 30
+    "id": 32
   },
   {
     "title": "🏠 Сдаётся 1-к квартира в Гагре",
@@ -578,7 +616,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/34",
     "is_approved": false,
     "is_active": true,
-    "id": 31
+    "id": 33
   },
   {
     "title": "🏠 Сдаются квартиры в Гагре (Кемпинг)",
@@ -597,7 +635,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/33",
     "is_approved": false,
     "is_active": true,
-    "id": 32
+    "id": 34
   },
   {
     "title": "🏠 Сдаётся 3-к квартира в Сухуме (поселок Агудзера)",
@@ -616,7 +654,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/32",
     "is_approved": false,
     "is_active": true,
-    "id": 33
+    "id": 35
   },
   {
     "title": "🏠 Сдаётся 3-к квартира в Сухуме (Новый район)",
@@ -635,7 +673,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/31",
     "is_approved": false,
     "is_active": true,
-    "id": 34
+    "id": 36
   },
   {
     "title": "🏠 Сдаётся 3-к квартира в Сухуме",
@@ -654,7 +692,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/30",
     "is_approved": false,
     "is_active": true,
-    "id": 35
+    "id": 37
   },
   {
     "title": "🏠 Сдаётся 3-к квартира в Сухуме (Центр)",
@@ -673,7 +711,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/29",
     "is_approved": false,
     "is_active": true,
-    "id": 36
+    "id": 38
   },
   {
     "title": "🏠 Сдаётся квартира-студия в Гагре",
@@ -692,7 +730,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/28",
     "is_approved": false,
     "is_active": true,
-    "id": 37
+    "id": 39
   },
   {
     "title": "🏠 Сдаётся 3-к квартира в Сухуме (Центр)",
@@ -711,7 +749,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/27",
     "is_approved": false,
     "is_active": true,
-    "id": 38
+    "id": 40
   },
   {
     "title": "🏠 Сдаётся 2-к квартира в Гагре",
@@ -730,7 +768,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/26",
     "is_approved": false,
     "is_active": true,
-    "id": 39
+    "id": 41
   },
   {
     "title": "🏠 Сдаётся 2-к квартира в Сухуме",
@@ -747,7 +785,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/25",
     "is_approved": false,
     "is_active": true,
-    "id": 40
+    "id": 42
   },
   {
     "title": "🏠 Сдаётся экодомик в Пицунде (Лазая)",
@@ -766,7 +804,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/24",
     "is_approved": false,
     "is_active": true,
-    "id": 41
+    "id": 43
   },
   {
     "title": "🏠 Сдаётся дом в Сухуме",
@@ -785,7 +823,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/23",
     "is_approved": false,
     "is_active": true,
-    "id": 42
+    "id": 44
   },
   {
     "title": "🏠 Сдаётся жильё в Сухуме",
@@ -802,7 +840,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/22",
     "is_approved": false,
     "is_active": true,
-    "id": 43
+    "id": 45
   },
   {
     "title": "🏠 Сдаётся 2-к квартира (9 этаж)",
@@ -819,7 +857,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/21",
     "is_approved": false,
     "is_active": true,
-    "id": 44
+    "id": 46
   },
   {
     "title": "🏠 Сдаётся 1-к квартира в Гагре (Центр)",
@@ -836,7 +874,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/17",
     "is_approved": false,
     "is_active": true,
-    "id": 45
+    "id": 47
   },
   {
     "title": "🏠 Сдаётся комната в Гагре (совместное проживание)",
@@ -853,7 +891,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/15",
     "is_approved": false,
     "is_active": true,
-    "id": 46
+    "id": 48
   },
   {
     "title": "🏠 Сдаётся жильё в Гагре (район Кемпинг)",
@@ -872,7 +910,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/14",
     "is_approved": false,
     "is_active": true,
-    "id": 47
+    "id": 49
   },
   {
     "title": "🏠 Сдаётся жильё в Гагре (район Кемпинг)",
@@ -891,7 +929,7 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/13",
     "is_approved": false,
     "is_active": true,
-    "id": 48
+    "id": 50
   },
   {
     "title": "🏠 Сдаётся дом в Гудауте (центр)",
@@ -910,6 +948,6 @@
     "tg_link": "https://t.me/arenda_abkhazia_svoi/12",
     "is_approved": false,
     "is_active": true,
-    "id": 49
+    "id": 51
   }
 ]
